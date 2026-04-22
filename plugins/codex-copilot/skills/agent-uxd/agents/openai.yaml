@@ -1,0 +1,7 @@
+interface:
+  display_name: "Agent UXD"
+  short_description: "Interaction design and usability"
+  default_prompt: "Use $agent-uxd to design the workflow, states, and interactions for this feature."
+
+policy:
+  allow_implicit_invocation: false

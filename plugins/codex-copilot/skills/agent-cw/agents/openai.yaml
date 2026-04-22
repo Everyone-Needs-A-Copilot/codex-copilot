@@ -1,0 +1,7 @@
+interface:
+  display_name: "Agent CW"
+  short_description: "Product copy and tone"
+  default_prompt: "Use $agent-cw to draft or refine the product copy for this feature or state."
+
+policy:
+  allow_implicit_invocation: false

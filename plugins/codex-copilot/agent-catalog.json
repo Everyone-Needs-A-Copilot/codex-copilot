@@ -1,0 +1,82 @@
+{
+  "version": "0.1.0",
+  "entrypoints": {
+    "primary": "protocol",
+    "launcher": "agent-launcher"
+  },
+  "agents": [
+    {
+      "id": "ta",
+      "skill": "agent-ta",
+      "role": "explorer",
+      "purpose": "Architecture, decomposition, and technical trade-offs"
+    },
+    {
+      "id": "me",
+      "skill": "agent-me",
+      "role": "worker",
+      "purpose": "Implementation and code changes"
+    },
+    {
+      "id": "qa",
+      "skill": "agent-qa",
+      "role": "explorer",
+      "purpose": "Reproduction, verification, and test strategy"
+    },
+    {
+      "id": "sec",
+      "skill": "agent-sec",
+      "role": "explorer",
+      "purpose": "Security review and threat analysis"
+    },
+    {
+      "id": "doc",
+      "skill": "agent-doc",
+      "role": "default",
+      "purpose": "Documentation and durable explanations"
+    },
+    {
+      "id": "do",
+      "skill": "agent-do",
+      "role": "worker",
+      "purpose": "Deployment, CI, and infrastructure work"
+    },
+    {
+      "id": "sd",
+      "skill": "agent-sd",
+      "role": "default",
+      "purpose": "Service design and end-to-end journey framing"
+    },
+    {
+      "id": "uxd",
+      "skill": "agent-uxd",
+      "role": "default",
+      "purpose": "Interaction design and usability"
+    },
+    {
+      "id": "uids",
+      "skill": "agent-uids",
+      "role": "default",
+      "purpose": "Visual design and design-system direction"
+    },
+    {
+      "id": "uid",
+      "skill": "agent-uid",
+      "role": "worker",
+      "purpose": "UI implementation and component construction"
+    },
+    {
+      "id": "cw",
+      "skill": "agent-cw",
+      "role": "default",
+      "purpose": "Product copy and tone"
+    }
+  ],
+  "workflows": {
+    "bug": ["qa", "me", "qa"],
+    "technical_feature": ["ta", "me", "qa"],
+    "experience_feature": ["sd", "uxd", "uids", "ta", "me", "qa"],
+    "ui_polish": ["uids", "uid", "qa"],
+    "security_sensitive": ["ta", "sec", "me", "qa"]
+  }
+}

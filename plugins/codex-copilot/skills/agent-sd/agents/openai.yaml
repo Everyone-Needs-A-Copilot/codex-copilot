@@ -1,0 +1,7 @@
+interface:
+  display_name: "Agent SD"
+  short_description: "Service design and journey framing"
+  default_prompt: "Use $agent-sd to map the end-to-end experience and identify the right service-level changes."
+
+policy:
+  allow_implicit_invocation: false

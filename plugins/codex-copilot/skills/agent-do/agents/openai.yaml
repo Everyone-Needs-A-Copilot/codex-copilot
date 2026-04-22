@@ -1,0 +1,7 @@
+interface:
+  display_name: "Agent DO"
+  short_description: "CI, deploy, and infrastructure"
+  default_prompt: "Use $agent-do to design or implement the operational changes for this system."
+
+policy:
+  allow_implicit_invocation: false

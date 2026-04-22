@@ -1,0 +1,7 @@
+interface:
+  display_name: "Agent SEC"
+  short_description: "Security review and threat analysis"
+  default_prompt: "Use $agent-sec to review this change for concrete security risks and mitigations."
+
+policy:
+  allow_implicit_invocation: false

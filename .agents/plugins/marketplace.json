@@ -1,0 +1,20 @@
+{
+  "name": "codex-copilot-local",
+  "interface": {
+    "displayName": "Codex Copilot Local"
+  },
+  "plugins": [
+    {
+      "name": "codex-copilot",
+      "source": {
+        "source": "local",
+        "path": "./plugins/codex-copilot"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}
