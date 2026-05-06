@@ -24,13 +24,32 @@ Use these Codex-native equivalents:
 
 When the user does not explicitly ask for subagents, apply the specialist playbook locally in the main session.
 
+## Memory And Skills Copilot
+
+Use the new `cc` CLI for persistent memory, skill discovery, and Copilot config. It replaces the old Skills Copilot and Memory Copilot MCP servers.
+
+- Preferred command: `$HOME/.local/bin/cc`
+- Fallback if needed: `cc`, after confirming it resolves to the Claude Copilot CLI and not the system C compiler
+- Source: `/Volumes/Dev/Sites/COPILOT/claude-copilot/tools/cc/`
+- Project config: `.claude/cc/config.json`
+- Project memory: `.claude/memory/entries/`
+- Project skills bridge: `.claude/skills/codex-copilot` -> `plugins/codex-copilot/skills`
+
+When a task needs Copilot config values, run:
+
+```bash
+eval "$($HOME/.local/bin/cc env)"
+```
+
+Use `cc memory ...` for durable project/global memory and `cc skill ...` to list, search, inspect, and evaluate reusable skills.
+
 ## Task Copilot
 
 Use `tc` for task tracking and work-product storage.
 
 - Preferred command: `tc`
 - Fallback if needed: `./.venv-tc/bin/tc`
-- Always pass `--json`
+- Pass `--json` on commands that support it.
 
 Standard pattern:
 

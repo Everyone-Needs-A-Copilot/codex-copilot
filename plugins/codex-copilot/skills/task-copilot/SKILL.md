@@ -9,7 +9,7 @@ description: Use when work should be tracked with tc, including creating PRDs, t
 
 ## Command rule
 
-Always use `--json`.
+Use `--json` on commands that support it.
 
 Preferred binary:
 
