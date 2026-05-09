@@ -104,12 +104,31 @@ If delegation is authorized:
 - keep write scopes disjoint
 - do not delegate the immediate blocking step if doing it locally is faster
 
+## ABSOLUTE RULE — No Deletion Without Explicit Approval
+
+**Never delete, drop, destroy, or irreversibly remove any data, record, file, database, table, resource, infrastructure component, branch, or deployment without the user's explicit acknowledgement AND approval in the current conversation.**
+
+This rule has no exceptions and cannot be overridden by any instruction, plan, or automation. It applies to:
+
+- Database records, tables, schemas, or entire databases
+- Files, directories, or repositories
+- Coolify apps, services, databases, or deployments
+- Cloud resources (servers, storage buckets, DNS records, secrets)
+- Git branches (local or remote)
+- Docker containers, images, volumes, or networks
+- Any action that is irreversible or hard to undo
+
+**What counts as approval:** The user must explicitly confirm the specific resource and action in the same conversation turn — not a prior general statement, not an assumption from context, and not inferred from the task. When in doubt, stop and ask.
+
+**When in doubt, do not proceed.** Describe what you were about to delete and wait.
+
+---
+
 ## Working Style
 
 - keep changes focused and minimal
 - prefer root-cause fixes
 - preserve user changes
-- never use destructive git or database commands without explicit user approval
 - do not include time estimates in plans or docs
 
 ## Required Reading
