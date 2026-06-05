@@ -18,9 +18,13 @@ Use $protocol to refactor the background job system.
 | ------------ | -------- |
 | defect | `qa -> me -> qa` |
 | technical | `ta -> me -> qa` |
-| experience | `sd -> uxd -> uids -> ta -> me -> qa` |
+| infrastructure | `do -> me -> qa` |
+| experience | `sd -> uxd -> uids -> uid -> ta -> me -> qa` |
 | UI polish | `uids -> uid -> qa` |
 | security-sensitive | `ta -> sec -> me -> qa` |
+| knowledge | `kc` |
+| creative branch | `cco -> cw` |
+| business advisory | `cs` or `cpa` |
 
 ## Specialist Use Without Delegation
 
@@ -32,7 +36,26 @@ Examples:
 Use $agent-ta to break this refactor into tc-backed tasks.
 Use $agent-qa to reproduce and verify this defect.
 Use $agent-doc to write onboarding docs for this repo.
+Use $continue to resume previous Codex Copilot work.
+Use $orchestrate to plan explicit user-approved parallel streams.
 ```
+
+## Command-Equivalent Skills
+
+Claude Copilot slash-command workflows are available as Codex skills:
+
+| Skill | Capability Boundary |
+| ----- | ------------------- |
+| `$continue` | Resume from `tc` tasks, work products, and `cc` memory when available. |
+| `$pause` | Preserve current work state through `tc`/`cc`; no Claude checkpoint runtime. |
+| `$map` | Produce or store a codebase map; writing `PROJECT_MAP.md` requires explicit request. |
+| `$memory` | Inspect `cc memory`, known references, and `tc` progress. |
+| `$extensions` | Inspect knowledge and extension status; no automatic prompt assembly. |
+| `$orchestrate` | Plan streams and explicit delegation; no automatic background workers. |
+| `$setup-project` | Guide project wiring; replacement still requires exact approval. |
+| `$update-project` | Inspect project drift and suggest safe updates. |
+| `$update-copilot` | Inspect/update framework state without destructive git operations. |
+| `$knowledge-copilot` | Create, link, or inspect shared knowledge safely. |
 
 ## Delegated Work
 

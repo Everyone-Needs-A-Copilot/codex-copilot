@@ -32,9 +32,13 @@ Use $protocol to refactor the auth service.
 
 - defect: `qa -> me -> qa`
 - technical: `ta -> me -> qa`
-- experience: `sd -> uxd -> uids -> ta -> me -> qa`
+- infrastructure: `do -> me -> qa`
+- experience: `sd -> uxd -> uids -> uid -> ta -> me -> qa`
 - UI polish: `uids -> uid -> qa`
 - security-sensitive: `ta -> sec -> me -> qa`
+- knowledge: `kc`
+- creative branch: `cco -> cw`
+- business advisory: `cs` or `cpa`
 
 ## Important boundary
 
@@ -45,3 +49,8 @@ The behavior is the same goal as `/protocol`, but expressed through:
 - a native Codex skill
 - specialist skills
 - native `spawn_agent` when explicitly requested
+
+Optional experience branches mirror Claude Copilot:
+
+- insert `ind` before `uxd` when product essentialism or affordances need review
+- insert `cco -> cw` after `sd` when brand direction or messaging shapes the experience

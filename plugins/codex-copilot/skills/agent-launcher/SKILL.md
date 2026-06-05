@@ -20,10 +20,15 @@ If the user did not explicitly ask for subagents, load the requested specialist 
 - `$agent-doc`
 - `$agent-do`
 - `$agent-sd`
+- `$agent-ind`
 - `$agent-uxd`
 - `$agent-uids`
 - `$agent-uid`
 - `$agent-cw`
+- `$agent-cco`
+- `$agent-kc`
+- `$agent-cs`
+- `$agent-cpa`
 
 ### Delegated subagent
 
@@ -31,7 +36,7 @@ If the user explicitly asked for delegation or parallel work, map the specialist
 
 - `explorer`: `ta`, `qa`, `sec`
 - `worker`: `me`, `uid`, `do`
-- `default`: `sd`, `uxd`, `uids`, `doc`, `cw`
+- `default`: `sd`, `ind`, `uxd`, `uids`, `doc`, `cw`, `cco`, `kc`, `cs`, `cpa`
 
 ## Required behavior
 

@@ -4,18 +4,20 @@
 
 Port the `claude-copilot` framework into Codex-native constructs without faking Claude-only features.
 
+For the canonical implementation status, see [capabilities.md](./capabilities.md).
+
 ## Mapping
 
 | Claude Copilot concept | Codex equivalent |
 |------------------------|------------------|
 | `CLAUDE.md` | `AGENTS.md` |
 | `@agent-x` invocation | specialist playbook applied locally or via `spawn_agent` when explicitly authorized |
-| slash commands | documented workflows and reusable skills |
+| slash commands | command-equivalent Codex skills |
 | `.claude/skills/` | `cc` skill discovery bridge to plugin-delivered Codex skills |
 | Memory Copilot / Skills Copilot MCP servers | `cc` CLI |
 | Task Copilot via `tc` | unchanged |
-| knowledge/extensions | future plugin or repo conventions |
-| orchestration worktrees | future Codex workflow built on `spawn_agent` + git worktrees |
+| knowledge/extensions | `cc` config, knowledge status skills, and project/global/base resolution guidance |
+| orchestration worktrees | explicit user-approved Codex workflow built on `tc`, `spawn_agent`, and git worktrees |
 
 ## Design Choices
 
@@ -47,21 +49,26 @@ The plugin bundle gives Codex a native entry point:
 
 ## Capability Status
 
-### Implemented now
+### Implemented
 
 - Codex-native repo instructions
 - plugin packaging
 - protocol-first entrypoint
 - native specialist skills
+- command-equivalent skills for setup, update, continue, pause, memory, map, extensions, knowledge, and orchestration
 - machine-readable agent catalog
 - routing skill
 - `tc` workflow skill
 - `cc` CLI bridge for memory and skills
 - specialist playbooks
 
-### Deliberately deferred
+### Codex-Native Substitutes
 
-- automated orchestration scripts
-- full extension-resolution system
+- Claude slash commands are represented as skills.
+- Claude named agents are represented as specialist skills and optional explicitly requested `spawn_agent` delegation.
+- Claude hooks are represented by instructions, setup safety checks, and regression tests.
 
-Those can be added in later phases once the core Codex workflow is validated.
+### Limited By Codex Runtime Boundaries
+
+- No automatic headless worker orchestration without explicit user-approved delegation.
+- No mechanical Claude hook enforcement where Codex has no equivalent hook surface.

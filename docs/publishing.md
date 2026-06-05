@@ -7,6 +7,8 @@
 - confirm repository URLs point to the organization-owned repo
 - review generated files from `setup-project.sh`
 - validate the bootstrap flow from a clean clone
+- run `python3 -m unittest discover -s tests -v`
+- confirm [capabilities.md](./capabilities.md) matches implemented skills and workflow boundaries
 
 ## Repo Ownership
 

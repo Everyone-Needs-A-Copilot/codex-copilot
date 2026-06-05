@@ -14,9 +14,14 @@ The bootstrap script writes:
 - `AGENTS.md`
 - `.agents/plugins/marketplace.json`
 - `.codex-copilot.json`
+- `.claude/cc/config.json`
+- `.claude/memory/entries/`
+- `.claude/skills/codex-copilot` as a relative symlink to the shared framework skills
 - `plugins/codex-copilot` as a relative symlink to the shared framework plugin
 
 This keeps the framework centralized while giving each project a stable local plugin path.
+
+Use a git repository as the target project when you want `cc skill list --scope project` to discover project skills immediately.
 
 ## First Prompt
 
@@ -32,3 +37,4 @@ Read AGENTS.md and use $protocol to route this task through the right codex-copi
 2. Ask Codex to use `$protocol`.
 3. Confirm the request is routed through the correct specialist workflow.
 4. Confirm the work product or task state is recorded with `tc` for substantial work.
+5. Run `cc skill list --scope project` and confirm the 16 `agent-*` skills plus command-equivalent skills are discoverable.

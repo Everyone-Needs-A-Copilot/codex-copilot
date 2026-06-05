@@ -4,7 +4,7 @@
 
 - Project: `codex-copilot`
 - Purpose: Codex-native specialist-agent framework with `tc` task management
-- Source inspiration: `claude-copilot`
+- Source inspiration: `claude-copilot` 5.6.0
 
 ## Core Principle
 
@@ -30,7 +30,7 @@ Use the new `cc` CLI for persistent memory, skill discovery, and Copilot config.
 
 - Preferred command: `$HOME/.local/bin/cc`
 - Fallback if needed: `cc`, after confirming it resolves to the Claude Copilot CLI and not the system C compiler
-- Source: `/Volumes/Dev/Sites/COPILOT/claude-copilot/tools/cc/`
+- Source: Claude Copilot `tools/cc/` in the user's local Claude Copilot clone, if installed from source
 - Project config: `.claude/cc/config.json`
 - Project memory: `.claude/memory/entries/`
 - Project skills bridge: `.claude/skills/codex-copilot` -> `plugins/codex-copilot/skills`
@@ -79,10 +79,15 @@ These specialists are available as native Codex skills:
 - `$agent-doc`
 - `$agent-do`
 - `$agent-sd`
+- `$agent-ind`
 - `$agent-uxd`
 - `$agent-uids`
 - `$agent-uid`
 - `$agent-cw`
+- `$agent-cco`
+- `$agent-kc`
+- `$agent-cs`
+- `$agent-cpa`
 
 ## Specialist Matrix
 
@@ -97,18 +102,26 @@ Use these specialist roles as decision lenses:
 | `doc` | documentation | READMEs, onboarding, API docs |
 | `do` | devops | CI, deploy, infra, observability |
 | `sd` | service design | end-to-end user journey |
+| `ind` | industrial design | product essentialism, affordances, constraints |
 | `uxd` | interaction design | workflows, states, usability |
 | `uids` | visual design | look and feel, design systems |
 | `uid` | UI implementation | component construction, styling |
 | `cw` | copywriting | microcopy, content, tone |
+| `cco` | creative direction | brand strategy, concept direction |
+| `kc` | knowledge copilot | shared docs, memory, references |
+| `cs` | customer success | sales, support, retention strategy |
+| `cpa` | financial advisory prep | financial modeling, tax-aware questions |
 
 ## Routing Rules
 
 - New work should start with `$protocol` unless the correct specialist is already obvious.
 - Bugs start with `qa`, then `me`, then `qa` again.
-- Experience work starts with `sd` or `uxd` before implementation.
+- Experience work follows `sd -> uxd -> uids -> uid -> ta -> me -> qa` unless stages are clearly unnecessary.
+- Infrastructure work follows `do -> me -> qa`.
 - Technical features start with `ta` before implementation.
 - Security-sensitive work pulls in `sec` before completion.
+- Creative branches use `cco -> cw` before returning to the primary flow when brand or messaging drives the work.
+- Knowledge setup uses `kc`.
 - `me` is not the final gate on implementation work when tests are relevant.
 
 ## Delegation Rules
@@ -159,3 +172,4 @@ Before substantial work, read the relevant skill:
 - `plugins/codex-copilot/skills/protocol-router/SKILL.md`
 - `plugins/codex-copilot/skills/task-copilot/SKILL.md`
 - `plugins/codex-copilot/skills/specialist-agents/SKILL.md`
+- `plugins/codex-copilot/skills/specialist-agents/references/shared-behaviors.md`

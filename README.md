@@ -6,6 +6,7 @@ It ports the core operating model from `claude-copilot` into primitives Codex ca
 
 - `AGENTS.md` for repo-level operating rules
 - native skills for protocol and specialist playbooks
+- command-equivalent skills for Claude Copilot workflows such as continue, pause, map, memory, extensions, orchestrate, setup, and update
 - optional delegation through `spawn_agent` when the user explicitly asks for subagents
 - `tc` as the durable record for PRDs, tasks, and work products
 
@@ -14,8 +15,8 @@ It ports the core operating model from `claude-copilot` into primitives Codex ca
 | Capability | What It Does |
 | ---------- | ------------ |
 | Protocol-first routing | Routes work before coding so requests follow the right workflow |
-| Specialist playbooks | Architecture, implementation, QA, security, docs, ops, service design, UX, UI, and copy |
-| Codex-native packaging | Ships as a local plugin plus repo instructions instead of Claude-only commands |
+| 16 specialist playbooks | Mirrors Claude Copilot's `cco`, `cpa`, `cs`, `cw`, `do`, `doc`, `ind`, `kc`, `me`, `qa`, `sd`, `sec`, `ta`, `uid`, `uids`, and `uxd` roster |
+| Codex-native command layer | Mirrors Claude command workflows as native skills instead of slash-command syntax |
 | Task discipline | Uses `tc` for task state, work products, and substantial execution records |
 | Reusable project bootstrap | Wires any project to the shared framework without copying the framework repo |
 | Honest delegation boundary | Uses native Codex subagents only when the user explicitly wants delegated or parallel work |
@@ -41,9 +42,13 @@ $protocol
   |
   +--> defect              -> qa -> me -> qa
   +--> technical           -> ta -> me -> qa
-  +--> experience          -> sd -> uxd -> uids -> ta -> me -> qa
+  +--> infrastructure      -> do -> me -> qa
+  +--> experience          -> sd -> uxd -> uids -> uid -> ta -> me -> qa
   +--> ui polish           -> uids -> uid -> qa
   +--> security-sensitive  -> ta -> sec -> me -> qa
+  +--> knowledge           -> kc
+  +--> creative branch     -> cco -> cw
+  +--> business advisory   -> cs or cpa
   |
   v
 tc-backed execution for substantial work
@@ -94,16 +99,35 @@ Specialist skills:
 - `$agent-doc`
 - `$agent-do`
 - `$agent-sd`
+- `$agent-ind`
 - `$agent-uxd`
 - `$agent-uids`
 - `$agent-uid`
 - `$agent-cw`
+- `$agent-cco`
+- `$agent-kc`
+- `$agent-cs`
+- `$agent-cpa`
 
 Support skills:
 
 - `protocol-router`
 - `task-copilot`
 - `specialist-agents`
+- `continue`
+- `pause`
+- `map`
+- `memory`
+- `extensions`
+- `orchestrate`
+- `update-project`
+- `update-copilot`
+- `knowledge-copilot`
+- `config`
+- `reflect`
+- `skills-approve`
+- `setup-copilot`
+- `setup-project`
 
 ## Repo Layout
 
@@ -122,19 +146,17 @@ Support skills:
 - [Architecture](./docs/architecture.md)
 - [Getting Started](./docs/getting-started.md)
 - [Usage Guide](./docs/usage.md)
+- [Capability Matrix](./docs/capabilities.md)
 - [Publishing Notes](./docs/publishing.md)
 
-## Current Scope
+## Mirror Boundary
 
-This repo intentionally focuses on the parts of the Copilot operating model that Codex can support cleanly right now:
+This repo mirrors Claude Copilot through Codex-native primitives. See the [Capability Matrix](./docs/capabilities.md) for the exact status of each mirrored feature.
 
-- protocol-first routing
-- specialist role guidance
-- `tc`-backed execution discipline
-- plugin-delivered Codex skills
-- explicit delegation rules for `spawn_agent`
-
-It does not attempt to recreate Claude slash commands, Claude agent syntax, or Claude-specific orchestration features one-for-one.
+- Claude slash commands become Codex skills.
+- Claude `@agent-*` invocations become local specialist skills or explicit `spawn_agent` delegation.
+- Claude hooks become documented guardrails and tests where Codex has no hook equivalent.
+- Claude auto-spawn orchestration becomes explicit, user-approved Codex delegation.
 
 ## Contributing
 

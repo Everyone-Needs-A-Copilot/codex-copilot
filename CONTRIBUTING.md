@@ -58,8 +58,9 @@ Before opening a PR:
 
 1. Run a repo-wide search for machine-specific paths and personal references.
 2. Validate the bootstrap flow on a throwaway project.
-3. Review generated `AGENTS.md` and `.codex-copilot.json`.
-4. Update docs when behavior changes.
+3. Run `python3 -m unittest discover -s tests -v`.
+4. Review generated `AGENTS.md`, `.codex-copilot.json`, `.claude/cc/config.json`, and `.claude/skills/codex-copilot`.
+5. Update docs and [docs/capabilities.md](./docs/capabilities.md) when behavior changes.
 
 ## Security
 

@@ -1,5 +1,10 @@
 {
-  "version": "0.1.0",
+  "version": "0.2.0",
+  "mirrors": {
+    "source": "claude-copilot",
+    "framework": "5.6.0",
+    "mode": "codex-native"
+  },
   "entrypoints": {
     "primary": "protocol",
     "launcher": "agent-launcher"
@@ -48,6 +53,12 @@
       "purpose": "Service design and end-to-end journey framing"
     },
     {
+      "id": "ind",
+      "skill": "agent-ind",
+      "role": "default",
+      "purpose": "Industrial design and object-level essentialism"
+    },
+    {
       "id": "uxd",
       "skill": "agent-uxd",
       "role": "default",
@@ -70,13 +81,46 @@
       "skill": "agent-cw",
       "role": "default",
       "purpose": "Product copy and tone"
+    },
+    {
+      "id": "cco",
+      "skill": "agent-cco",
+      "role": "default",
+      "purpose": "Creative direction and brand strategy"
+    },
+    {
+      "id": "kc",
+      "skill": "agent-kc",
+      "role": "default",
+      "purpose": "Knowledge Copilot setup and knowledge repository guidance"
+    },
+    {
+      "id": "cs",
+      "skill": "agent-cs",
+      "role": "default",
+      "purpose": "Customer success, sales discovery, and support strategy"
+    },
+    {
+      "id": "cpa",
+      "skill": "agent-cpa",
+      "role": "default",
+      "purpose": "Financial modeling and tax-aware advisory preparation"
     }
   ],
   "workflows": {
     "bug": ["qa", "me", "qa"],
     "technical_feature": ["ta", "me", "qa"],
-    "experience_feature": ["sd", "uxd", "uids", "ta", "me", "qa"],
+    "experience_feature": ["sd", "uxd", "uids", "uid", "ta", "me", "qa"],
     "ui_polish": ["uids", "uid", "qa"],
-    "security_sensitive": ["ta", "sec", "me", "qa"]
+    "security_sensitive": ["ta", "sec", "me", "qa"],
+    "infrastructure": ["do", "me", "qa"],
+    "knowledge": ["kc"],
+    "creative_branch": ["cco", "cw"],
+    "business_advisory": ["cs", "cpa"]
+  },
+  "optional_branches": {
+    "experience_upstream": ["ind"],
+    "experience_creative": ["cco", "cw"],
+    "security_review": ["sec"]
   }
 }

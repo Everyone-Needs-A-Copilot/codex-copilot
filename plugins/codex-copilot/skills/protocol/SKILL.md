@@ -30,9 +30,13 @@ In Codex, that means:
 |--------------|---------|----------|
 | defect | broken behavior, regression, failing tests, bug fix | `qa -> me -> qa` |
 | technical | architecture, refactor, backend, migration, optimization | `ta -> me -> qa` |
-| experience | user-facing feature, workflow, screen, UI, UX | `sd -> uxd -> uids -> ta -> me -> qa` |
+| infrastructure | deploy, CI, environment, containers, releases, observability | `do -> me -> qa` |
+| experience | user-facing feature, workflow, screen, UI, UX | `sd -> uxd -> uids -> uid -> ta -> me -> qa` |
 | UI polish | visual refinement, component styling, layout polish | `uids -> uid -> qa` |
 | security-sensitive | auth, permissions, secrets, trust boundaries | `ta -> sec -> me -> qa` |
+| knowledge | memory, shared docs, known references, knowledge repository setup | `kc` |
+| creative | brand, concept, messaging direction before UX/UI/copy execution | `cco -> cw` |
+| business advisory | sales, customer success, finance, tax, pricing economics | `cs` or `cpa` |
 | ambiguous | improve, update, change, enhance without clear direction | ask for clarification before routing |
 
 ## Required behavior
@@ -53,6 +57,7 @@ Checkpoint stages:
 - after `sd`
 - after `uxd`
 - after `uids`
+- after `uid`
 - after `ta` when the plan materially shapes implementation
 
 Each checkpoint should summarize:
@@ -66,12 +71,21 @@ Each checkpoint should summarize:
 Use these native skills directly:
 
 - `$agent-sd`
+- `$agent-ind`
 - `$agent-uxd`
 - `$agent-uids`
+- `$agent-uid`
 - `$agent-ta`
 - `$agent-me`
 - `$agent-qa`
 - `$agent-sec`
+- `$agent-do`
+- `$agent-doc`
+- `$agent-cw`
+- `$agent-cco`
+- `$agent-kc`
+- `$agent-cs`
+- `$agent-cpa`
 
 ## Delegated pattern
 

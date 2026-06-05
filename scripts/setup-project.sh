@@ -14,7 +14,7 @@ Options:
   --stack TEXT            Tech stack summary (default: "Unknown")
   --framework-root PATH   Override detected codex-copilot framework root
   --rules-file PATH       Append project-specific rules from file into AGENTS.md
-  --force                 Overwrite existing AGENTS.md and metadata files
+  --force                 Reserved for compatibility; refuses destructive replacement
   --no-tc-init            Skip tc init
   --help                  Show this help
 EOF
@@ -90,6 +90,10 @@ if [[ ! -d "${PROJECT_PATH}" ]]; then
   exit 1
 fi
 
+if ! git -C "${PROJECT_PATH}" rev-parse --show-toplevel >/dev/null 2>&1; then
+  echo "Warning: target is not a git repository; cc project-scope skill discovery requires a git root." >&2
+fi
+
 if [[ -z "${PROJECT_NAME}" ]]; then
   PROJECT_NAME="$(basename "${PROJECT_PATH}")"
 fi
@@ -109,16 +113,13 @@ if [[ -n "${RULES_FILE}" && ! -f "${RULES_FILE}" ]]; then
   exit 1
 fi
 
-mkdir -p "${PROJECT_PATH}/.agents/plugins"
-mkdir -p "${PROJECT_PATH}/.claude/cc"
-mkdir -p "${PROJECT_PATH}/.claude/memory/entries"
-mkdir -p "${PROJECT_PATH}/.claude/skills"
-mkdir -p "${PROJECT_PATH}/plugins"
-
 PLUGIN_LINK="${PROJECT_PATH}/plugins/codex-copilot"
 FRAMEWORK_PLUGIN_PATH="${FRAMEWORK_ROOT}/plugins/codex-copilot"
 SKILLS_LINK="${PROJECT_PATH}/.claude/skills/codex-copilot"
 FRAMEWORK_SKILLS_PATH="${FRAMEWORK_PLUGIN_PATH}/skills"
+MARKETPLACE_PATH="${PROJECT_PATH}/.agents/plugins/marketplace.json"
+CODEX_COPILOT_METADATA="${PROJECT_PATH}/.codex-copilot.json"
+AGENTS_PATH="${PROJECT_PATH}/AGENTS.md"
 
 if [[ ! -d "${FRAMEWORK_PLUGIN_PATH}" ]]; then
   echo "Missing framework plugin directory: ${FRAMEWORK_PLUGIN_PATH}" >&2
@@ -148,30 +149,46 @@ SKILLS_LINK_DIR="$(dirname "${SKILLS_LINK}")"
 RELATIVE_SKILLS_TARGET="$(relative_path "${SKILLS_LINK_DIR}" "${FRAMEWORK_SKILLS_PATH}")"
 
 if [[ -L "${PLUGIN_LINK}" || -e "${PLUGIN_LINK}" ]]; then
-  if [[ "${FORCE}" -eq 1 ]]; then
-    rm -rf "${PLUGIN_LINK}"
-  else
-    echo "Plugin link/path already exists: ${PLUGIN_LINK}" >&2
-    echo "Re-run with --force to replace it." >&2
-    exit 1
-  fi
+  echo "Plugin link/path already exists: ${PLUGIN_LINK}" >&2
+  echo "Refusing to replace it automatically. Move or update it only after explicit approval for that path." >&2
+  exit 1
 fi
 
 if [[ -L "${SKILLS_LINK}" || -e "${SKILLS_LINK}" ]]; then
-  if [[ "${FORCE}" -eq 1 ]]; then
-    rm -rf "${SKILLS_LINK}"
-  else
-    echo "Skill link/path already exists: ${SKILLS_LINK}" >&2
-    echo "Re-run with --force to replace it." >&2
-    exit 1
-  fi
+  echo "Skill link/path already exists: ${SKILLS_LINK}" >&2
+  echo "Refusing to replace it automatically. Move or update it only after explicit approval for that path." >&2
+  exit 1
 fi
+
+if [[ -f "${MARKETPLACE_PATH}" ]]; then
+  echo "Marketplace metadata already exists: ${MARKETPLACE_PATH}" >&2
+  echo "Refusing to overwrite it automatically." >&2
+  exit 1
+fi
+
+if [[ -f "${CODEX_COPILOT_METADATA}" ]]; then
+  echo "Codex Copilot metadata already exists: ${CODEX_COPILOT_METADATA}" >&2
+  echo "Refusing to overwrite it automatically." >&2
+  exit 1
+fi
+
+if [[ -f "${AGENTS_PATH}" ]]; then
+  echo "AGENTS.md already exists: ${AGENTS_PATH}" >&2
+  echo "Refusing to overwrite it automatically." >&2
+  exit 1
+fi
+
+mkdir -p "${PROJECT_PATH}/.agents/plugins"
+mkdir -p "${PROJECT_PATH}/.claude/cc"
+mkdir -p "${PROJECT_PATH}/.claude/memory/entries"
+mkdir -p "${PROJECT_PATH}/.claude/skills"
+mkdir -p "${PROJECT_PATH}/plugins"
 
 ln -s "${RELATIVE_PLUGIN_TARGET}" "${PLUGIN_LINK}"
 ln -s "${RELATIVE_SKILLS_TARGET}" "${SKILLS_LINK}"
 
 MEMORY_GITIGNORE="${PROJECT_PATH}/.claude/memory/.gitignore"
-if [[ ! -f "${MEMORY_GITIGNORE}" || "${FORCE}" -eq 1 ]]; then
+if [[ ! -f "${MEMORY_GITIGNORE}" ]]; then
   cat > "${MEMORY_GITIGNORE}" <<'EOF'
 memory.db
 memory.db-shm
@@ -182,7 +199,7 @@ fi
 touch "${PROJECT_PATH}/.claude/memory/entries/.gitkeep"
 
 CC_CONFIG_PATH="${PROJECT_PATH}/.claude/cc/config.json"
-if [[ ! -f "${CC_CONFIG_PATH}" || "${FORCE}" -eq 1 ]]; then
+if [[ ! -f "${CC_CONFIG_PATH}" ]]; then
   cat > "${CC_CONFIG_PATH}" <<'EOF'
 {
   "$schema": "cc-config-v1",
@@ -195,7 +212,7 @@ if [[ ! -f "${CC_CONFIG_PATH}" || "${FORCE}" -eq 1 ]]; then
 EOF
 fi
 
-cat > "${PROJECT_PATH}/.agents/plugins/marketplace.json" <<'EOF'
+cat > "${MARKETPLACE_PATH}" <<'EOF'
 {
   "name": "codex-copilot-project",
   "interface": {
@@ -218,7 +235,7 @@ cat > "${PROJECT_PATH}/.agents/plugins/marketplace.json" <<'EOF'
 }
 EOF
 
-cat > "${PROJECT_PATH}/.codex-copilot.json" <<EOF
+cat > "${CODEX_COPILOT_METADATA}" <<EOF
 {
   "installType": "symlink",
   "pluginPath": "./plugins/codex-copilot",
@@ -237,37 +254,16 @@ fi
 export PROJECT_RULES
 
 TMP_FILE="$(mktemp)"
-cp "${TEMPLATE_PATH}" "${TMP_FILE}"
-sed -i.bak \
+sed \
   -e "s/{{PROJECT_NAME}}/$(escape_sed "${PROJECT_NAME}")/g" \
   -e "s/{{PROJECT_DESCRIPTION}}/$(escape_sed "${PROJECT_DESCRIPTION}")/g" \
   -e "s/{{TECH_STACK}}/$(escape_sed "${TECH_STACK}")/g" \
-  "${TMP_FILE}"
-rm -f "${TMP_FILE}.bak"
+  "${TEMPLATE_PATH}" > "${TMP_FILE}"
 
 if grep -q "{{PROJECT_RULES}}" "${TMP_FILE}"; then
-  RULES_TMP="$(mktemp)"
-  python3 - "${TMP_FILE}" "${RULES_TMP}" <<'PY'
-from pathlib import Path
-import os
-import sys
-
-src = Path(sys.argv[1])
-dst = Path(sys.argv[2])
-rules = os.environ["PROJECT_RULES"]
-content = src.read_text()
-dst.write_text(content.replace("{{PROJECT_RULES}}", rules))
-PY
-  mv "${RULES_TMP}" "${TMP_FILE}"
+  perl -0pi -e 's/\{\{PROJECT_RULES\}\}/$ENV{PROJECT_RULES}/g' "${TMP_FILE}"
 fi
 
-AGENTS_PATH="${PROJECT_PATH}/AGENTS.md"
-if [[ -f "${AGENTS_PATH}" && "${FORCE}" -ne 1 ]]; then
-  echo "AGENTS.md already exists: ${AGENTS_PATH}" >&2
-  echo "Re-run with --force to replace it." >&2
-  rm -f "${TMP_FILE}"
-  exit 1
-fi
 mv "${TMP_FILE}" "${AGENTS_PATH}"
 
 if [[ "${DO_TC_INIT}" -eq 1 ]]; then

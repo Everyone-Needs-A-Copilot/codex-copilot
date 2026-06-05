@@ -25,10 +25,15 @@ Each specialist is a first-class skill in `plugins/codex-copilot/skills/`:
 - `$agent-doc`
 - `$agent-do`
 - `$agent-sd`
+- `$agent-ind`
 - `$agent-uxd`
 - `$agent-uids`
 - `$agent-uid`
 - `$agent-cw`
+- `$agent-cco`
+- `$agent-kc`
+- `$agent-cs`
+- `$agent-cpa`
 - `$agent-launcher`
 
 ## Invocation model
@@ -49,7 +54,26 @@ If the user explicitly asks for subagents or parallel execution, use `$agent-lau
 
 - `explorer`: analysis-heavy specialists such as `ta`, `qa`, `sec`
 - `worker`: implementation-heavy specialists such as `me`, `uid`, `do`
-- `default`: mixed or design-oriented specialists such as `sd`, `uxd`, `uids`, `doc`, `cw`
+- `default`: mixed, design-oriented, knowledge, creative, or advisory specialists such as `sd`, `ind`, `uxd`, `uids`, `doc`, `cw`, `cco`, `kc`, `cs`, and `cpa`
+
+## Command-Equivalent Skills
+
+Claude Copilot slash-command workflows are mirrored as Codex skills:
+
+- `$continue`
+- `$pause`
+- `$map`
+- `$memory`
+- `$extensions`
+- `$orchestrate`
+- `$update-project`
+- `$update-copilot`
+- `$knowledge-copilot`
+- `$config`
+- `$reflect`
+- `$skills-approve`
+- `$setup-copilot`
+- `$setup-project`
 
 ## Why this is the correct boundary
 
@@ -62,3 +86,5 @@ This keeps the system genuinely native to Codex:
 ## Machine-readable source
 
 See [agent-catalog.json](../plugins/codex-copilot/agent-catalog.json).
+
+For capability boundaries across command-equivalent skills, hooks, orchestration, memory, and task storage, see [capabilities.md](./capabilities.md).

@@ -85,9 +85,13 @@ Read AGENTS.md and the codex-copilot skills, then use $protocol to route this ta
 
 ## Suggested Validation
 
-1. Create a PRD with `tc prd create`
-2. Create a task with `tc task create`
-3. Ask Codex to route the work using the protocol skill
-4. Have Codex store a work product with `tc wp store`
+1. Run `tc init --json` in a throwaway git repo.
+2. Create a PRD with `tc prd create`.
+3. Create a task with `tc task create`.
+4. Run `cc skill list --scope project` from the git repo and confirm `agent-cco`, `agent-kc`, `$continue`, and `$orchestrate` are discoverable.
+5. Ask Codex to route a task using `$protocol`.
+6. Have Codex store a work product with `tc wp store`.
 
 That verifies the core framework loop end to end.
+
+For full feature status, see [capabilities.md](./capabilities.md).

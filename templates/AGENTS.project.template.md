@@ -23,10 +23,15 @@ Use these native specialist skills when appropriate:
 - `$agent-doc`
 - `$agent-do`
 - `$agent-sd`
+- `$agent-ind`
 - `$agent-uxd`
 - `$agent-uids`
 - `$agent-uid`
 - `$agent-cw`
+- `$agent-cco`
+- `$agent-kc`
+- `$agent-cs`
+- `$agent-cpa`
 
 ## Memory And Skills Copilot
 
@@ -34,7 +39,7 @@ Use the new `cc` CLI for persistent memory, skill discovery, and Copilot config.
 
 - Preferred command: `$HOME/.local/bin/cc`
 - Fallback if needed: `cc`, after confirming it resolves to the Claude Copilot CLI and not the system C compiler
-- Source: `/Volumes/Dev/Sites/COPILOT/claude-copilot/tools/cc/`
+- Source: Claude Copilot `tools/cc/` in the user's local Claude Copilot clone, if installed from source
 - Project config: `.claude/cc/config.json`
 - Project memory: `.claude/memory/entries/`
 - Project skills bridge: `.claude/skills/codex-copilot` -> `plugins/codex-copilot/skills`
@@ -66,6 +71,8 @@ Use `tc` for task tracking and work-product storage in this repository.
 
 - Start new work with `$protocol` unless the correct specialist path is already obvious.
 - Use `$agent-launcher` when the correct specialist flow is unclear.
+- Use `sd -> uxd -> uids -> uid -> ta -> me -> qa` for substantial experience work.
+- Use `do -> me -> qa` for infrastructure work.
 - Use `$agent-ta` before implementation for architecture, refactors, or non-trivial features.
 - Use `$agent-me` for implementation once the work is framed.
 - Use `$agent-qa` to verify implementation work.

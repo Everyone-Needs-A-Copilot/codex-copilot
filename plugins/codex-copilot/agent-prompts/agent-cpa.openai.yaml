@@ -1,0 +1,7 @@
+interface:
+  display_name: "Agent CPA"
+  short_description: "Financial modeling and CPA prep"
+  default_prompt: "Use $agent-cpa to model financial implications and prepare questions for a qualified CPA."
+
+policy:
+  allow_implicit_invocation: false

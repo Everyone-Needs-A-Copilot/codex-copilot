@@ -7,6 +7,8 @@ description: Use when you need specialist role guidance for architecture, engine
 
 This skill provides Codex-native specialist playbooks modeled on the original Claude Copilot team.
 
+Read `references/shared-behaviors.md` before using an individual specialist for substantial work.
+
 ## Usage modes
 
 ### Local mode
@@ -30,6 +32,9 @@ Read `references/agent-playbooks.md` and load only the role section you need.
 
 Core roles:
 
+- `cco`
+- `cpa`
+- `cs`
 - `ta`
 - `me`
 - `qa`
@@ -37,9 +42,11 @@ Core roles:
 - `doc`
 - `do`
 - `sd`
+- `ind`
 - `uxd`
 - `uids`
 - `uid`
+- `kc`
 - `cw`
 
 ## Quality gates

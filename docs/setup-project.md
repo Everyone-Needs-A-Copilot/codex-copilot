@@ -17,6 +17,8 @@ The bootstrap script:
 
 This keeps the framework centralized while giving each project a stable local plugin path.
 
+`cc skill list --scope project` resolves project scope from the current git root. Run the installer against a git repository if you want project-scope skill discovery to work immediately.
+
 ## Command
 
 Run:
@@ -44,15 +46,13 @@ If you want to pre-fill project-specific rules, pass a file:
   --rules-file /absolute/path/to/project-rules.md
 ```
 
-## Force overwrite
+## Replacement Safety
 
-If the target project already has wiring you want to replace:
+The installer refuses to replace existing `AGENTS.md`, plugin links, skill links, marketplace metadata, or Codex Copilot metadata. This matches the project rule that destructive replacement requires explicit current approval for the exact resource.
 
-```bash
-./scripts/setup-project.sh \
-  --project /absolute/path/to/project \
-  --force
-```
+`--force` is reserved for command compatibility, but it does not override the no-deletion/no-overwrite safety checks.
+
+If replacement is required, inspect the exact existing paths first and perform the update manually after explicit approval for those paths.
 
 ## Result
 
@@ -80,4 +80,4 @@ Read AGENTS.md and use $protocol to route this task through the right codex-copi
 - Updating the shared `codex-copilot` repo updates all linked projects automatically.
 - The installer creates a relative plugin symlink, so generated project files do not embed a machine-specific absolute framework path.
 - The installer prefers `$HOME/.local/bin/cc` because bare `cc` may resolve to the system C compiler.
-- If a project already has a hand-written `AGENTS.md`, review before using `--force`.
+- If a project already has Codex Copilot wiring, inspect it with `$update-project` and update individual files only after reviewing the exact paths involved.

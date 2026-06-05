@@ -7,6 +7,24 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Added
+
+- Claude Copilot 5.6.0 mirror metadata and capability matrix
+- full 16-agent Codex skill roster: `cco`, `cpa`, `cs`, `cw`, `do`, `doc`, `ind`, `kc`, `me`, `qa`, `sd`, `sec`, `ta`, `uid`, `uids`, and `uxd`
+- command-equivalent Codex skills for setup, update, continue, pause, map, memory, extensions, orchestration, config, reflection, skills approval, and knowledge setup
+- shared specialist behavior reference for `cc`, `tc`, memory, skill discovery, compact output, and QA/security gates
+- parity tests covering agent roster, workflow declarations, command skills, setup safety, and documentation portability
+
+### Changed
+
+- experience workflow now mirrors Claude Copilot's `sd -> uxd -> uids -> uid -> ta -> me -> qa` chain
+- setup documentation and installer behavior now make replacement refusal explicit
+- public docs now distinguish implemented features, Codex-native substitutes, and Codex runtime limitations
+
+### Security
+
+- setup-project refuses destructive replacement of existing plugin links, skill links, marketplace metadata, Codex metadata, and `AGENTS.md`
+
 ## [0.2.0] - 2026-05-06
 
 ### Added
