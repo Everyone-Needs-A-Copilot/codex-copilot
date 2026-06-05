@@ -11,7 +11,8 @@ Port the `claude-copilot` framework into Codex-native constructs without faking 
 | `CLAUDE.md` | `AGENTS.md` |
 | `@agent-x` invocation | specialist playbook applied locally or via `spawn_agent` when explicitly authorized |
 | slash commands | documented workflows and reusable skills |
-| `.claude/skills/` | plugin-delivered Codex skills |
+| `.claude/skills/` | `cc` skill discovery bridge to plugin-delivered Codex skills |
+| Memory Copilot / Skills Copilot MCP servers | `cc` CLI |
 | Task Copilot via `tc` | unchanged |
 | knowledge/extensions | future plugin or repo conventions |
 | orchestration worktrees | future Codex workflow built on `spawn_agent` + git worktrees |
@@ -32,7 +33,11 @@ This port therefore uses:
 
 The most valuable non-model-specific part of the original framework is its task/work-product discipline. That remains unchanged.
 
-### 3. Installable as a Codex Plugin
+### 3. Use `cc` For Memory And Skill Discovery
+
+Memory and reusable skill discovery now live behind the Claude Copilot `cc` CLI. Codex Copilot projects link the shared plugin skills into `.claude/skills/codex-copilot` so `cc skill ...` can discover them, and keep durable memory entries under `.claude/memory/entries/`.
+
+### 4. Installable as a Codex Plugin
 
 The plugin bundle gives Codex a native entry point:
 
@@ -51,12 +56,12 @@ The plugin bundle gives Codex a native entry point:
 - machine-readable agent catalog
 - routing skill
 - `tc` workflow skill
+- `cc` CLI bridge for memory and skills
 - specialist playbooks
 
 ### Deliberately deferred
 
 - automated orchestration scripts
 - full extension-resolution system
-- copied MCP servers from `claude-copilot`
 
 Those can be added in later phases once the core Codex workflow is validated.

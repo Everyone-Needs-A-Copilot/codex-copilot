@@ -7,8 +7,13 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-05-06
+
 ### Added
 
+- `cc` CLI bridge for memory, skill discovery, and project config
+- project bootstrap wiring for `.claude/cc`, `.claude/memory`, and `.claude/skills/codex-copilot`
+- documentation for the new Memory and Skills Copilot CLI workflow
 - public-facing documentation set for installation, usage, publishing, contribution, and security
 - version metadata for public release
 - MIT license for open-source publication

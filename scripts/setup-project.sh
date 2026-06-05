@@ -110,13 +110,23 @@ if [[ -n "${RULES_FILE}" && ! -f "${RULES_FILE}" ]]; then
 fi
 
 mkdir -p "${PROJECT_PATH}/.agents/plugins"
+mkdir -p "${PROJECT_PATH}/.claude/cc"
+mkdir -p "${PROJECT_PATH}/.claude/memory/entries"
+mkdir -p "${PROJECT_PATH}/.claude/skills"
 mkdir -p "${PROJECT_PATH}/plugins"
 
 PLUGIN_LINK="${PROJECT_PATH}/plugins/codex-copilot"
 FRAMEWORK_PLUGIN_PATH="${FRAMEWORK_ROOT}/plugins/codex-copilot"
+SKILLS_LINK="${PROJECT_PATH}/.claude/skills/codex-copilot"
+FRAMEWORK_SKILLS_PATH="${FRAMEWORK_PLUGIN_PATH}/skills"
 
 if [[ ! -d "${FRAMEWORK_PLUGIN_PATH}" ]]; then
   echo "Missing framework plugin directory: ${FRAMEWORK_PLUGIN_PATH}" >&2
+  exit 1
+fi
+
+if [[ ! -d "${FRAMEWORK_SKILLS_PATH}" ]]; then
+  echo "Missing framework skills directory: ${FRAMEWORK_SKILLS_PATH}" >&2
   exit 1
 fi
 
@@ -134,6 +144,8 @@ PY
 
 PLUGIN_LINK_DIR="$(dirname "${PLUGIN_LINK}")"
 RELATIVE_PLUGIN_TARGET="$(relative_path "${PLUGIN_LINK_DIR}" "${FRAMEWORK_PLUGIN_PATH}")"
+SKILLS_LINK_DIR="$(dirname "${SKILLS_LINK}")"
+RELATIVE_SKILLS_TARGET="$(relative_path "${SKILLS_LINK_DIR}" "${FRAMEWORK_SKILLS_PATH}")"
 
 if [[ -L "${PLUGIN_LINK}" || -e "${PLUGIN_LINK}" ]]; then
   if [[ "${FORCE}" -eq 1 ]]; then
@@ -145,7 +157,43 @@ if [[ -L "${PLUGIN_LINK}" || -e "${PLUGIN_LINK}" ]]; then
   fi
 fi
 
+if [[ -L "${SKILLS_LINK}" || -e "${SKILLS_LINK}" ]]; then
+  if [[ "${FORCE}" -eq 1 ]]; then
+    rm -rf "${SKILLS_LINK}"
+  else
+    echo "Skill link/path already exists: ${SKILLS_LINK}" >&2
+    echo "Re-run with --force to replace it." >&2
+    exit 1
+  fi
+fi
+
 ln -s "${RELATIVE_PLUGIN_TARGET}" "${PLUGIN_LINK}"
+ln -s "${RELATIVE_SKILLS_TARGET}" "${SKILLS_LINK}"
+
+MEMORY_GITIGNORE="${PROJECT_PATH}/.claude/memory/.gitignore"
+if [[ ! -f "${MEMORY_GITIGNORE}" || "${FORCE}" -eq 1 ]]; then
+  cat > "${MEMORY_GITIGNORE}" <<'EOF'
+memory.db
+memory.db-shm
+memory.db-wal
+EOF
+fi
+
+touch "${PROJECT_PATH}/.claude/memory/entries/.gitkeep"
+
+CC_CONFIG_PATH="${PROJECT_PATH}/.claude/cc/config.json"
+if [[ ! -f "${CC_CONFIG_PATH}" || "${FORCE}" -eq 1 ]]; then
+  cat > "${CC_CONFIG_PATH}" <<'EOF'
+{
+  "$schema": "cc-config-v1",
+  "version": 1,
+  "paths": {
+    "shared_docs": "@machine",
+    "knowledge_repo": "@machine"
+  }
+}
+EOF
+fi
 
 cat > "${PROJECT_PATH}/.agents/plugins/marketplace.json" <<'EOF'
 {
@@ -234,4 +282,7 @@ echo "Configured project: ${PROJECT_PATH}"
 echo "Framework root: ${FRAMEWORK_ROOT}"
 echo "Plugin link: ${PLUGIN_LINK}"
 echo "Plugin source: ${RELATIVE_PLUGIN_TARGET}"
+echo "Skill link: ${SKILLS_LINK}"
+echo "Skill source: ${RELATIVE_SKILLS_TARGET}"
+echo "cc config: ${CC_CONFIG_PATH}"
 echo "AGENTS.md: ${AGENTS_PATH}"

@@ -53,6 +53,28 @@ If `tc` is not installed globally, use the repo-local fallback pattern:
 ./.venv-tc/bin/tc --help
 ```
 
+## Memory And Skills CLI Requirement
+
+This framework uses the Claude Copilot `cc` CLI for memory, skill discovery, and Copilot config. It replaces the old Skills Copilot and Memory Copilot MCP servers.
+
+Expected install:
+
+```bash
+$HOME/.local/bin/cc --help
+```
+
+The command name `cc` can also mean the system C compiler, so project instructions prefer the absolute shim path. For agent shell hydration, use:
+
+```bash
+eval "$($HOME/.local/bin/cc env)"
+```
+
+The project bootstrap creates:
+
+- `.claude/cc/config.json`
+- `.claude/memory/entries/`
+- `.claude/skills/codex-copilot` linked to the shared Codex Copilot skills
+
 ## Recommended First Prompt In Codex
 
 Use a prompt like:

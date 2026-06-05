@@ -28,13 +28,32 @@ Use these native specialist skills when appropriate:
 - `$agent-uid`
 - `$agent-cw`
 
+## Memory And Skills Copilot
+
+Use the new `cc` CLI for persistent memory, skill discovery, and Copilot config. It replaces the old Skills Copilot and Memory Copilot MCP servers.
+
+- Preferred command: `$HOME/.local/bin/cc`
+- Fallback if needed: `cc`, after confirming it resolves to the Claude Copilot CLI and not the system C compiler
+- Source: `/Volumes/Dev/Sites/COPILOT/claude-copilot/tools/cc/`
+- Project config: `.claude/cc/config.json`
+- Project memory: `.claude/memory/entries/`
+- Project skills bridge: `.claude/skills/codex-copilot` -> `plugins/codex-copilot/skills`
+
+When a task needs Copilot config values, run:
+
+```bash
+eval "$($HOME/.local/bin/cc env)"
+```
+
+Use `cc memory ...` for durable project/global memory and `cc skill ...` to list, search, inspect, and evaluate reusable skills.
+
 ## Task Management
 
 Use `tc` for task tracking and work-product storage in this repository.
 
 - Preferred command: `tc`
 - Fallback if unavailable: `./.venv-tc/bin/tc`
-- Always use `--json`
+- Use `--json` on commands that support it.
 
 ### Core Pattern
 
