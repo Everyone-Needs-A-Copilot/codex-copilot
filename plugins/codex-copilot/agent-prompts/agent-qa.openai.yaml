@@ -1,7 +1,0 @@
-interface:
-  display_name: "Agent QA"
-  short_description: "Reproduction, tests, and verification"
-  default_prompt: "Use $agent-qa to reproduce this issue, define the right tests, and verify the final behavior."
-
-policy:
-  allow_implicit_invocation: false

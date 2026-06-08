@@ -1,8 +1,0 @@
-interface:
-  display_name: "Agent IND"
-  short_description: "Industrial design and essentialism"
-  default_prompt: "Use $agent-ind to reduce this product or feature to its essential affordances before UX design."
-
-policy:
-  allow_implicit_invocation: false
-

@@ -1,7 +1,0 @@
-interface:
-  display_name: "Agent Launcher"
-  short_description: "Launch Codex specialists and workflows"
-  default_prompt: "Use $agent-launcher to choose the right codex-copilot specialist workflow and map it onto native Codex execution."
-
-policy:
-  allow_implicit_invocation: false

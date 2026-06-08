@@ -1,126 +1,83 @@
 {
-  "version": "0.2.0",
-  "mirrors": {
-    "source": "claude-copilot",
-    "framework": "5.6.0",
-    "mode": "codex-native"
-  },
+  "version": "0.3.0",
   "entrypoints": {
     "primary": "protocol",
-    "launcher": "agent-launcher"
+    "launcher": "launcher"
   },
   "agents": [
     {
-      "id": "ta",
-      "skill": "agent-ta",
-      "role": "explorer",
-      "purpose": "Architecture, decomposition, and technical trade-offs"
-    },
-    {
-      "id": "me",
-      "skill": "agent-me",
-      "role": "worker",
-      "purpose": "Implementation and code changes"
-    },
-    {
-      "id": "qa",
-      "skill": "agent-qa",
-      "role": "explorer",
-      "purpose": "Reproduction, verification, and test strategy"
-    },
-    {
-      "id": "sec",
-      "skill": "agent-sec",
-      "role": "explorer",
-      "purpose": "Security review and threat analysis"
-    },
-    {
-      "id": "doc",
-      "skill": "agent-doc",
-      "role": "default",
-      "purpose": "Documentation and durable explanations"
-    },
-    {
-      "id": "do",
-      "skill": "agent-do",
-      "role": "worker",
-      "purpose": "Deployment, CI, and infrastructure work"
-    },
-    {
       "id": "sd",
-      "skill": "agent-sd",
+      "skill": "sd",
       "role": "default",
       "purpose": "Service design and end-to-end journey framing"
     },
     {
-      "id": "ind",
-      "skill": "agent-ind",
-      "role": "default",
-      "purpose": "Industrial design and object-level essentialism"
-    },
-    {
       "id": "uxd",
-      "skill": "agent-uxd",
+      "skill": "uxd",
       "role": "default",
       "purpose": "Interaction design and usability"
     },
     {
       "id": "uids",
-      "skill": "agent-uids",
+      "skill": "uids",
       "role": "default",
       "purpose": "Visual design and design-system direction"
     },
     {
       "id": "uid",
-      "skill": "agent-uid",
+      "skill": "uid",
       "role": "worker",
       "purpose": "UI implementation and component construction"
     },
     {
-      "id": "cw",
-      "skill": "agent-cw",
-      "role": "default",
-      "purpose": "Product copy and tone"
+      "id": "ta",
+      "skill": "ta",
+      "role": "explorer",
+      "purpose": "Architecture, decomposition, and technical trade-offs"
     },
     {
-      "id": "cco",
-      "skill": "agent-cco",
-      "role": "default",
-      "purpose": "Creative direction and brand strategy"
+      "id": "me",
+      "skill": "me",
+      "role": "worker",
+      "purpose": "Implementation and code changes"
     },
     {
-      "id": "kc",
-      "skill": "agent-kc",
-      "role": "default",
-      "purpose": "Knowledge Copilot setup and knowledge repository guidance"
+      "id": "qa",
+      "skill": "qa",
+      "role": "explorer",
+      "purpose": "Reproduction, verification, and test strategy"
     },
     {
-      "id": "cs",
-      "skill": "agent-cs",
+      "id": "ind",
+      "skill": "ind",
       "role": "default",
-      "purpose": "Customer success, sales discovery, and support strategy"
+      "purpose": "Industrial design for physical and physical-digital products"
     },
     {
-      "id": "cpa",
-      "skill": "agent-cpa",
+      "id": "sec",
+      "skill": "sec",
+      "role": "explorer",
+      "purpose": "Security review and threat analysis"
+    },
+    {
+      "id": "doc",
+      "skill": "doc",
       "role": "default",
-      "purpose": "Financial modeling and tax-aware advisory preparation"
+      "purpose": "Documentation and durable explanations"
+    },
+    {
+      "id": "do",
+      "skill": "do",
+      "role": "worker",
+      "purpose": "Deployment, CI, and infrastructure work"
     }
   ],
   "workflows": {
     "bug": ["qa", "me", "qa"],
     "technical_feature": ["ta", "me", "qa"],
     "experience_feature": ["sd", "uxd", "uids", "uid", "ta", "me", "qa"],
+    "physical_digital_feature": ["ind", "sd", "uxd", "uids", "uid", "ta", "me", "qa"],
     "ui_polish": ["uids", "uid", "qa"],
-    "security_sensitive": ["ta", "sec", "me", "qa"],
-    "infrastructure": ["do", "me", "qa"],
-    "knowledge": ["kc"],
-    "creative_branch": ["cco", "cw"],
-    "business_advisory": ["cs", "cpa"]
-  },
-  "optional_branches": {
-    "experience_upstream": ["ind"],
-    "experience_creative": ["cco", "cw"],
-    "security_review": ["sec"]
+    "security_sensitive": ["ta", "sec", "me", "qa"]
   }
 }

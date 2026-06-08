@@ -1,8 +1,0 @@
-interface:
-  display_name: "Agent KC"
-  short_description: "Knowledge Copilot setup"
-  default_prompt: "Use $agent-kc to inspect and configure Copilot knowledge, memory, and known references."
-
-policy:
-  allow_implicit_invocation: false
-

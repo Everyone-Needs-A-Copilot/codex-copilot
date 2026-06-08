@@ -22,23 +22,24 @@ Use $protocol to refactor the auth service.
 
 `$protocol`:
 
+- reads `SOUL.md` before substantial product-facing work when present
+- reads `docs/01-architecture/12-architecture-guiding-principles.md` before substantial durable technical work when present
 - classifies the request
 - chooses the workflow
 - applies the right specialist thinking before implementation
 - uses `tc` for substantial work
-- hands off to `$agent-launcher` only when delegated subagents are explicitly desired
+- hands off to `$launcher` only when delegated subagents are explicitly desired
 
 ## Default workflows
 
 - defect: `qa -> me -> qa`
 - technical: `ta -> me -> qa`
-- infrastructure: `do -> me -> qa`
 - experience: `sd -> uxd -> uids -> uid -> ta -> me -> qa`
+- physical-digital: `ind -> sd -> uxd -> uids -> uid -> ta -> me -> qa`
 - UI polish: `uids -> uid -> qa`
 - security-sensitive: `ta -> sec -> me -> qa`
-- knowledge: `kc`
-- creative branch: `cco -> cw`
-- business advisory: `cs` or `cpa`
+
+For user-facing work that does not materially change screens, components, or interface states, `$protocol` may explicitly skip `$uid` and state why.
 
 ## Important boundary
 
@@ -49,8 +50,3 @@ The behavior is the same goal as `/protocol`, but expressed through:
 - a native Codex skill
 - specialist skills
 - native `spawn_agent` when explicitly requested
-
-Optional experience branches mirror Claude Copilot:
-
-- insert `ind` before `uxd` when product essentialism or affordances need review
-- insert `cco -> cw` after `sd` when brand direction or messaging shapes the experience

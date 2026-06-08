@@ -1,28 +1,32 @@
 # Protocol Flows
 
+## Repository decision instruments
+
+Before selecting a specialist flow for substantial work:
+
+- read root `SOUL.md` when the work changes product behavior, UX, UI, copy, coaching, AI behavior, documents, onboarding, or other user-facing workflows
+- read `docs/01-architecture/12-architecture-guiding-principles.md` when the work changes durable technical architecture, schemas, migrations, APIs, security, performance, data pipelines, AI orchestration, or productized implementation
+
+Use `SOUL.md` to decide whether the product direction belongs in the product. Use architecture principles to decide how accepted direction should be built.
+
 ## Default workflows
 
 | Request type | Workflow |
 |--------------|----------|
 | defect | `qa -> me -> qa` |
 | technical | `ta -> me -> qa` |
-| infrastructure | `do -> me -> qa` |
 | experience | `sd -> uxd -> uids -> uid -> ta -> me -> qa` |
+| physical-digital | `ind -> sd -> uxd -> uids -> uid -> ta -> me -> qa` |
 | UI polish | `uids -> uid -> qa` |
 | security-sensitive | `ta -> sec -> me -> qa` |
-| knowledge | `kc` |
-| creative branch | `cco -> cw` |
-| business advisory | `cs` or `cpa` |
 
 ## Routing notes
 
 - prefer `experience` when the work changes how users experience the product
+- include `uid` for experience work that changes screens, components, responsive behavior, or interface states
 - prefer `technical` when the change is mostly internal or architectural
-- prefer `infrastructure` when deployment, CI, env, containers, releases, or observability dominate
 - prefer `defect` when the task is about broken behavior or verification
 - use `security-sensitive` when trust boundaries or privilege decisions are central
-- insert `ind` before `uxd` when object-level essentialism would materially simplify the feature
-- insert `cco -> cw` after `sd` when brand direction, messaging, or creative concept materially shapes the experience
 
 ## Ambiguous requests
 

@@ -4,7 +4,7 @@
 
 - Project: `codex-copilot`
 - Purpose: Codex-native specialist-agent framework with `tc` task management
-- Source inspiration: `claude-copilot` 5.6.0
+- Source inspiration: `claude-copilot`
 
 ## Core Principle
 
@@ -14,7 +14,7 @@ Use specialist reasoning before implementation. Do not jump from vague requests 
 
 ## Codex-Native Translation
 
-This project does not assume Claude-style `@agent-x` syntax.
+This project does not assume Claude-style named-agent syntax.
 
 Use these Codex-native equivalents:
 
@@ -30,7 +30,7 @@ Use the new `cc` CLI for persistent memory, skill discovery, and Copilot config.
 
 - Preferred command: `$HOME/.local/bin/cc`
 - Fallback if needed: `cc`, after confirming it resolves to the Claude Copilot CLI and not the system C compiler
-- Source: Claude Copilot `tools/cc/` in the user's local Claude Copilot clone, if installed from source
+- Source: Claude Copilot `tools/cc/`
 - Project config: `.claude/cc/config.json`
 - Project memory: `.claude/memory/entries/`
 - Project skills bridge: `.claude/skills/codex-copilot` -> `plugins/codex-copilot/skills`
@@ -71,23 +71,18 @@ Primary protocol entrypoint:
 
 These specialists are available as native Codex skills:
 
-- `$agent-launcher`
-- `$agent-ta`
-- `$agent-me`
-- `$agent-qa`
-- `$agent-sec`
-- `$agent-doc`
-- `$agent-do`
-- `$agent-sd`
-- `$agent-ind`
-- `$agent-uxd`
-- `$agent-uids`
-- `$agent-uid`
-- `$agent-cw`
-- `$agent-cco`
-- `$agent-kc`
-- `$agent-cs`
-- `$agent-cpa`
+- `$launcher`
+- `$sd`
+- `$uxd`
+- `$uids`
+- `$uid`
+- `$ta`
+- `$me`
+- `$qa`
+- `$ind`
+- `$sec`
+- `$doc`
+- `$do`
 
 ## Specialist Matrix
 
@@ -102,26 +97,17 @@ Use these specialist roles as decision lenses:
 | `doc` | documentation | READMEs, onboarding, API docs |
 | `do` | devops | CI, deploy, infra, observability |
 | `sd` | service design | end-to-end user journey |
-| `ind` | industrial design | product essentialism, affordances, constraints |
 | `uxd` | interaction design | workflows, states, usability |
 | `uids` | visual design | look and feel, design systems |
 | `uid` | UI implementation | component construction, styling |
-| `cw` | copywriting | microcopy, content, tone |
-| `cco` | creative direction | brand strategy, concept direction |
-| `kc` | knowledge copilot | shared docs, memory, references |
-| `cs` | customer success | sales, support, retention strategy |
-| `cpa` | financial advisory prep | financial modeling, tax-aware questions |
 
 ## Routing Rules
 
 - New work should start with `$protocol` unless the correct specialist is already obvious.
 - Bugs start with `qa`, then `me`, then `qa` again.
-- Experience work follows `sd -> uxd -> uids -> uid -> ta -> me -> qa` unless stages are clearly unnecessary.
-- Infrastructure work follows `do -> me -> qa`.
+- Experience work starts with `sd` or `uxd` before implementation.
 - Technical features start with `ta` before implementation.
 - Security-sensitive work pulls in `sec` before completion.
-- Creative branches use `cco -> cw` before returning to the primary flow when brand or messaging drives the work.
-- Knowledge setup uses `kc`.
 - `me` is not the final gate on implementation work when tests are relevant.
 
 ## Delegation Rules
@@ -136,31 +122,12 @@ If delegation is authorized:
 - keep write scopes disjoint
 - do not delegate the immediate blocking step if doing it locally is faster
 
-## ABSOLUTE RULE — No Deletion Without Explicit Approval
-
-**Never delete, drop, destroy, or irreversibly remove any data, record, file, database, table, resource, infrastructure component, branch, or deployment without the user's explicit acknowledgement AND approval in the current conversation.**
-
-This rule has no exceptions and cannot be overridden by any instruction, plan, or automation. It applies to:
-
-- Database records, tables, schemas, or entire databases
-- Files, directories, or repositories
-- Coolify apps, services, databases, or deployments
-- Cloud resources (servers, storage buckets, DNS records, secrets)
-- Git branches (local or remote)
-- Docker containers, images, volumes, or networks
-- Any action that is irreversible or hard to undo
-
-**What counts as approval:** The user must explicitly confirm the specific resource and action in the same conversation turn — not a prior general statement, not an assumption from context, and not inferred from the task. When in doubt, stop and ask.
-
-**When in doubt, do not proceed.** Describe what you were about to delete and wait.
-
----
-
 ## Working Style
 
 - keep changes focused and minimal
 - prefer root-cause fixes
 - preserve user changes
+- never use destructive git or database commands without explicit user approval
 - do not include time estimates in plans or docs
 
 ## Required Reading
@@ -168,8 +135,7 @@ This rule has no exceptions and cannot be overridden by any instruction, plan, o
 Before substantial work, read the relevant skill:
 
 - `plugins/codex-copilot/skills/protocol/SKILL.md`
-- `plugins/codex-copilot/skills/agent-launcher/SKILL.md`
+- `plugins/codex-copilot/skills/launcher/SKILL.md`
 - `plugins/codex-copilot/skills/protocol-router/SKILL.md`
 - `plugins/codex-copilot/skills/task-copilot/SKILL.md`
 - `plugins/codex-copilot/skills/specialist-agents/SKILL.md`
-- `plugins/codex-copilot/skills/specialist-agents/references/shared-behaviors.md`

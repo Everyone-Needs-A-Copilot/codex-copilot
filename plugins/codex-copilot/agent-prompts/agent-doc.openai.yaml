@@ -1,7 +1,0 @@
-interface:
-  display_name: "Agent DOC"
-  short_description: "Documentation and technical explanation"
-  default_prompt: "Use $agent-doc to write or refine the documentation for this workflow or feature."
-
-policy:
-  allow_implicit_invocation: false

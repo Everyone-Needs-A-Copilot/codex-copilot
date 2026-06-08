@@ -14,14 +14,11 @@ Use this skill to classify the request and choose the right specialist flow befo
 | bug, regression, test failure | `qa` |
 | backend feature, refactor, architecture, performance | `ta` |
 | user-facing feature, workflow, product experience | `sd` or `uxd` |
+| physical product, connected product, hardware/software touchpoint | `ind` |
 | visual polish, design system, component styling | `uids` or `uid` |
 | auth, permissions, secrets, trust boundaries | `sec` in addition to primary flow |
 | docs, onboarding, references | `doc` |
 | deploy, CI, env, infrastructure | `do` |
-| memory, shared docs, known references, knowledge setup | `kc` |
-| brand strategy, campaign direction, concept territory | `cco` |
-| sales, customer success, support escalation | `cs` |
-| finance, tax, pricing economics, CPA prep | `cpa` |
 
 ## Codex rule
 
@@ -46,10 +43,8 @@ If the user explicitly asked for delegation or parallel work, you may spawn suba
 - bug: `qa -> me -> qa`
 - backend feature: `ta -> me -> qa`
 - experience feature: `sd -> uxd -> uids -> uid` as needed, then `ta -> me -> qa`
-- infrastructure: `do -> me -> qa`
+- physical-digital feature: `ind -> sd -> uxd -> uids -> uid` as needed, then `ta -> me -> qa`
 - security-sensitive feature: primary flow plus `sec` before completion
-- creative branch: `cco -> cw`, then return to the primary build flow when implementation is needed
-- knowledge setup: `kc`, then return to the primary flow
 
 ## References
 

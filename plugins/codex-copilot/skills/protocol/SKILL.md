@@ -24,29 +24,41 @@ In Codex, that means:
 - use `spawn_agent` only when the user explicitly asks for subagents or parallel execution
 - use `tc` as the durable record for substantial work
 
+## Repository Decision Instruments
+
+Before routing substantial work, check whether the repository defines its own decision instruments:
+
+- If a root `SOUL.md` exists, read it before substantial product-facing work. Use it to decide whether the product direction should be built, reshaped, or rejected before specialist routing continues.
+- If `docs/01-architecture/12-architecture-guiding-principles.md` exists, read it before durable technical, architecture, migration, data, security, performance, AI pipeline, or productized implementation work. Use it as the technical decision lens.
+
+Keep these instruments separate:
+
+- `SOUL.md` answers whether the product direction fits the product's purpose, taste, anti-patterns, and quality bar.
+- architecture principles answer how accepted product direction should be built safely, scalably, efficiently, and securely.
+
 ## Request Classification
 
 | Request type | Signals | Workflow |
 |--------------|---------|----------|
 | defect | broken behavior, regression, failing tests, bug fix | `qa -> me -> qa` |
 | technical | architecture, refactor, backend, migration, optimization | `ta -> me -> qa` |
-| infrastructure | deploy, CI, environment, containers, releases, observability | `do -> me -> qa` |
 | experience | user-facing feature, workflow, screen, UI, UX | `sd -> uxd -> uids -> uid -> ta -> me -> qa` |
+| physical-digital | hardware, connected product, tangible service touchpoint, physical object plus software | `ind -> sd -> uxd -> uids -> uid -> ta -> me -> qa` |
 | UI polish | visual refinement, component styling, layout polish | `uids -> uid -> qa` |
 | security-sensitive | auth, permissions, secrets, trust boundaries | `ta -> sec -> me -> qa` |
-| knowledge | memory, shared docs, known references, knowledge repository setup | `kc` |
-| creative | brand, concept, messaging direction before UX/UI/copy execution | `cco -> cw` |
-| business advisory | sales, customer success, finance, tax, pricing economics | `cs` or `cpa` |
 | ambiguous | improve, update, change, enhance without clear direction | ask for clarification before routing |
 
 ## Required behavior
 
-1. classify the task
-2. state the workflow
-3. ensure `tc` context exists for substantial work
-4. perform the next appropriate specialist step
-5. do not jump straight to implementation when earlier specialist work is warranted
-6. do not use `spawn_agent` unless the user explicitly asked for delegation or parallel work
+1. check repository decision instruments when they apply
+2. classify the task
+3. state the workflow
+4. ensure `tc` context exists for substantial work
+5. perform the next appropriate specialist step
+6. do not jump straight to implementation when earlier specialist work is warranted
+7. do not use `spawn_agent` unless the user explicitly asked for delegation or parallel work
+
+For experience work that does not materially change screens, components, or interface states, `$uid` may be skipped only when the checkpoint states why.
 
 ## Checkpoints
 
@@ -57,12 +69,12 @@ Checkpoint stages:
 - after `sd`
 - after `uxd`
 - after `uids`
-- after `uid`
 - after `ta` when the plan materially shapes implementation
 
 Each checkpoint should summarize:
 
 - what was decided
+- whether any applicable soul or architecture principle changed the direction
 - what happens next
 - what the user can correct before continuing
 
@@ -70,26 +82,21 @@ Each checkpoint should summarize:
 
 Use these native skills directly:
 
-- `$agent-sd`
-- `$agent-ind`
-- `$agent-uxd`
-- `$agent-uids`
-- `$agent-uid`
-- `$agent-ta`
-- `$agent-me`
-- `$agent-qa`
-- `$agent-sec`
-- `$agent-do`
-- `$agent-doc`
-- `$agent-cw`
-- `$agent-cco`
-- `$agent-kc`
-- `$agent-cs`
-- `$agent-cpa`
+- `$sd`
+- `$uxd`
+- `$uids`
+- `$uid`
+- `$ta`
+- `$me`
+- `$qa`
+- `$ind`
+- `$sec`
+- `$doc`
+- `$do`
 
 ## Delegated pattern
 
-If the user explicitly asks for delegation or parallel work, use `$agent-launcher` to map the needed specialists onto native Codex spawned-agent roles.
+If the user explicitly asks for delegation or parallel work, use `$launcher` to map the needed specialists onto native Codex spawned-agent roles.
 
 ## Task Copilot
 

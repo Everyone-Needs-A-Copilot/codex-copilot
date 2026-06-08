@@ -1,13 +1,11 @@
 ---
 name: specialist-agents
-description: Use when you need specialist role guidance for architecture, engineering, QA, security, docs, devops, service design, UX, UI design, UI implementation, or copywriting in a Codex session or delegated subagent.
+description: Use when you need specialist role guidance for architecture, engineering, QA, security, docs, devops, service design, UX, UI design, UI implementation, or industrial design in a Codex session or delegated subagent.
 ---
 
 # Specialist Agents
 
 This skill provides Codex-native specialist playbooks modeled on the original Claude Copilot team.
-
-Read `references/shared-behaviors.md` before using an individual specialist for substantial work.
 
 ## Usage modes
 
@@ -28,26 +26,21 @@ Keep prompts short. Give the subagent:
 
 ## Roles
 
-Read `references/agent-playbooks.md` and load only the role section you need.
+Read `references/agent-playbooks.md` and `references/shared-behaviors.md`, then load only the role section you need.
 
 Core roles:
 
-- `cco`
-- `cpa`
-- `cs`
-- `ta`
-- `me`
-- `qa`
-- `sec`
-- `doc`
-- `do`
 - `sd`
-- `ind`
 - `uxd`
 - `uids`
 - `uid`
-- `kc`
-- `cw`
+- `ta`
+- `me`
+- `qa`
+- `ind`
+- `sec`
+- `doc`
+- `do`
 
 ## Quality gates
 

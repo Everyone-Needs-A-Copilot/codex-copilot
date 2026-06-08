@@ -12,12 +12,13 @@ The bootstrap script:
 4. creates `.claude/memory/entries/` and ignores the local memory index
 5. links `.claude/skills/codex-copilot` to the shared Codex Copilot skills
 6. writes a thin project `AGENTS.md`
-7. writes `.codex-copilot.json` with install metadata
-8. optionally runs `tc init --json`
+7. writes design-led decision instruments: `SOUL.md` and `docs/01-architecture/12-architecture-guiding-principles.md`
+8. writes `.codex-copilot.json` with install metadata
+9. optionally runs `tc init --json`
 
 This keeps the framework centralized while giving each project a stable local plugin path.
 
-`cc skill list --scope project` resolves project scope from the current git root. Run the installer against a git repository if you want project-scope skill discovery to work immediately.
+Use a git repository as the target project when you want `cc skill list --scope project` to discover project skills immediately.
 
 ## Command
 
@@ -46,24 +47,47 @@ If you want to pre-fill project-specific rules, pass a file:
   --rules-file /absolute/path/to/project-rules.md
 ```
 
-## Replacement Safety
+## Decision instruments
 
-The installer refuses to replace existing `AGENTS.md`, plugin links, skill links, marketplace metadata, or Codex Copilot metadata. This matches the project rule that destructive replacement requires explicit current approval for the exact resource.
+By default, setup creates:
 
-`--force` is reserved for command compatibility, but it does not override the no-deletion/no-overwrite safety checks.
+- `SOUL.md` for product purpose, taste constraints, anti-patterns, and product-facing go/no-go decisions
+- `docs/01-architecture/12-architecture-guiding-principles.md` for durable technical decisions after the product direction is accepted
 
-If replacement is required, inspect the exact existing paths first and perform the update manually after explicit approval for those paths.
+`$protocol` reads these files before substantial work when they apply.
+
+To skip these files for a lightweight install:
+
+```bash
+./scripts/setup-project.sh \
+  --project /absolute/path/to/project \
+  --no-decision-instruments
+```
+
+## Existing Project Wiring
+
+The installer does not override existing `AGENTS.md`, plugin links, or skill links. If a project already has Codex Copilot wiring, review it manually and update only the specific fields that need to change.
+
+`--force` is accepted for compatibility with older scripts, but it does not authorize destructive replacement.
+
+```bash
+./scripts/setup-project.sh \
+  --project /absolute/path/to/project \
+  --force
+```
 
 ## Result
 
 The target repo will contain:
 
 - `AGENTS.md`
+- `SOUL.md`
 - `.agents/plugins/marketplace.json`
 - `.codex-copilot.json`
 - `.claude/cc/config.json`
 - `.claude/memory/entries/`
 - `.claude/skills/codex-copilot` -> relative symlink to the shared framework skills
+- `docs/01-architecture/12-architecture-guiding-principles.md`
 - `plugins/codex-copilot` -> relative symlink to the shared framework plugin
 
 ## First prompt in Codex
@@ -80,4 +104,5 @@ Read AGENTS.md and use $protocol to route this task through the right codex-copi
 - Updating the shared `codex-copilot` repo updates all linked projects automatically.
 - The installer creates a relative plugin symlink, so generated project files do not embed a machine-specific absolute framework path.
 - The installer prefers `$HOME/.local/bin/cc` because bare `cc` may resolve to the system C compiler.
-- If a project already has Codex Copilot wiring, inspect it with `$update-project` and update individual files only after reviewing the exact paths involved.
+- If a project already has a hand-written `AGENTS.md`, review it manually before changing it.
+- Existing `SOUL.md` and architecture-principles files are preserved.

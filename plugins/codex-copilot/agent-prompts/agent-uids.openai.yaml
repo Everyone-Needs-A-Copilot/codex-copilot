@@ -1,7 +1,0 @@
-interface:
-  display_name: "Agent UIDS"
-  short_description: "Visual design and design systems"
-  default_prompt: "Use $agent-uids to define the visual direction, hierarchy, and design-system implications of this UI work."
-
-policy:
-  allow_implicit_invocation: false

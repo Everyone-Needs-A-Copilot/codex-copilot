@@ -37,4 +37,4 @@ Read AGENTS.md and use $protocol to route this task through the right codex-copi
 2. Ask Codex to use `$protocol`.
 3. Confirm the request is routed through the correct specialist workflow.
 4. Confirm the work product or task state is recorded with `tc` for substantial work.
-5. Run `cc skill list --scope project` and confirm the 16 `agent-*` skills plus command-equivalent skills are discoverable.
+5. Run `cc skill list --scope project` and confirm the direct software specialist skills plus command-equivalent support skills are discoverable.

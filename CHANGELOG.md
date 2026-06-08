@@ -7,23 +7,28 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-06-08
+
 ### Added
 
-- Claude Copilot 5.6.0 mirror metadata and capability matrix
-- full 16-agent Codex skill roster: `cco`, `cpa`, `cs`, `cw`, `do`, `doc`, `ind`, `kc`, `me`, `qa`, `sd`, `sec`, `ta`, `uid`, `uids`, and `uxd`
-- command-equivalent Codex skills for setup, update, continue, pause, map, memory, extensions, orchestration, config, reflection, skills approval, and knowledge setup
-- shared specialist behavior reference for `cc`, `tc`, memory, skill discovery, compact output, and QA/security gates
-- parity tests covering agent roster, workflow declarations, command skills, setup safety, and documentation portability
+- direct software specialist skill names such as `$sd`, `$uxd`, `$uids`, `$uid`, `$ta`, `$me`, and `$qa`
+- `$ind` industrial design specialist for physical, hardware, connected-product, and physical-digital work
+- dormant capability pack convention for optional project-level domain skills
+- `writing-legal` capability pack as the first dormant pack
+- repository decision instruments in `$protocol` for `SOUL.md` and architecture guiding principles
+- setup templates for `SOUL.md` and `docs/01-architecture/12-architecture-guiding-principles.md`
 
 ### Changed
 
-- experience workflow now mirrors Claude Copilot's `sd -> uxd -> uids -> uid -> ta -> me -> qa` chain
-- setup documentation and installer behavior now make replacement refusal explicit
-- public docs now distinguish implemented features, Codex-native substitutes, and Codex runtime limitations
+- global plugin scope now focuses on design-led software creation specialists
+- docs and generated project instructions now use direct specialist names instead of `agent-*` skill names
+- experience workflows now route screen-changing work through service design, UX, UI design, UI implementation, architecture, engineering, and QA
+- product language ownership now lives in `$uxd` and `$uids` for in-product labels, CTAs, empty states, errors, validation, and feedback
+- `$qa` now verifies design intent, visual fidelity, responsive behavior, accessibility, product language, and decision-instrument alignment for product-facing work
 
-### Security
+### Removed
 
-- setup-project refuses destructive replacement of existing plugin links, skill links, marketplace metadata, Codex metadata, and `AGENTS.md`
+- globally active copywriting specialist in favor of optional domain-pack activation
 
 ## [0.2.0] - 2026-05-06
 

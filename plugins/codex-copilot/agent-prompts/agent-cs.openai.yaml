@@ -1,8 +1,0 @@
-interface:
-  display_name: "Agent CS"
-  short_description: "Customer success and sales strategy"
-  default_prompt: "Use $agent-cs to frame customer success, discovery, support, or sales strategy."
-
-policy:
-  allow_implicit_invocation: false
-

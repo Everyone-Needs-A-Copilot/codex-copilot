@@ -1,7 +1,0 @@
-interface:
-  display_name: "Agent TA"
-  short_description: "Architecture and task breakdown"
-  default_prompt: "Use $agent-ta to analyze this system, choose an implementation approach, and break the work into tc-backed tasks."
-
-policy:
-  allow_implicit_invocation: false

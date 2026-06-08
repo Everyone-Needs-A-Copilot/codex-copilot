@@ -18,13 +18,10 @@ Use $protocol to refactor the background job system.
 | ------------ | -------- |
 | defect | `qa -> me -> qa` |
 | technical | `ta -> me -> qa` |
-| infrastructure | `do -> me -> qa` |
 | experience | `sd -> uxd -> uids -> uid -> ta -> me -> qa` |
+| physical-digital | `ind -> sd -> uxd -> uids -> uid -> ta -> me -> qa` |
 | UI polish | `uids -> uid -> qa` |
 | security-sensitive | `ta -> sec -> me -> qa` |
-| knowledge | `kc` |
-| creative branch | `cco -> cw` |
-| business advisory | `cs` or `cpa` |
 
 ## Specialist Use Without Delegation
 
@@ -33,29 +30,23 @@ Codex Copilot is designed to work in the main session by default.
 Examples:
 
 ```text
-Use $agent-ta to break this refactor into tc-backed tasks.
-Use $agent-qa to reproduce and verify this defect.
-Use $agent-doc to write onboarding docs for this repo.
-Use $continue to resume previous Codex Copilot work.
-Use $orchestrate to plan explicit user-approved parallel streams.
+Use $ta to break this refactor into tc-backed tasks.
+Use $qa to reproduce and verify this defect.
+Use $sd to frame the service journey before UX.
+Use $uxd to design the interaction states.
+Use $uids to define the visual system.
+Use $uid to implement the UI.
+Use $ind to shape a physical-digital product touchpoint.
+Use $doc to write onboarding docs for this repo.
 ```
 
-## Command-Equivalent Skills
+## Project Capability Packs
 
-Claude Copilot slash-command workflows are available as Codex skills:
+Domain-specific work should be activated by the project, not added to the global software layer.
 
-| Skill | Capability Boundary |
-| ----- | ------------------- |
-| `$continue` | Resume from `tc` tasks, work products, and `cc` memory when available. |
-| `$pause` | Preserve current work state through `tc`/`cc`; no Claude checkpoint runtime. |
-| `$map` | Produce or store a codebase map; writing `PROJECT_MAP.md` requires explicit request. |
-| `$memory` | Inspect `cc memory`, known references, and `tc` progress. |
-| `$extensions` | Inspect knowledge and extension status; no automatic prompt assembly. |
-| `$orchestrate` | Plan streams and explicit delegation; no automatic background workers. |
-| `$setup-project` | Guide project wiring; replacement still requires exact approval. |
-| `$update-project` | Inspect project drift and suggest safe updates. |
-| `$update-copilot` | Inspect/update framework state without destructive git operations. |
-| `$knowledge-copilot` | Create, link, or inspect shared knowledge safely. |
+The shared repo can store dormant packs under `packs/<category>/`. A project activates a pack by exposing selected pack skills through its own local plugin and marketplace entry.
+
+This keeps global Codex Copilot focused on making software while allowing a project to opt into capabilities such as writing, legal advisory, sales workflows, or other domain work.
 
 ## Delegated Work
 
@@ -67,7 +58,7 @@ Use `spawn_agent` only when the user explicitly asks for:
 - delegation
 - parallel work
 
-When that happens, `$agent-launcher` maps specialist intent onto Codex’s built-in spawned agent types.
+When that happens, `$launcher` maps specialist intent onto Codex’s built-in spawned agent types.
 
 ## Task Discipline
 

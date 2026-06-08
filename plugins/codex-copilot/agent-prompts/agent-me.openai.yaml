@@ -1,7 +1,0 @@
-interface:
-  display_name: "Agent ME"
-  short_description: "Implementation and code changes"
-  default_prompt: "Use $agent-me to implement this planned change with minimal, test-backed edits."
-
-policy:
-  allow_implicit_invocation: false

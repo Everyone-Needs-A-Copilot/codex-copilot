@@ -1,24 +1,14 @@
 import json
-import os
 import pathlib
 import re
 import unittest
 
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-CLAUDE_VERSION = pathlib.Path(
-    os.environ.get("CLAUDE_COPILOT_ROOT", ROOT.parent / "claude-copilot")
-) / "VERSION.json"
-
-EXPECTED_AGENTS = [
-    "cco",
-    "cpa",
-    "cs",
-    "cw",
+EXPECTED_SPECIALISTS = [
     "do",
     "doc",
     "ind",
-    "kc",
     "me",
     "qa",
     "sd",
@@ -47,38 +37,33 @@ EXPECTED_COMMAND_SKILLS = [
 ]
 
 
-class MirrorParityTest(unittest.TestCase):
+class DesignLedContractTest(unittest.TestCase):
     def load_catalog(self):
         return json.loads((ROOT / "plugins/codex-copilot/agent-catalog.json").read_text())
 
-    def test_catalog_declares_claude_56_mirror(self):
+    def test_catalog_declares_design_led_release(self):
         catalog = self.load_catalog()
-        self.assertEqual(catalog["version"], "0.2.0")
-        self.assertEqual(catalog["mirrors"]["source"], "claude-copilot")
-        self.assertEqual(catalog["mirrors"]["framework"], "5.6.0")
-        self.assertEqual(catalog["mirrors"]["mode"], "codex-native")
+        self.assertEqual(catalog["version"], "0.3.0")
+        self.assertEqual(catalog["entrypoints"]["primary"], "protocol")
+        self.assertEqual(catalog["entrypoints"]["launcher"], "launcher")
 
-    def test_agent_roster_matches_claude_baseline(self):
-        expected = EXPECTED_AGENTS
-        if CLAUDE_VERSION.exists():
-            source = json.loads(CLAUDE_VERSION.read_text())
-            expected = source["components"]["agents"]["frameworkAgents"]
-
+    def test_specialist_roster_uses_direct_skill_names(self):
         catalog = self.load_catalog()
         actual = sorted(agent["id"] for agent in catalog["agents"])
-        self.assertEqual(actual, sorted(expected))
+        self.assertEqual(actual, sorted(EXPECTED_SPECIALISTS))
 
-        for agent_id in expected:
+        for agent_id in EXPECTED_SPECIALISTS:
             self.assertTrue(
-                (ROOT / f"plugins/codex-copilot/skills/agent-{agent_id}/SKILL.md").exists(),
+                (ROOT / f"plugins/codex-copilot/skills/{agent_id}/SKILL.md").exists(),
                 f"missing skill for agent {agent_id}",
             )
-            self.assertTrue(
-                (ROOT / f"plugins/codex-copilot/agent-prompts/agent-{agent_id}.openai.yaml").exists(),
-                f"missing prompt metadata for agent {agent_id}",
+            self.assertFalse(
+                (ROOT / f"plugins/codex-copilot/skills/agent-{agent_id}/SKILL.md").exists(),
+                f"stale agent-* skill for {agent_id}",
             )
+        self.assertTrue((ROOT / "plugins/codex-copilot/skills/launcher/SKILL.md").exists())
 
-    def test_workflows_match_mirror_contract(self):
+    def test_workflows_match_design_led_contract(self):
         workflows = self.load_catalog()["workflows"]
         self.assertEqual(workflows["bug"], ["qa", "me", "qa"])
         self.assertEqual(workflows["technical_feature"], ["ta", "me", "qa"])
@@ -86,9 +71,12 @@ class MirrorParityTest(unittest.TestCase):
             workflows["experience_feature"],
             ["sd", "uxd", "uids", "uid", "ta", "me", "qa"],
         )
-        self.assertEqual(workflows["infrastructure"], ["do", "me", "qa"])
-        self.assertEqual(workflows["creative_branch"], ["cco", "cw"])
-        self.assertEqual(workflows["business_advisory"], ["cs", "cpa"])
+        self.assertEqual(
+            workflows["physical_digital_feature"],
+            ["ind", "sd", "uxd", "uids", "uid", "ta", "me", "qa"],
+        )
+        self.assertEqual(workflows["ui_polish"], ["uids", "uid", "qa"])
+        self.assertEqual(workflows["security_sensitive"], ["ta", "sec", "me", "qa"])
 
     def test_command_equivalent_skills_exist(self):
         for skill in EXPECTED_COMMAND_SKILLS:
@@ -115,7 +103,7 @@ class MirrorParityTest(unittest.TestCase):
             ROOT / "docs/usage.md",
             ROOT / "plugins/codex-copilot/skills/protocol/SKILL.md",
             ROOT / "plugins/codex-copilot/skills/protocol/references/flows.md",
-            ROOT / "plugins/codex-copilot/skills/agent-launcher/references/workflows.md",
+            ROOT / "plugins/codex-copilot/skills/launcher/references/workflows.md",
         ]
         for path in checked:
             self.assertNotIn(stale, path.read_text(), f"stale chain in {path}")
@@ -159,7 +147,7 @@ class MirrorParityTest(unittest.TestCase):
             self.assertNotIn("/Users/", text, f"local user path in {path}")
             self.assertNotIn("/Volumes/", text, f"local volume path in {path}")
 
-    def test_capability_matrix_covers_mirrored_surfaces(self):
+    def test_capability_matrix_covers_design_led_surfaces(self):
         text = (ROOT / "docs/capabilities.md").read_text()
         for term in [
             "$protocol",
@@ -167,7 +155,8 @@ class MirrorParityTest(unittest.TestCase):
             "$pause",
             "$orchestrate",
             "$knowledge-copilot",
-            "16 `agent-*` Codex skills",
+            "direct Codex skills",
+            "dormant capability packs",
             "cc memory",
             "cc skill",
             "tc",

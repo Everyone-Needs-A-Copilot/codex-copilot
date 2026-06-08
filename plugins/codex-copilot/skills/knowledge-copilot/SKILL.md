@@ -9,7 +9,7 @@ Guide knowledge repository setup and onboarding.
 
 ## Workflow
 
-1. Use `$agent-kc` for the specialist lens.
+1. Use this skill for the knowledge-copilot lens.
 2. Inspect `cc config list --scope effective`.
 3. Check `paths.knowledge_repo`, `paths.shared_docs`, and `refs.*`.
 4. For an existing team repository, provide clone/link steps.
@@ -22,4 +22,3 @@ Guide knowledge repository setup and onboarding.
 - setup mode recommendation
 - config commands
 - verification steps
-

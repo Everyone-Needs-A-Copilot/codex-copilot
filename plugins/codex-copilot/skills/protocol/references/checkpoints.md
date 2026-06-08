@@ -17,6 +17,8 @@ Each checkpoint should be short and concrete:
 
 - workflow stage completed
 - 2-4 key decisions
+- soul fit or architecture principle impacts when applicable
+- design-fidelity expectations that QA should verify when product-facing
 - next stage
 - a short prompt for corrections or approval
 

@@ -4,26 +4,24 @@
 
 Port the `claude-copilot` framework into Codex-native constructs without faking Claude-only features.
 
-For the canonical implementation status, see [capabilities.md](./capabilities.md).
-
 ## Mapping
 
 | Claude Copilot concept | Codex equivalent |
 |------------------------|------------------|
 | `CLAUDE.md` | `AGENTS.md` |
-| `@agent-x` invocation | specialist playbook applied locally or via `spawn_agent` when explicitly authorized |
-| slash commands | command-equivalent Codex skills |
+| named-agent invocation | specialist playbook applied locally or via `spawn_agent` when explicitly authorized |
+| slash commands | documented workflows and reusable skills |
 | `.claude/skills/` | `cc` skill discovery bridge to plugin-delivered Codex skills |
 | Memory Copilot / Skills Copilot MCP servers | `cc` CLI |
 | Task Copilot via `tc` | unchanged |
-| knowledge/extensions | `cc` config, knowledge status skills, and project/global/base resolution guidance |
-| orchestration worktrees | explicit user-approved Codex workflow built on `tc`, `spawn_agent`, and git worktrees |
+| knowledge/extensions | dormant capability packs plus project-local plugin activation |
+| orchestration worktrees | future Codex workflow built on `spawn_agent` + git worktrees |
 
 ## Design Choices
 
 ### 1. Honest Port, Not Syntax Emulation
 
-Codex does not expose a native named-agent registry like Claude's `@agent-qa`.
+Codex does not expose a native named-agent registry like Claude's `@qa`-style agents.
 
 This port therefore uses:
 
@@ -47,28 +45,46 @@ The plugin bundle gives Codex a native entry point:
 - marketplace registration
 - bundled skills
 
+### 5. Project Overlays Through Packs
+
+The global plugin should stay focused on software creation. Domain capabilities live under `packs/<category>/` and stay dormant until a project activates them through a project-local plugin.
+
+This gives Codex Copilot the same practical inheritance shape as Claude Copilot:
+
+- shared global behavior for every project
+- reusable dormant capability source
+- project-specific activation and overrides
+
+### 6. Design-Led Decision Instruments
+
+Projects can define two local decision instruments:
+
+- `SOUL.md` for product purpose, taste, anti-patterns, and whether product-facing work belongs in the product
+- `docs/01-architecture/12-architecture-guiding-principles.md` for how accepted product direction should be built
+
+`$protocol` reads these before substantial work when they apply. The setup script scaffolds both files by default so design judgment is not hidden in chat history.
+
 ## Capability Status
 
-### Implemented
+### Implemented now
 
 - Codex-native repo instructions
 - plugin packaging
 - protocol-first entrypoint
 - native specialist skills
-- command-equivalent skills for setup, update, continue, pause, memory, map, extensions, knowledge, and orchestration
 - machine-readable agent catalog
 - routing skill
 - `tc` workflow skill
 - `cc` CLI bridge for memory and skills
 - specialist playbooks
+- dormant capability pack convention
+- direct software specialist skill names
+- design-led project decision-instrument scaffolding
+- design-fidelity QA expectations
 
-### Codex-Native Substitutes
+### Deliberately deferred
 
-- Claude slash commands are represented as skills.
-- Claude named agents are represented as specialist skills and optional explicitly requested `spawn_agent` delegation.
-- Claude hooks are represented by instructions, setup safety checks, and regression tests.
+- automated orchestration scripts
+- full extension-resolution system
 
-### Limited By Codex Runtime Boundaries
-
-- No automatic headless worker orchestration without explicit user-approved delegation.
-- No mechanical Claude hook enforcement where Codex has no equivalent hook surface.
+Those can be added in later phases once the core Codex workflow is validated.

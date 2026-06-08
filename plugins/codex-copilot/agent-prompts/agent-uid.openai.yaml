@@ -1,7 +1,0 @@
-interface:
-  display_name: "Agent UID"
-  short_description: "UI implementation and components"
-  default_prompt: "Use $agent-uid to build or refine the interface code for this design."
-
-policy:
-  allow_implicit_invocation: false
