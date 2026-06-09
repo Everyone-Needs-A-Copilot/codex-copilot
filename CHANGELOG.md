@@ -7,6 +7,33 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.4.1] - 2026-06-09
+
+### Changed
+
+- expanded README into a comprehensive project overview covering purpose, values, benefits, usage, specialists, quality gates, optional packs, and Codex-native boundaries
+- added `docs/README.md` as the documentation index
+- rewrote Getting Started, Install, and Usage guides with clearer setup, validation, Live Docs, QA gate, orchestration, and pack activation guidance
+- updated version metadata across framework manifests and parity metadata
+
+## [0.4.0] - 2026-06-09
+
+### Added
+
+- Claude Copilot `5.7.0` parity manifest and version metadata
+- Live Docs guidance for installed third-party package APIs
+- Codex-native QA gate convention with `tc` metadata, verdict work products, and `scripts/copilot-gate.sh`
+- optional `business-creative` pack for `kc`, `cco`, `cw`, `cs`, and `cpa`
+- stream validation utility for orchestration planning
+- release fitness scripts for version, smoke, and parity checks
+- `$setup` and `$setup-knowledge-sync` command-equivalent skills
+
+### Changed
+
+- deepened active specialist skills with success criteria, workflows, iteration loops, methodology, anti-generic rules, and routing contracts
+- updated protocol routing to include infrastructure flow
+- documented Codex-native substitutes for Claude hooks, named agents, and headless workers
+
 ## [0.3.0] - 2026-06-08
 
 ### Added
