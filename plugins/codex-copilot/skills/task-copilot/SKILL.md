@@ -38,6 +38,38 @@ tc wp store --task <taskId> --type <type> --title "..." --content "..." --json
 tc task update <taskId> --status completed --json
 ```
 
+## Code-Execution Path
+
+Prefer the importable APIs for batches:
+
+```bash
+python3 - <<'PY'
+from tc.api import create_prd, create_task, transaction
+from tc.db.connection import get_db, find_db_path
+
+conn = get_db(find_db_path())
+try:
+    with transaction(conn):
+        prd = create_prd(title="Example", conn=conn)
+        task = create_task(prd=prd["id"], title="Example task", conn=conn)
+finally:
+    conn.close()
+print(f"PRD-{prd['id']} TASK-{task['id']}")
+PY
+```
+
+Use a separate `cc.api` block for memory or skill batches. Do not import `tc.api` and `cc.api` in the same Python block.
+
+## QA Metadata
+
+Implementation tasks that require verification should use metadata like:
+
+```json
+{"requiresQa": true, "qaStatus": "pending"}
+```
+
+After QA approval, record `qaStatus`, `qaWpId`, and `verifiedAt` when possible. Use `scripts/copilot-gate.sh` to inspect the convention.
+
 ## When no task exists
 
 Create the missing planning records:

@@ -1,5 +1,5 @@
 {
-  "version": "0.3.0",
+  "version": "0.4.0",
   "entrypoints": {
     "primary": "protocol",
     "launcher": "launcher"
@@ -72,12 +72,45 @@
       "purpose": "Deployment, CI, and infrastructure work"
     }
   ],
+  "optionalAgents": [
+    {
+      "id": "kc",
+      "pack": "business-creative",
+      "skill": "kc",
+      "purpose": "Knowledge repository setup and onboarding"
+    },
+    {
+      "id": "cco",
+      "pack": "business-creative",
+      "skill": "cco",
+      "purpose": "Creative direction and brand strategy"
+    },
+    {
+      "id": "cw",
+      "pack": "business-creative",
+      "skill": "cw",
+      "purpose": "Copywriting, messaging, and microcopy"
+    },
+    {
+      "id": "cs",
+      "pack": "business-creative",
+      "skill": "cs",
+      "purpose": "Customer success and retention advisory"
+    },
+    {
+      "id": "cpa",
+      "pack": "business-creative",
+      "skill": "cpa",
+      "purpose": "Financial and tax advisory for founder/agency operations"
+    }
+  ],
   "workflows": {
     "bug": ["qa", "me", "qa"],
     "technical_feature": ["ta", "me", "qa"],
     "experience_feature": ["sd", "uxd", "uids", "uid", "ta", "me", "qa"],
     "physical_digital_feature": ["ind", "sd", "uxd", "uids", "uid", "ta", "me", "qa"],
     "ui_polish": ["uids", "uid", "qa"],
-    "security_sensitive": ["ta", "sec", "me", "qa"]
+    "security_sensitive": ["ta", "sec", "me", "qa"],
+    "infrastructure": ["do", "me", "qa"]
   }
 }

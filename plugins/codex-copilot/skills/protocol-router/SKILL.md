@@ -45,6 +45,7 @@ If the user explicitly asked for delegation or parallel work, you may spawn suba
 - experience feature: `sd -> uxd -> uids -> uid` as needed, then `ta -> me -> qa`
 - physical-digital feature: `ind -> sd -> uxd -> uids -> uid` as needed, then `ta -> me -> qa`
 - security-sensitive feature: primary flow plus `sec` before completion
+- infrastructure: `do -> me -> qa`
 
 ## References
 

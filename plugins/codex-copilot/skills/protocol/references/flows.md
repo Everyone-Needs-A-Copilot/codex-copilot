@@ -19,6 +19,7 @@ Use `SOUL.md` to decide whether the product direction belongs in the product. Us
 | physical-digital | `ind -> sd -> uxd -> uids -> uid -> ta -> me -> qa` |
 | UI polish | `uids -> uid -> qa` |
 | security-sensitive | `ta -> sec -> me -> qa` |
+| infrastructure | `do -> me -> qa` |
 
 ## Routing notes
 
@@ -27,6 +28,7 @@ Use `SOUL.md` to decide whether the product direction belongs in the product. Us
 - prefer `technical` when the change is mostly internal or architectural
 - prefer `defect` when the task is about broken behavior or verification
 - use `security-sensitive` when trust boundaries or privilege decisions are central
+- use `infrastructure` when the work changes CI, deployment, environment setup, observability, worktrees, release automation, or operational safety
 
 ## Ambiguous requests
 

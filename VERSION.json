@@ -1,7 +1,25 @@
 {
   "name": "codex-copilot",
-  "version": "0.3.0",
-  "releaseDate": "2026-06-08",
-  "codename": "design-led-specialists",
-  "status": "stable"
+  "version": "0.4.0",
+  "releaseDate": "2026-06-09",
+  "codename": "parity-contract",
+  "status": "stable",
+  "mirrors": {
+    "project": "claude-copilot",
+    "frameworkVersion": "5.7.0",
+    "baselineManifest": "parity/claude-baseline.json",
+    "capturedDate": "2026-06-09"
+  },
+  "components": {
+    "cc": {
+      "requiredVersion": "1.3.0",
+      "source": "Claude Copilot tools/cc",
+      "provides": ["cc memory", "cc skill", "cc config", "cc env", "cc docs"]
+    },
+    "tc": {
+      "requiredVersion": "1.1.0",
+      "source": "Claude Copilot tools/tc",
+      "provides": ["tc prd", "tc task", "tc wp", "tc stream", "tc progress"]
+    }
+  }
 }

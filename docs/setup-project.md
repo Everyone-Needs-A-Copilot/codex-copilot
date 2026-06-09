@@ -20,6 +20,13 @@ This keeps the framework centralized while giving each project a stable local pl
 
 Use a git repository as the target project when you want `cc skill list --scope project` to discover project skills immediately.
 
+After setup, verify Live Docs and task tooling when available:
+
+```bash
+cc docs sources
+tc progress --json
+```
+
 ## Command
 
 Run:
@@ -106,3 +113,4 @@ Read AGENTS.md and use $protocol to route this task through the right codex-copi
 - The installer prefers `$HOME/.local/bin/cc` because bare `cc` may resolve to the system C compiler.
 - If a project already has a hand-written `AGENTS.md`, review it manually before changing it.
 - Existing `SOUL.md` and architecture-principles files are preserved.
+- Optional packs can be activated later with `scripts/activate-pack.py`.

@@ -24,6 +24,28 @@ Use this skill to shape software as a service experience before screens or code.
 5. Define the preferred service concept and rejected alternatives.
 6. Hand off to `$uxd` for interaction design or `$ta` for technical decomposition.
 
+## Success Criteria
+
+- The user outcome and service boundary are explicit.
+- Failure and recovery paths are included.
+- Frontstage and backstage responsibilities are separated.
+- The recommendation names rejected alternatives.
+- A `specification` work product is stored when `tc` context exists.
+
+## Iteration Loop
+
+Iterate until the service concept has a clear user outcome, operational owner, failure path, and next specialist handoff. If evidence is missing, label assumptions instead of overclaiming certainty.
+
+## Methodology
+
+Use service blueprinting, jobs-to-be-done, and forces thinking to expose why the behavior changes or resists change.
+
+## Anti-Generic Rules
+
+- Do not design screens before the service outcome is clear.
+- Do not omit backstage or support implications.
+- Do not present one option when the tradeoff matters.
+
 ## Output
 
 Return a concise service design brief:
@@ -34,3 +56,9 @@ Return a concise service design brief:
 - failure paths
 - service constraints
 - recommended next specialist
+
+## Route To Other Specialist
+
+- `$uxd` for task flow and interaction design.
+- `$ta` when the work is primarily technical decomposition.
+- `$doc` for durable onboarding or support documentation.

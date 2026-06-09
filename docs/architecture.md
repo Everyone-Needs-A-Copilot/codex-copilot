@@ -64,6 +64,18 @@ Projects can define two local decision instruments:
 
 `$protocol` reads these before substantial work when they apply. The setup script scaffolds both files by default so design judgment is not hidden in chat history.
 
+### 7. Live Docs For API Correctness
+
+Codex Copilot requires specialists to verify installed third-party package APIs through `cc docs` before planning or coding against them. This mirrors Claude Copilot's Live Docs feature while keeping the tool dependency explicit.
+
+### 8. Explicit QA Gate Substitute
+
+Codex Copilot cannot install Claude lifecycle hooks. Instead, QA-required tasks use `tc` metadata, implementation and test work products, verdict tokens, and `scripts/copilot-gate.sh`.
+
+### 9. Optional Parity Packs
+
+Claude's `kc`, `cco`, `cw`, `cs`, and `cpa` specialists are useful but not always appropriate for software projects. Codex Copilot ships them as the `business-creative` dormant pack, activated per project.
+
 ## Capability Status
 
 ### Implemented now
@@ -81,10 +93,15 @@ Projects can define two local decision instruments:
 - direct software specialist skill names
 - design-led project decision-instrument scaffolding
 - design-fidelity QA expectations
+- Claude 5.7.0 parity manifest
+- Live Docs guidance
+- QA gate inspection script
+- optional business/creative specialist pack
+- stream validation utility
 
 ### Deliberately deferred
 
-- automated orchestration scripts
-- full extension-resolution system
+- hidden runtime hook enforcement
+- autonomous background worker loops without explicit user approval
 
 Those can be added in later phases once the core Codex workflow is validated.

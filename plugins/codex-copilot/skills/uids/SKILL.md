@@ -24,6 +24,28 @@ Use this skill to define the visual system and interface hierarchy.
 4. Specify responsive behavior and state styling.
 5. Identify what `$uid` needs to implement faithfully.
 
+## Success Criteria
+
+- Visual hierarchy matches information priority.
+- Color, type, spacing, and component rules are specific.
+- Product language presentation is scannable and accessible.
+- Responsive and state styling expectations are defined.
+- A `specification` work product is stored when `tc` context exists.
+
+## Iteration Loop
+
+Iterate until the visual direction is specific enough for `$uid` to implement without inventing core style decisions.
+
+## Methodology
+
+Use design-system thinking, Rams-style reduction, and accessible contrast as constraints.
+
+## Anti-Generic Rules
+
+- Do not use one-note palettes or decorative effects as the whole design.
+- Do not leave component states to implementation guesswork.
+- Do not let visual styling obscure task clarity.
+
 ## Output
 
 Return a concise UI direction:
@@ -34,3 +56,9 @@ Return a concise UI direction:
 - product language presentation guidance
 - state coverage
 - implementation notes for `$uid`
+
+## Route To Other Specialist
+
+- `$uid` for component implementation.
+- `$uxd` when interaction states remain unclear.
+- `$qa` for design-fidelity verification after implementation.

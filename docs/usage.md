@@ -22,6 +22,7 @@ Use $protocol to refactor the background job system.
 | physical-digital | `ind -> sd -> uxd -> uids -> uid -> ta -> me -> qa` |
 | UI polish | `uids -> uid -> qa` |
 | security-sensitive | `ta -> sec -> me -> qa` |
+| infrastructure | `do -> me -> qa` |
 
 ## Specialist Use Without Delegation
 
@@ -38,7 +39,18 @@ Use $uids to define the visual system.
 Use $uid to implement the UI.
 Use $ind to shape a physical-digital product touchpoint.
 Use $doc to write onboarding docs for this repo.
+Use $do to update CI or deployment automation.
 ```
+
+## Live Docs
+
+Before planning or coding against an installed third-party package API, use:
+
+```bash
+cc docs get <package> --topic <area> --json
+```
+
+If `cc docs` is unavailable, verify through local package files or official docs before coding.
 
 ## Project Capability Packs
 
@@ -68,3 +80,5 @@ For substantial work, use `tc` as the system of record:
 2. do the work through the right specialist flow
 3. store meaningful work products
 4. update task status
+
+For implementation tasks that require verification, set `metadata.requiresQa=true`, store a `code` work product, route to `$qa`, and store a `test` work product with a verdict. `scripts/copilot-gate.sh` checks the convention.

@@ -41,7 +41,17 @@ When a task needs Copilot config values, run:
 eval "$($HOME/.local/bin/cc env)"
 ```
 
-Use `cc memory ...` for durable project/global memory and `cc skill ...` to list, search, inspect, and evaluate reusable skills.
+Use `cc memory ...` for durable project/global memory and `cc skill ...` to list, search, inspect, and retrieve reusable skills.
+
+## Live Docs
+
+Before planning or implementing against an installed third-party package API, use Live Docs through `cc` instead of relying on remembered API shapes:
+
+```bash
+$HOME/.local/bin/cc docs get <package> --topic <area> --json
+```
+
+Use `cc docs resolve <package>` when version detection itself is unclear. If `cc docs` is unavailable, state that limitation and verify against local package files or official docs before coding.
 
 ## Task Copilot
 
@@ -63,6 +73,17 @@ If no PRD/task exists for framework work, create them instead of writing plannin
 - `tc prd create --title "..." --content "..." --json`
 - `tc task create --prd <id> --title "..." --description "..." --json`
 
+For three or more related `tc` operations, prefer a single `python3` block using `tc.api` and print only a compact summary. For three or more related `cc` memory/skill operations, use a separate `cc.api` block. Do not mix `tc.api` and `cc.api` in the same Python process.
+
+### QA Gate Convention
+
+Codex Copilot cannot rely on Claude lifecycle hooks, so implementation work uses explicit `tc` state:
+
+- implementation tasks that need verification should carry `metadata.requiresQa=true`
+- `$me` stores an implementation work product and routes to `$qa`
+- `$qa` stores a `test` work product and records a `VERDICT: APPROVED`, `VERDICT: APPROVED-WITH-MINOR-FIXES`, or `VERDICT: REJECTED` token
+- use `scripts/copilot-gate.sh` to inspect QA-required tasks before closure
+
 ## Native Specialist Skills
 
 Primary protocol entrypoint:
@@ -83,6 +104,11 @@ These specialists are available as native Codex skills:
 - `$sec`
 - `$doc`
 - `$do`
+
+Optional parity specialists are available through dormant packs rather than loaded globally:
+
+- `kc`, `cco`, `cw`, `cs`, and `cpa` live in `packs/business-creative/`
+- activate a pack in a project with `scripts/activate-pack.py`
 
 ## Specialist Matrix
 
@@ -108,6 +134,7 @@ Use these specialist roles as decision lenses:
 - Experience work starts with `sd` or `uxd` before implementation.
 - Technical features start with `ta` before implementation.
 - Security-sensitive work pulls in `sec` before completion.
+- Infrastructure work starts with `do`, then routes through `me` and `qa` when code or scripts change.
 - `me` is not the final gate on implementation work when tests are relevant.
 
 ## Delegation Rules

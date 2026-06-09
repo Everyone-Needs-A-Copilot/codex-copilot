@@ -17,8 +17,10 @@ It ports the core operating model from `claude-copilot` into primitives Codex ca
 | Specialist playbooks | Software-focused specialists for service design, UX, UI design, UI development, architecture, implementation, QA, industrial design, security, docs, and ops |
 | Codex-native packaging | Ships as a local plugin plus repo instructions instead of Claude-only commands |
 | Task discipline | Uses `tc` for task state, work products, and substantial execution records |
+| Live Docs | Uses `cc docs` to verify installed third-party package APIs before planning or coding against them |
+| QA gate substitute | Uses `tc` metadata, QA work products, and `scripts/copilot-gate.sh` to make verification inspectable |
 | Reusable project bootstrap | Wires any project to the shared framework without copying the framework repo |
-| Dormant capability packs | Stores optional domain packs that projects can activate without making them global |
+| Dormant capability packs | Stores optional domain packs, including business/creative parity specialists, that projects can activate without making them global |
 | Honest delegation boundary | Uses native Codex subagents only when the user explicitly wants delegated or parallel work |
 
 ## Why This Exists
@@ -46,6 +48,7 @@ $protocol
   +--> physical-digital    -> ind -> sd -> uxd -> uids -> uid -> ta -> me -> qa
   +--> ui polish           -> uids -> uid -> qa
   +--> security-sensitive  -> ta -> sec -> me -> qa
+  +--> infrastructure      -> do -> me -> qa
   |
   v
 tc-backed execution for substantial work
@@ -107,6 +110,11 @@ Support skills:
 - `task-copilot`
 - `specialist-agents`
 
+Optional parity specialists:
+
+- `kc`, `cco`, `cw`, `cs`, and `cpa` live in `packs/business-creative/`
+- activate optional packs with `scripts/activate-pack.py`
+
 ## Repo Layout
 
 - `AGENTS.md` - operating instructions for this repo
@@ -127,6 +135,12 @@ Support skills:
 - [Getting Started](./docs/getting-started.md)
 - [Usage Guide](./docs/usage.md)
 - [Publishing Notes](./docs/publishing.md)
+- [Parity Contract](./docs/parity.md)
+- [Live Docs](./docs/live-docs.md)
+- [Quality Gates](./docs/quality-gates.md)
+- [Orchestration](./docs/orchestration.md)
+- [Extensions And Packs](./docs/extensions.md)
+- [Release Fitness](./docs/release-fitness.md)
 
 ## Current Scope
 
@@ -138,6 +152,9 @@ This repo intentionally focuses on the parts of the Copilot operating model that
 - plugin-delivered Codex skills
 - categorized dormant packs for optional project-level capabilities
 - explicit delegation rules for `spawn_agent`
+- Live Docs guidance for installed package APIs
+- Codex-native QA gate inspection
+- stream metadata validation
 
 It does not attempt to recreate Claude slash commands, Claude agent syntax, or Claude-specific orchestration features one-for-one.
 

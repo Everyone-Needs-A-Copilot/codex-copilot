@@ -28,6 +28,8 @@ Use $protocol to refactor the auth service.
 - chooses the workflow
 - applies the right specialist thinking before implementation
 - uses `tc` for substantial work
+- uses Live Docs before third-party API planning or implementation
+- records QA-required implementation work through the Codex QA gate convention
 - hands off to `$launcher` only when delegated subagents are explicitly desired
 
 ## Default workflows
@@ -38,6 +40,7 @@ Use $protocol to refactor the auth service.
 - physical-digital: `ind -> sd -> uxd -> uids -> uid -> ta -> me -> qa`
 - UI polish: `uids -> uid -> qa`
 - security-sensitive: `ta -> sec -> me -> qa`
+- infrastructure: `do -> me -> qa`
 
 For user-facing work that does not materially change screens, components, or interface states, `$protocol` may explicitly skip `$uid` and state why.
 
@@ -50,3 +53,4 @@ The behavior is the same goal as `/protocol`, but expressed through:
 - a native Codex skill
 - specialist skills
 - native `spawn_agent` when explicitly requested
+- explicit `tc` state and inspection scripts instead of hidden Claude hooks

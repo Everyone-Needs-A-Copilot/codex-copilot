@@ -11,9 +11,11 @@ Verify shared Copilot tooling.
 
 1. Verify Python, `cc`, and `tc`.
 2. Confirm `cc` resolves to the Copilot CLI, not the system C compiler.
-3. Confirm `tc` supports required commands.
-4. Confirm the Codex plugin manifest and marketplace entry exist.
-5. Provide install or repair commands without deleting existing resources.
+3. Confirm `cc docs sources` works for Live Docs capability.
+4. Confirm `tc` supports required commands.
+5. Run `scripts/check-versions.sh` from the framework root.
+6. Confirm the Codex plugin manifest and marketplace entry exist.
+7. Provide install or repair commands without deleting existing resources.
 
 ## Output
 
@@ -21,4 +23,3 @@ Verify shared Copilot tooling.
 - missing tools
 - safe install commands
 - verification commands
-

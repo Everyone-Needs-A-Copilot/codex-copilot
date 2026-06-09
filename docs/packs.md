@@ -33,7 +33,18 @@ This gives each project an explicit override layer while preserving one reusable
 
 | Pack | Purpose | Active Globally |
 | ---- | ------- | --------------- |
+| `business-creative` | Optional parity specialists for knowledge setup, creative direction, copywriting, customer success, and financial planning | No |
 | `writing-legal` | Creative writing, proposal/SOW copy, contract review, IP, privacy, employment, government contracts, and AI governance | No |
+
+## Scripted Activation
+
+Activate a full pack in a target project:
+
+```bash
+scripts/activate-pack.py --project /path/to/project --pack business-creative
+```
+
+The script refuses to replace existing skill links or marketplace files.
 
 ## Naming
 

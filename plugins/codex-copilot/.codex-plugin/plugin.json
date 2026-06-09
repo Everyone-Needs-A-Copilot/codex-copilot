@@ -1,7 +1,7 @@
 {
   "name": "codex-copilot",
-  "version": "0.3.0",
-  "description": "Codex-native software specialist framework with tc-backed workflow discipline.",
+  "version": "0.4.0",
+  "description": "Codex-native software specialist framework with tc-backed workflow discipline and Claude Copilot parity contracts.",
   "author": "Everyone Needs A Copilot",
   "homepage": "https://ineedacopilot.com",
   "repository": "https://github.com/Everyone-Needs-A-Copilot/codex-copilot",
@@ -16,7 +16,7 @@
   "interface": {
     "displayName": "Codex Copilot",
     "shortDescription": "Specialist playbooks and tc discipline for Codex.",
-    "longDescription": "Ports the Claude Copilot workflow into Codex-native instructions, skills, and plugin packaging while keeping tc as the execution record. The global plugin focuses on software creation specialists; optional domain capabilities live in dormant packs activated by projects.",
+    "longDescription": "Ports the Claude Copilot workflow into Codex-native instructions, skills, scripts, and plugin packaging while keeping tc as the execution record. The global plugin focuses on software creation specialists; optional domain capabilities live in dormant packs activated by projects.",
     "developerName": "Everyone Needs A Copilot",
     "category": "Productivity",
     "capabilities": [
@@ -30,8 +30,21 @@
       "Route this request through the codex-copilot protocol.",
       "Use $ta, $me, and $qa with tc to ship this task.",
       "Use $sd, $uxd, $uids, and $uid for product experience work.",
+      "Use Live Docs before coding against third-party APIs.",
       "Set up a Codex specialist workflow for this repo."
     ],
     "brandColor": "#1F6FEB"
+  },
+  "requires_external": {
+    "cc": {
+      "description": "cc CLI for memory, skill discovery, config, env hydration, known references, and Live Docs.",
+      "requiredVersion": "1.3.0",
+      "degraded_without": ["cc memory", "cc skill", "cc config", "cc env", "cc docs"]
+    },
+    "tc": {
+      "description": "tc CLI for PRDs, tasks, streams, handoffs, and work products.",
+      "requiredVersion": "1.1.0",
+      "degraded_without": ["tc prd", "tc task", "tc wp", "tc stream", "tc progress"]
+    }
   }
 }

@@ -14,7 +14,8 @@ Guide knowledge repository setup and onboarding.
 3. Check `paths.knowledge_repo`, `paths.shared_docs`, and `refs.*`.
 4. For an existing team repository, provide clone/link steps.
 5. For a new repository, produce a Git-friendly structure and setup checklist.
-6. Do not remove or replace existing knowledge repositories without explicit current approval.
+6. Use `$setup-knowledge-sync` when sync wiring or optional pack activation is needed.
+7. Do not remove or replace existing knowledge repositories without explicit current approval.
 
 ## Output
 

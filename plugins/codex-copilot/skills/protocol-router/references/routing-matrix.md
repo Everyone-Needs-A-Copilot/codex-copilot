@@ -26,4 +26,4 @@
 | design connected-product experience | `ind -> sd -> uxd -> uids -> uid -> ta -> me -> qa` | `sec`, `do` |
 | update dashboard visuals | `uids -> uid -> qa` | `uxd` |
 | write migration plan | `ta` | `do`, `sec` |
-| ship deployment fix | `do -> qa` | `ta`, `sec` |
+| ship deployment fix | `do -> me -> qa` | `ta`, `sec` |

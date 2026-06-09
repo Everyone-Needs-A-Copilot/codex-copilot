@@ -25,6 +25,9 @@ Codex Copilot translates the useful parts of Claude Copilot into Codex-native pr
 | Memory Copilot MCP | `cc memory` CLI | Implemented dependency | Requires Claude Copilot `cc` CLI installed. |
 | Skills Copilot MCP | `cc skill` plus Codex skills | Implemented dependency | `cc skill --scope project` requires running inside a git repo. |
 | Task Copilot | `tc` CLI | Implemented dependency | `tc init` creates `.copilot/tasks.db`; work products are stored through `tc`. |
+| Live Docs | `cc docs` CLI guidance in specialists | Implemented dependency | Requires compatible `cc`; falls back to local package files or official docs when unavailable. |
 | domain agents and extensions | dormant capability packs | Implemented convention | Packs stay inactive until a project exposes selected skills through its own local plugin. |
-| Mechanical Claude hooks | Instructions, skills, and tests | Codex-native substitute | Codex has no equivalent runtime hook surface in this project. |
-| Headless worker orchestration | Explicit `spawn_agent` delegation | Limited substitute | Codex delegation is user-approved and scoped; no autonomous background worker loop. |
+| Mechanical Claude hooks | `tc` metadata, QA work products, `scripts/copilot-gate.sh`, instructions, and tests | Codex-native substitute | Codex has no equivalent runtime hook surface in this project. |
+| Headless worker orchestration | Explicit `spawn_agent` delegation plus stream validation | Limited substitute | Codex delegation is user-approved and scoped; no autonomous background worker loop. |
+| Claude 16-agent roster | 11 active software/product skills plus optional `business-creative` pack | Codex-native substitute | `kc`, `cco`, `cw`, `cs`, and `cpa` are activatable rather than globally loaded. |
+| Worktree stream validation | `scripts/orchestrate-validate.py` | Implemented utility | Validates stream metadata, dependencies, cycles, and file ownership before parallel work. |

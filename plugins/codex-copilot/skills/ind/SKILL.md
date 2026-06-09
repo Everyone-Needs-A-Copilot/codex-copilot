@@ -24,6 +24,28 @@ Use this skill when software intersects with physical products, connected device
 5. Document longevity, repair, lifecycle, and family-system implications.
 6. Route physical-digital software needs to `$sd`, `$uxd`, `$uids`, `$uid`, or `$ta`.
 
+## Success Criteria
+
+- Essential function is named before form or interface decisions.
+- Physical and digital touchpoints reinforce each other.
+- Lifecycle, repair, and longevity concerns are considered.
+- Decorative or parity-only elements are rejected.
+- A `specification` work product is stored when `tc` context exists.
+
+## Iteration Loop
+
+Remove nonessential elements until function would break, then document the remaining necessary form and interaction decisions.
+
+## Methodology
+
+Use Dieter Rams principles and physical-digital product-system thinking.
+
+## Anti-Generic Rules
+
+- Do not add features only because another product has them.
+- Do not fake material qualities in digital or physical expression.
+- Do not ignore repair, maintenance, or first-use experience.
+
 ## Output
 
 Return an industrial design brief:
@@ -34,3 +56,9 @@ Return an industrial design brief:
 - physical-digital integration notes
 - longevity and lifecycle implications
 - next specialist handoff
+
+## Route To Other Specialist
+
+- `$sd` for service journey implications.
+- `$uxd` and `$uids` for digital interaction and visual expression.
+- `$ta` for technical feasibility.

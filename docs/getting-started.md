@@ -38,3 +38,5 @@ Read AGENTS.md and use $protocol to route this task through the right codex-copi
 3. Confirm the request is routed through the correct specialist workflow.
 4. Confirm the work product or task state is recorded with `tc` for substantial work.
 5. Run `cc skill list --scope project` and confirm the direct software specialist skills plus command-equivalent support skills are discoverable.
+6. Run `cc docs sources` and confirm Live Docs is available, or record why it is unavailable.
+7. For implementation work that needs verification, run `scripts/copilot-gate.sh` after QA stores a verdict.

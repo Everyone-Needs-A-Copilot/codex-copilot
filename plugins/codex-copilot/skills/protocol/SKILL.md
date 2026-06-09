@@ -46,6 +46,7 @@ Keep these instruments separate:
 | physical-digital | hardware, connected product, tangible service touchpoint, physical object plus software | `ind -> sd -> uxd -> uids -> uid -> ta -> me -> qa` |
 | UI polish | visual refinement, component styling, layout polish | `uids -> uid -> qa` |
 | security-sensitive | auth, permissions, secrets, trust boundaries | `ta -> sec -> me -> qa` |
+| infrastructure | CI, deploy, environment, observability, worktrees, release automation | `do -> me -> qa` |
 | ambiguous | improve, update, change, enhance without clear direction | ask for clarification before routing |
 
 ## Required behavior
@@ -54,9 +55,12 @@ Keep these instruments separate:
 2. classify the task
 3. state the workflow
 4. ensure `tc` context exists for substantial work
-5. perform the next appropriate specialist step
-6. do not jump straight to implementation when earlier specialist work is warranted
-7. do not use `spawn_agent` unless the user explicitly asked for delegation or parallel work
+5. load known references and memory when `cc` is configured
+6. for third-party API work, require Live Docs before planning or implementation
+7. record QA-required implementation tasks with `metadata.requiresQa=true`
+8. perform the next appropriate specialist step
+9. do not jump straight to implementation when earlier specialist work is warranted
+10. do not use `spawn_agent` unless the user explicitly asked for delegation or parallel work
 
 For experience work that does not materially change screens, components, or interface states, `$uid` may be skipped only when the checkpoint states why.
 
@@ -93,6 +97,8 @@ Use these native skills directly:
 - `$sec`
 - `$doc`
 - `$do`
+
+Optional pack specialists (`kc`, `cco`, `cw`, `cs`, `cpa`) are activated per project when the user needs knowledge, creative, copywriting, customer success, or financial advisory work.
 
 ## Delegated pattern
 

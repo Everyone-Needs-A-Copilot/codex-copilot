@@ -10,6 +10,7 @@
 | physical-digital feature | `ind -> sd -> uxd -> uids -> uid -> ta -> me -> qa` |
 | UI polish | `uids -> uid -> qa` |
 | security-sensitive feature | `ta -> sec -> me -> qa` |
+| infrastructure | `do -> me -> qa` |
 
 ## Spawn Guidance
 

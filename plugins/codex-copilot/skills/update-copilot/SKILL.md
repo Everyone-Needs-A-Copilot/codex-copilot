@@ -13,7 +13,8 @@ Update and verify the shared framework.
 2. Fetch from GitHub and inspect incoming changes before merging or rebasing.
 3. Never delete, reset, clean, or force-push without explicit current approval.
 4. Verify plugin metadata, agent catalog, skills, `cc`, and `tc`.
-5. Run the parity tests.
+5. Run `scripts/check-versions.sh` and `scripts/smoke-test.sh`.
+6. Run the parity tests.
 
 ## Output
 
@@ -21,4 +22,3 @@ Update and verify the shared framework.
 - version status
 - verification results
 - approval needs for destructive operations
-

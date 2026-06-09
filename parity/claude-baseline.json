@@ -1,0 +1,124 @@
+{
+  "baseline": {
+    "source": "claude-copilot",
+    "frameworkVersion": "5.7.0",
+    "capturedDate": "2026-06-09",
+    "codexParityVersion": "0.4.0",
+    "notes": "Codex Copilot mirrors capability intent with Codex-native substitutes where Claude runtime hooks or named-agent syntax are unavailable."
+  },
+  "components": {
+    "cc": {
+      "version": "1.3.0",
+      "requiredCommands": [
+        "cc memory",
+        "cc skill",
+        "cc config",
+        "cc env",
+        "cc docs"
+      ]
+    },
+    "tc": {
+      "version": "1.1.0",
+      "requiredCommands": [
+        "tc prd",
+        "tc task",
+        "tc wp",
+        "tc stream",
+        "tc progress",
+        "tc handoff",
+        "tc log",
+        "tc watch"
+      ]
+    }
+  },
+  "activeSpecialists": [
+    "do",
+    "doc",
+    "ind",
+    "me",
+    "qa",
+    "sd",
+    "sec",
+    "ta",
+    "uid",
+    "uids",
+    "uxd"
+  ],
+  "optionalSpecialists": [
+    "cco",
+    "cpa",
+    "cs",
+    "cw",
+    "kc"
+  ],
+  "commandSkills": [
+    "config",
+    "continue",
+    "extensions",
+    "knowledge-copilot",
+    "map",
+    "memory",
+    "orchestrate",
+    "pause",
+    "protocol",
+    "reflect",
+    "setup",
+    "setup-copilot",
+    "setup-knowledge-sync",
+    "setup-project",
+    "skills-approve",
+    "update-copilot",
+    "update-project"
+  ],
+  "workflows": {
+    "bug": ["qa", "me", "qa"],
+    "technical_feature": ["ta", "me", "qa"],
+    "experience_feature": ["sd", "uxd", "uids", "uid", "ta", "me", "qa"],
+    "physical_digital_feature": ["ind", "sd", "uxd", "uids", "uid", "ta", "me", "qa"],
+    "ui_polish": ["uids", "uid", "qa"],
+    "security_sensitive": ["ta", "sec", "me", "qa"],
+    "infrastructure": ["do", "me", "qa"]
+  },
+  "runtimeSubstitutes": {
+    "claudeHooks": {
+      "status": "substituted",
+      "codexMechanisms": [
+        "scripts/copilot-gate.sh",
+        "tc QA metadata",
+        "specialist output contracts",
+        "parity tests"
+      ]
+    },
+    "headlessWorkers": {
+      "status": "substituted",
+      "codexMechanisms": [
+        "explicit spawn_agent approval",
+        "stream ownership metadata",
+        "git worktree utilities"
+      ]
+    },
+    "namedAgentSyntax": {
+      "status": "substituted",
+      "codexMechanisms": [
+        "direct skill names",
+        "agent-catalog.json",
+        "optional pack activation"
+      ]
+    }
+  },
+  "requiredDocs": [
+    "docs/parity.md",
+    "docs/live-docs.md",
+    "docs/quality-gates.md",
+    "docs/orchestration.md",
+    "docs/extensions.md",
+    "docs/release-fitness.md"
+  ],
+  "scripts": [
+    "scripts/copilot-gate.sh",
+    "scripts/orchestrate-validate.py",
+    "scripts/activate-pack.py",
+    "scripts/check-versions.sh",
+    "scripts/smoke-test.sh"
+  ]
+}

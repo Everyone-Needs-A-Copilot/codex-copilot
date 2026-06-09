@@ -24,6 +24,28 @@ Use this skill to implement polished, accessible UI.
 4. Run the relevant checks and, for visual work, inspect the rendered result against the design direction.
 5. Hand off to `$qa` for verification.
 
+## Success Criteria
+
+- Components preserve UX/UI direction.
+- All relevant states are implemented.
+- Responsive and accessibility behavior are verified.
+- Layout geometry is stable across dynamic content.
+- Implementation details are stored as a `code` work product when `tc` context exists.
+
+## Iteration Loop
+
+Implement, render or inspect the result, compare against design intent, fix mismatches, and hand off to `$qa`.
+
+## Methodology
+
+Use component-driven development and accessibility-first UI implementation.
+
+## Anti-Generic Rules
+
+- Do not implement only the happy path state.
+- Do not introduce new styling conventions without a reason.
+- Do not close UI work without responsive and accessibility checks.
+
 ## Output
 
 Return:
@@ -33,3 +55,9 @@ Return:
 - design direction preserved or intentionally changed
 - verification run
 - remaining visual or accessibility risks
+
+## Route To Other Specialist
+
+- `$qa` for visual, interaction, accessibility, and regression verification.
+- `$uids` when visual direction is insufficient.
+- `$uxd` when interaction behavior is unresolved.

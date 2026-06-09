@@ -25,9 +25,19 @@ $HOME/.local/bin/cc memory search "<task topic>"
 git status --short
 ```
 
+5. For third-party API planning or implementation, verify the installed package API with Live Docs:
+
+```bash
+$HOME/.local/bin/cc docs get <package> --topic <area> --json
+```
+
+If `cc docs` is unavailable, say so and inspect local package files or official docs before coding against that API.
+
 ## Skill Discovery
 
 Codex skills are the primary path in Codex sessions. Use `cc skill search "<topic>"` or `cc skill get <name>` as a fallback when a reusable skill is not already visible in the session.
+
+Optional parity specialists (`kc`, `cco`, `cw`, `cs`, `cpa`) live in dormant packs. Activate them with `scripts/activate-pack.py` when the project needs those capabilities; do not load them globally by default.
 
 ## Task Copilot Pattern
 
@@ -40,6 +50,8 @@ tc task update <taskId> --status completed --json
 ```
 
 If no task exists, create a PRD and task rather than writing planning state into ad hoc markdown.
+
+For three or more related `tc` operations, prefer a single `python3` block importing `tc.api` and print one compact result. For three or more related `cc` memory or skill operations, use a separate block importing `cc.api`. Do not mix `tc.api` and `cc.api` in one process.
 
 ## Specification Workflow
 
@@ -63,7 +75,8 @@ Keep chat output compact. Store detailed analysis, specs, and verification recor
 
 - `me` is not the final gate when tests or verification are relevant.
 - `qa` verifies implementation before closure.
+- implementation tasks that require verification should carry `metadata.requiresQa=true`
+- `qa` stores a `test` work product and a verdict; `scripts/copilot-gate.sh` checks this convention
 - `sec` reviews security-sensitive changes before closure.
 - `do` owns deployment planning before deploy or CI changes.
 - Destructive actions require explicit current user approval.
-

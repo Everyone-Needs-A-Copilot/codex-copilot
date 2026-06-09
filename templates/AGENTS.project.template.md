@@ -45,7 +45,17 @@ When a task needs Copilot config values, run:
 eval "$($HOME/.local/bin/cc env)"
 ```
 
-Use `cc memory ...` for durable project/global memory and `cc skill ...` to list, search, inspect, and evaluate reusable skills.
+Use `cc memory ...` for durable project/global memory and `cc skill ...` to list, search, inspect, and retrieve reusable skills.
+
+## Live Docs
+
+Before planning or implementing against an installed third-party package API, use Live Docs through `cc`:
+
+```bash
+$HOME/.local/bin/cc docs get <package> --topic <area> --json
+```
+
+If `cc docs` is unavailable, say so and verify against local package files or official docs before coding.
 
 ## Task Management
 
@@ -62,6 +72,15 @@ Use `tc` for task tracking and work-product storage in this repository.
 3. `tc wp store --task <taskId> --type <type> --title "..." --content "..." --json`
 4. `tc task update <id> --status completed --json`
 
+For three or more related `tc` operations, prefer one `python3` block using `tc.api`. For three or more related `cc` memory/skill operations, use a separate `cc.api` block. Keep `tc` and `cc` API blocks separate.
+
+### QA Gate Convention
+
+- implementation tasks that need verification should carry `metadata.requiresQa=true`
+- `$me` stores an implementation work product and routes to `$qa`
+- `$qa` stores a `test` work product and a `VERDICT: APPROVED`, `VERDICT: APPROVED-WITH-MINOR-FIXES`, or `VERDICT: REJECTED` token
+- `scripts/copilot-gate.sh` can inspect QA-required tasks before closure
+
 ## Framework Rules
 
 - Start new work with `$protocol` unless the correct specialist path is already obvious.
@@ -71,6 +90,7 @@ Use `tc` for task tracking and work-product storage in this repository.
 - Use `$ta` before implementation for architecture, refactors, or non-trivial features.
 - Use `$me` for implementation once the work is framed.
 - Use `$qa` to verify implementation work.
+- Use `$do -> $me -> $qa` for infrastructure, CI, deployment, and environment changes that require implementation.
 - Use `spawn_agent` only when the user explicitly asks for delegation or parallel subagents.
 - Keep plans free of time estimates.
 

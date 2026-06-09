@@ -25,6 +25,28 @@ Use this skill to turn product intent into clear interactions.
 5. Flag unresolved service or technical dependencies.
 6. Hand off to `$uids` for visual direction or `$ta` for technical planning.
 
+## Success Criteria
+
+- Primary, alternate, and recovery flows are defined.
+- Empty, loading, error, success, disabled, permissioned, and edge states are covered as needed.
+- Product language clarifies the task.
+- Accessibility flow is specified.
+- A `specification` work product is stored when `tc` context exists.
+
+## Iteration Loop
+
+Iterate until a user can complete the primary task, recover from failure, and understand system status without hidden instructions.
+
+## Methodology
+
+Use Nielsen heuristics, task analysis, and recognition-over-recall as practical checks.
+
+## Anti-Generic Rules
+
+- Do not leave error, empty, or permission states undefined.
+- Do not use labels or CTAs that describe implementation instead of user intent.
+- Do not route to UI implementation before interaction states are clear.
+
 ## Output
 
 Return a concise UX specification:
@@ -35,3 +57,9 @@ Return a concise UX specification:
 - product language notes for labels, CTAs, empty states, errors, validation, and feedback
 - accessibility notes
 - unresolved questions
+
+## Route To Other Specialist
+
+- `$uids` for visual hierarchy and system direction.
+- `$uid` only when interaction and visual direction are already clear.
+- `$ta` when technical constraints shape the flow.
