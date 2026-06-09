@@ -3,7 +3,7 @@
     "source": "claude-copilot",
     "frameworkVersion": "5.7.0",
     "capturedDate": "2026-06-09",
-    "codexParityVersion": "0.4.0",
+    "codexParityVersion": "0.4.1",
     "notes": "Codex Copilot mirrors capability intent with Codex-native substitutes where Claude runtime hooks or named-agent syntax are unavailable."
   },
   "components": {

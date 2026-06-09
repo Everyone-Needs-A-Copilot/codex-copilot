@@ -1,27 +1,62 @@
 # Install
 
-## Local Repo Use
+Codex Copilot can be used directly in this framework repo or linked into other projects.
 
-Open the repo in Codex and let Codex read:
+## Requirements
+
+| Requirement | Why |
+| --- | --- |
+| Codex | Reads `AGENTS.md`, plugin skills, and project instructions. |
+| `tc` | Stores PRDs, tasks, streams, handoffs, and work products. |
+| `cc` | Provides memory, skill discovery, config, env hydration, known references, and Live Docs. |
+| Python 3 | Runs setup and verification scripts. |
+| Git | Supports project detection, safe updates, and optional worktree workflows. |
+
+Check the tools:
+
+```bash
+tc --help
+$HOME/.local/bin/cc --help
+$HOME/.local/bin/cc docs sources
+python3 --version
+git --version
+```
+
+The command name `cc` can also mean a system C compiler, so framework instructions prefer `$HOME/.local/bin/cc`.
+
+## Framework Verification
+
+From the `codex-copilot` repo:
+
+```bash
+scripts/check-versions.sh
+scripts/smoke-test.sh
+```
+
+These verify:
+
+- version alignment
+- plugin manifest alignment
+- parity manifest alignment
+- test suite behavior
+- stream validation behavior
+
+## Using The Framework Repo Directly
+
+Open this repo in Codex. Codex will read:
 
 - `AGENTS.md`
 - `plugins/codex-copilot/skills/`
 
-The repo is already structured so the instructions are local and versioned.
+Start with:
 
-## Local Plugin Registration
+```text
+Use $protocol to route this task through the right workflow.
+```
 
-This repo includes a local marketplace entry:
+## Linking A Target Project
 
-- `.agents/plugins/marketplace.json`
-
-The plugin lives at:
-
-- `plugins/codex-copilot`
-
-## Project Bootstrap
-
-To wire another project to this shared framework, use:
+Run:
 
 ```bash
 ./scripts/setup-project.sh \
@@ -31,67 +66,64 @@ To wire another project to this shared framework, use:
   --stack "React / Next.js"
 ```
 
-Run that command from the `codex-copilot` repo root, or replace it with the path to your local clone.
+The setup script creates relative symlinks so generated project files do not embed machine-specific framework paths.
 
-Full details:
+## What Gets Installed In A Project
 
-- [setup-project.md](./setup-project.md)
+- `AGENTS.md`
+- `.agents/plugins/marketplace.json`
+- `.codex-copilot.json`
+- `.claude/cc/config.json`
+- `.claude/memory/entries/`
+- `.claude/skills/codex-copilot`
+- `plugins/codex-copilot`
+- `SOUL.md` unless skipped
+- `docs/01-architecture/12-architecture-guiding-principles.md` unless skipped
+- `.copilot/tasks.db` when `tc init` succeeds
 
-## Task Copilot Requirement
+## Safe Update Behavior
 
-This framework expects `tc` to be available.
+The setup script refuses to replace existing project wiring. For an already configured project, update only the exact framework block that needs changing and preserve project-specific rules.
 
-Use:
+Optional packs are activated separately:
 
 ```bash
-tc --help
+scripts/activate-pack.py --project /absolute/path/to/project --pack business-creative
 ```
 
-If `tc` is not installed globally, use the repo-local fallback pattern:
+## Troubleshooting
 
-```bash
-./.venv-tc/bin/tc --help
-```
+### `cc` opens a compiler
 
-## Memory And Skills CLI Requirement
-
-This framework uses the Claude Copilot `cc` CLI for memory, skill discovery, and Copilot config. It replaces the old Skills Copilot and Memory Copilot MCP servers.
-
-Expected install:
+Use the absolute shim:
 
 ```bash
 $HOME/.local/bin/cc --help
 ```
 
-The command name `cc` can also mean the system C compiler, so project instructions prefer the absolute shim path. For agent shell hydration, use:
+### Skills are not discoverable
+
+Run from a git repository and check:
 
 ```bash
-eval "$($HOME/.local/bin/cc env)"
+ls -ld .claude/skills/codex-copilot
+cc skill list --scope project
 ```
 
-The project bootstrap creates:
+### Live Docs is unavailable
 
-- `.claude/cc/config.json`
-- `.claude/memory/entries/`
-- `.claude/skills/codex-copilot` linked to the shared Codex Copilot skills
+Check:
 
-## Recommended First Prompt In Codex
-
-Use a prompt like:
-
-```text
-Read AGENTS.md and the codex-copilot skills, then use $protocol to route this task through the right workflow with tc-backed task tracking.
+```bash
+cc docs sources
 ```
 
-## Suggested Validation
+If unavailable, inspect local package files or official docs before coding against third-party APIs.
 
-1. Run `tc init --json` in a throwaway git repo.
-2. Create a PRD with `tc prd create`.
-3. Create a task with `tc task create`.
-4. Run `cc skill list --scope project` from the git repo and confirm `$protocol`, `$ta`, `$qa`, `$continue`, and `$orchestrate` are discoverable.
-5. Ask Codex to route a task using `$protocol`.
-6. Have Codex store a work product with `tc wp store`.
+### `tc` cannot find a database
 
-That verifies the core framework loop end to end.
+Initialize in the target project:
 
-For full feature status, see [capabilities.md](./capabilities.md).
+```bash
+tc init --json
+```

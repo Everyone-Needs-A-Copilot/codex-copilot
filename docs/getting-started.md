@@ -1,42 +1,114 @@
 # Getting Started
 
-## Recommended Flow
+This guide walks you from a clean project to a working Codex Copilot workflow.
 
-1. Clone `codex-copilot`.
-2. Use `scripts/setup-project.sh` to wire a target repo to the framework.
-3. Open the target repo in Codex.
-4. Start with `$protocol`.
+## What You Are Installing
 
-## What Gets Added to a Project
+Codex Copilot adds a specialist operating layer to a project. After setup, the target project gets:
 
-The bootstrap script writes:
+- `AGENTS.md` with project-specific Codex instructions
+- local plugin registration under `.agents/plugins/`
+- a symlink to the shared `plugins/codex-copilot` plugin
+- a `cc` config file at `.claude/cc/config.json`
+- project memory entries under `.claude/memory/entries/`
+- a skill discovery bridge under `.claude/skills/codex-copilot`
+- optional decision instruments for product and architecture judgment
+- optional `tc` initialization
 
-- `AGENTS.md`
-- `.agents/plugins/marketplace.json`
-- `.codex-copilot.json`
-- `.claude/cc/config.json`
-- `.claude/memory/entries/`
-- `.claude/skills/codex-copilot` as a relative symlink to the shared framework skills
-- `plugins/codex-copilot` as a relative symlink to the shared framework plugin
+The framework stays centralized in the shared `codex-copilot` repo. Linked projects point back to it.
 
-This keeps the framework centralized while giving each project a stable local plugin path.
+## Before You Start
+
+Verify the shared tools:
+
+```bash
+tc --help
+$HOME/.local/bin/cc --help
+$HOME/.local/bin/cc docs sources
+```
+
+Then verify the framework itself:
+
+```bash
+scripts/smoke-test.sh
+```
+
+## Step 1: Wire A Project
+
+From the `codex-copilot` repo:
+
+```bash
+./scripts/setup-project.sh \
+  --project /absolute/path/to/project \
+  --name "my-project" \
+  --description "Short project description" \
+  --stack "React / Next.js"
+```
 
 Use a git repository as the target project when you want `cc skill list --scope project` to discover project skills immediately.
 
-## First Prompt
+The installer is intentionally conservative. It refuses to overwrite existing `AGENTS.md`, plugin links, or skill links.
 
-Use:
+## Step 2: Open The Project In Codex
+
+Start with:
 
 ```text
 Read AGENTS.md and use $protocol to route this task through the right codex-copilot specialists.
 ```
 
-## Recommended Validation
+That tells Codex to use the project instructions and route the work before acting.
 
-1. Create or identify a `tc` task for a meaningful change.
-2. Ask Codex to use `$protocol`.
-3. Confirm the request is routed through the correct specialist workflow.
-4. Confirm the work product or task state is recorded with `tc` for substantial work.
-5. Run `cc skill list --scope project` and confirm the direct software specialist skills plus command-equivalent support skills are discoverable.
-6. Run `cc docs sources` and confirm Live Docs is available, or record why it is unavailable.
-7. For implementation work that needs verification, run `scripts/copilot-gate.sh` after QA stores a verdict.
+## Step 3: Run A Small Workflow
+
+Try a low-risk task:
+
+```text
+Use $protocol to review this repo's setup and create a short tc-backed verification note.
+```
+
+For substantial work, Codex should:
+
+1. classify the request
+2. choose a specialist workflow
+3. create or use `tc` task context
+4. store important output as a work product
+5. route implementation through QA when verification matters
+
+## Step 4: Validate Discovery
+
+In the target project:
+
+```bash
+cc skill list --scope project
+tc progress --json
+cc docs sources
+```
+
+Expected result:
+
+- `cc skill list` can see Codex Copilot skills through `.claude/skills/codex-copilot`
+- `tc progress` can find or initialize task state
+- `cc docs sources` reports Live Docs availability
+
+## Step 5: Use Quality Gates
+
+For implementation work that needs verification:
+
+1. mark the task metadata with `requiresQa`
+2. store an implementation work product
+3. route to `$qa`
+4. store a `test` work product with a verdict
+5. run the gate when needed
+
+```bash
+scripts/copilot-gate.sh
+```
+
+## What To Do Next
+
+- Read [Usage Guide](./usage.md) for daily workflows.
+- Read [Protocol](./protocol.md) for routing behavior.
+- Read [Native Agents](./native-agents.md) for specialist roles.
+- Read [Live Docs](./live-docs.md) before API-heavy work.
+- Read [Quality Gates](./quality-gates.md) before shipping implementation.

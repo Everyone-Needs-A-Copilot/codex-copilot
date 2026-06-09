@@ -1,38 +1,73 @@
-# codex-copilot
+# Codex Copilot
 
-Codex Copilot is a Codex-native instruction layer that gives Codex a disciplined specialist workflow instead of a single undifferentiated assistant loop.
+Codex Copilot is a Codex-native operating layer for serious software work. It gives Codex a repeatable specialist workflow, durable task memory, and explicit quality gates instead of a single undifferentiated assistant loop.
 
-It ports the core operating model from `claude-copilot` into primitives Codex can actually use today:
+It is inspired by Claude Copilot, but it does not pretend Codex has Claude-only runtime features. The framework translates the useful parts into Codex primitives:
 
-- `AGENTS.md` for repo-level operating rules
-- native skills for protocol and specialist playbooks
-- optional delegation through `spawn_agent` when the user explicitly asks for subagents
-- `tc` as the durable record for PRDs, tasks, and work products
+- `AGENTS.md` for project instructions
+- Codex skills for specialist playbooks
+- `tc` for PRDs, tasks, streams, handoffs, and work products
+- `cc` for memory, skill discovery, configuration, known references, and Live Docs
+- optional `spawn_agent` delegation only when the user explicitly asks for subagents or parallel work
+- dormant capability packs that projects can activate when they need domain-specific specialists
+
+## What It Is
+
+Codex Copilot is not a separate application. It is a framework of instructions, skills, scripts, templates, and docs that helps Codex behave like a disciplined lead engineer with access to specialist playbooks.
+
+Use it when you want Codex to:
+
+- classify work before coding
+- bring in architecture, QA, security, DevOps, service design, UX, UI, or documentation thinking at the right time
+- preserve important plans and outputs in `tc`
+- verify third-party package APIs with Live Docs before coding against them
+- keep implementation work from being treated as complete before QA
+- coordinate explicit, scoped parallel work without hidden background automation
+
+## Why It Exists
+
+AI coding sessions are useful, but they often fail in predictable ways:
+
+- they jump from vague intent straight to code
+- they forget prior decisions
+- they skip QA or treat build success as verification
+- they use stale API knowledge for third-party packages
+- they produce long plans that vanish into chat history
+- they blur UX, UI, architecture, implementation, and testing into one generic response
+
+Codex Copilot fixes those failure modes with a small operating model:
+
+1. Route the work.
+2. Apply the right specialist lens.
+3. Store durable planning and work products.
+4. Verify before closing.
+5. Keep Codex-native boundaries honest.
+
+## Core Values
+
+| Value | What It Means In Practice |
+| --- | --- |
+| Discipline before speed | Classify, frame, and verify instead of rushing from request to code. |
+| Native over imitation | Use Codex skills, `AGENTS.md`, scripts, and `tc` instead of pretending Claude slash commands or hooks exist. |
+| Durable context | Important decisions, specs, implementation notes, and test results belong in `tc` and `cc`, not only chat. |
+| Specialist judgment | Architecture, QA, design, security, docs, and ops each have a distinct job. |
+| Explicit quality | Implementation is not the final gate when tests, review, or design fidelity matter. |
+| User-approved delegation | Parallel work uses clear scopes and approval, not silent background workers. |
 
 ## What You Get
 
 | Capability | What It Does |
-| ---------- | ------------ |
-| Protocol-first routing | Routes work before coding so requests follow the right workflow |
-| Specialist playbooks | Software-focused specialists for service design, UX, UI design, UI development, architecture, implementation, QA, industrial design, security, docs, and ops |
-| Codex-native packaging | Ships as a local plugin plus repo instructions instead of Claude-only commands |
-| Task discipline | Uses `tc` for task state, work products, and substantial execution records |
-| Live Docs | Uses `cc docs` to verify installed third-party package APIs before planning or coding against them |
-| QA gate substitute | Uses `tc` metadata, QA work products, and `scripts/copilot-gate.sh` to make verification inspectable |
-| Reusable project bootstrap | Wires any project to the shared framework without copying the framework repo |
-| Dormant capability packs | Stores optional domain packs, including business/creative parity specialists, that projects can activate without making them global |
-| Honest delegation boundary | Uses native Codex subagents only when the user explicitly wants delegated or parallel work |
-
-## Why This Exists
-
-Generic AI coding sessions tend to skip straight from an ambiguous request to code. That works for small edits, but it breaks down on defects, non-trivial features, user-facing flows, security-sensitive work, and multi-step implementation.
-
-Codex Copilot adds an operating model around Codex so it can:
-
-- classify the task before acting
-- apply the right specialist lens at the right stage
-- keep substantial work grounded in `tc`
-- stay native to Codex instead of pretending Claude features exist
+| --- | --- |
+| `$protocol` routing | Classifies new work and chooses the right specialist workflow. |
+| Specialist skills | Provides direct Codex skills for service design, UX, UI design, UI implementation, architecture, engineering, QA, security, docs, ops, and industrial design. |
+| `tc` task discipline | Stores PRDs, tasks, handoffs, stream metadata, and work products. |
+| `cc` memory and config | Uses the Claude Copilot `cc` CLI for memory, skill discovery, environment hydration, known references, and Live Docs. |
+| Live Docs | Requires `cc docs` before planning or coding against installed third-party package APIs. |
+| QA gate substitute | Uses `tc` metadata, QA work products, verdict tokens, and `scripts/copilot-gate.sh`. |
+| Project setup | Wires projects to the shared framework without copying the framework repo. |
+| Optional packs | Lets projects activate dormant domain skills without making them global. |
+| Stream validation | Checks stream dependencies and file ownership before approved parallel work. |
+| Release fitness | Provides version, manifest, parity, and smoke checks. |
 
 ## How It Works
 
@@ -46,26 +81,42 @@ $protocol
   +--> technical           -> ta -> me -> qa
   +--> experience          -> sd -> uxd -> uids -> uid -> ta -> me -> qa
   +--> physical-digital    -> ind -> sd -> uxd -> uids -> uid -> ta -> me -> qa
-  +--> ui polish           -> uids -> uid -> qa
+  +--> UI polish           -> uids -> uid -> qa
   +--> security-sensitive  -> ta -> sec -> me -> qa
   +--> infrastructure      -> do -> me -> qa
   |
   v
-tc-backed execution for substantial work
+tc-backed work products and verification
 ```
 
-When the user explicitly asks for delegation or parallel work, Codex Copilot maps those specialist roles onto Codex’s built-in spawned agent types.
+Most specialist work happens in the main Codex session. If the user explicitly asks for delegation, `$launcher` maps specialist intent onto Codex spawned-agent roles with clear scope boundaries.
 
 ## Quick Start
 
-### 1. Clone the framework
+### 1. Clone The Framework
 
 ```bash
 git clone https://github.com/Everyone-Needs-A-Copilot/codex-copilot.git
 cd codex-copilot
 ```
 
-### 2. Wire a project to the framework
+### 2. Verify Tooling
+
+Codex Copilot expects `tc` and `cc` to be installed:
+
+```bash
+tc --help
+$HOME/.local/bin/cc --help
+$HOME/.local/bin/cc docs sources
+```
+
+Run the framework smoke test:
+
+```bash
+scripts/smoke-test.sh
+```
+
+### 3. Wire A Project
 
 ```bash
 ./scripts/setup-project.sh \
@@ -75,88 +126,149 @@ cd codex-copilot
   --stack "React / Next.js"
 ```
 
-### 3. Open the target project in Codex
+The setup script creates local links to the shared framework and writes project instructions. It refuses to overwrite existing `AGENTS.md`, plugin links, or skill links.
 
-Start with:
+### 4. Start In Codex
+
+Open the target project in Codex and start with:
 
 ```text
 Read AGENTS.md and use $protocol to route this task through the right codex-copilot specialists.
 ```
 
-## Included Skills
+## Everyday Usage
+
+Use `$protocol` when starting new work:
+
+```text
+Use $protocol to fix the checkout regression.
+Use $protocol to add a new onboarding flow.
+Use $protocol to refactor the auth service.
+Use $protocol to update staging deployment automation.
+```
+
+Use a specialist directly when the path is obvious:
+
+```text
+Use $ta to break this migration into tc-backed tasks.
+Use $qa to reproduce and verify this bug.
+Use $sec to review this auth change.
+Use $doc to update setup documentation.
+```
+
+For substantial work, use `tc`:
+
+```bash
+tc prd create --title "Checkout v2" --content "..."
+tc task create --prd 1 --title "Implement checkout state machine"
+tc wp store --task 1 --type architecture --title "Checkout architecture" --content "..."
+```
+
+For third-party package APIs, use Live Docs:
+
+```bash
+cc docs get openai --topic responses --json
+```
+
+For QA-required implementation work, inspect the gate:
+
+```bash
+scripts/copilot-gate.sh
+```
+
+## Specialist Roster
 
 Primary entrypoint:
 
 - `$protocol`
 
-Specialist skills:
+Active software and product specialists:
 
-- `$launcher`
-- `$sd`
-- `$uxd`
-- `$uids`
-- `$uid`
-- `$ta`
-- `$me`
-- `$qa`
-- `$ind`
-- `$sec`
-- `$doc`
-- `$do`
+- `$sd`: service design and end-to-end journey framing
+- `$uxd`: interaction design, task flows, states, and accessibility flow
+- `$uids`: visual design, hierarchy, tokens, and product-language presentation
+- `$uid`: UI implementation, responsive behavior, styling, and accessibility attributes
+- `$ta`: technical architecture, decomposition, tradeoffs, and task planning
+- `$me`: implementation, bug fixes, refactors, and integration work
+- `$qa`: reproduction, tests, verification, design fidelity, and verdicts
+- `$ind`: physical-digital and connected-product design
+- `$sec`: security review, trust boundaries, auth, secrets, and unsafe inputs
+- `$doc`: durable documentation, setup guides, API docs, and onboarding material
+- `$do`: CI, deployment, infrastructure, observability, and operational safety
 
 Support skills:
 
+- `$launcher`
 - `protocol-router`
 - `task-copilot`
 - `specialist-agents`
 
-Optional parity specialists:
+Optional parity specialists live in `packs/business-creative/`:
 
-- `kc`, `cco`, `cw`, `cs`, and `cpa` live in `packs/business-creative/`
-- activate optional packs with `scripts/activate-pack.py`
+- `kc`
+- `cco`
+- `cw`
+- `cs`
+- `cpa`
 
-## Repo Layout
+Activate optional packs per project:
 
-- `AGENTS.md` - operating instructions for this repo
-- `plugins/codex-copilot/` - installable plugin bundle and skills
-- `packs/` - dormant capability packs that projects can activate through their own local plugins
-- `scripts/setup-project.sh` - project bootstrap installer
-- `templates/AGENTS.project.template.md` - generated project instructions
-- `docs/` - public documentation
+```bash
+scripts/activate-pack.py --project /path/to/project --pack business-creative
+```
+
+## Project Layout
+
+```text
+codex-copilot/
+  AGENTS.md
+  VERSION.json
+  docs/
+  parity/
+  plugins/codex-copilot/
+    .codex-plugin/plugin.json
+    agent-catalog.json
+    skills/
+  packs/
+  scripts/
+  templates/
+  tests/
+```
 
 ## Documentation
 
-- [Install Guide](./docs/install.md)
-- [Project Setup Guide](./docs/setup-project.md)
-- [Protocol Guide](./docs/protocol.md)
-- [Native Agents](./docs/native-agents.md)
-- [Capability Packs](./docs/packs.md)
-- [Architecture](./docs/architecture.md)
+Start here:
+
+- [Documentation Index](./docs/README.md)
 - [Getting Started](./docs/getting-started.md)
+- [Install](./docs/install.md)
 - [Usage Guide](./docs/usage.md)
-- [Publishing Notes](./docs/publishing.md)
-- [Parity Contract](./docs/parity.md)
+- [Protocol](./docs/protocol.md)
+- [Native Agents](./docs/native-agents.md)
+- [Architecture](./docs/architecture.md)
+- [Capabilities](./docs/capabilities.md)
+- [Project Setup](./docs/setup-project.md)
 - [Live Docs](./docs/live-docs.md)
 - [Quality Gates](./docs/quality-gates.md)
 - [Orchestration](./docs/orchestration.md)
 - [Extensions And Packs](./docs/extensions.md)
+- [Capability Packs](./docs/packs.md)
+- [Parity Contract](./docs/parity.md)
 - [Release Fitness](./docs/release-fitness.md)
+- [Publishing Notes](./docs/publishing.md)
 
-## Current Scope
+## Honest Boundaries
 
-This repo intentionally focuses on the parts of the Copilot operating model that Codex can support cleanly right now:
+Codex Copilot does not recreate Claude slash commands, Claude named-agent syntax, or Claude lifecycle hooks one-for-one.
 
-- protocol-first routing
-- specialist role guidance
-- `tc`-backed execution discipline
-- plugin-delivered Codex skills
-- categorized dormant packs for optional project-level capabilities
-- explicit delegation rules for `spawn_agent`
-- Live Docs guidance for installed package APIs
-- Codex-native QA gate inspection
-- stream metadata validation
+Instead:
 
-It does not attempt to recreate Claude slash commands, Claude agent syntax, or Claude-specific orchestration features one-for-one.
+- slash commands become Codex skills
+- named agents become direct skill names and launcher mappings
+- hooks become explicit task metadata, scripts, work products, and tests
+- headless worker orchestration becomes user-approved delegation with stream validation
+
+That honesty is intentional. It keeps the framework reliable inside Codex instead of depending on runtime features this project cannot provide.
 
 ## Contributing
 

@@ -1,21 +1,24 @@
 # Usage Guide
 
-## Starting Work
+This guide covers the daily Codex Copilot workflow.
 
-Use `$protocol` unless the correct specialist path is already obvious.
+## Start With Protocol
 
-Examples:
+Use `$protocol` when beginning new work:
 
 ```text
 Use $protocol to fix the login regression.
 Use $protocol to add a new onboarding flow.
 Use $protocol to refactor the background job system.
+Use $protocol to update staging deployment automation.
 ```
+
+`$protocol` classifies the request and routes it through the right specialist sequence.
 
 ## Workflow Types
 
 | Request Type | Workflow |
-| ------------ | -------- |
+| --- | --- |
 | defect | `qa -> me -> qa` |
 | technical | `ta -> me -> qa` |
 | experience | `sd -> uxd -> uids -> uid -> ta -> me -> qa` |
@@ -24,11 +27,9 @@ Use $protocol to refactor the background job system.
 | security-sensitive | `ta -> sec -> me -> qa` |
 | infrastructure | `do -> me -> qa` |
 
-## Specialist Use Without Delegation
+## Use Specialists Directly
 
-Codex Copilot is designed to work in the main session by default.
-
-Examples:
+When the correct role is obvious:
 
 ```text
 Use $ta to break this refactor into tc-backed tasks.
@@ -38,31 +39,75 @@ Use $uxd to design the interaction states.
 Use $uids to define the visual system.
 Use $uid to implement the UI.
 Use $ind to shape a physical-digital product touchpoint.
-Use $doc to write onboarding docs for this repo.
+Use $sec to review this auth change.
+Use $doc to update onboarding docs.
 Use $do to update CI or deployment automation.
 ```
 
-## Live Docs
+## Use `tc` For Durable Work
 
-Before planning or coding against an installed third-party package API, use:
+For substantial work, keep the durable record in `tc`:
+
+```bash
+tc prd create --title "Checkout v2" --content "..."
+tc task create --prd 1 --title "Implement checkout flow"
+tc wp store --task 1 --type architecture --title "Checkout architecture" --content "..."
+```
+
+Useful work product types:
+
+- `architecture`
+- `specification`
+- `code`
+- `test`
+- `security`
+- `operations`
+- `documentation`
+
+## Use Live Docs Before API Work
+
+Before planning or coding against an installed third-party package API:
 
 ```bash
 cc docs get <package> --topic <area> --json
 ```
 
+Examples:
+
+```bash
+cc docs get openai --topic responses --json
+cc docs get stripe --topic payment-intents --json
+cc docs get react-router --topic loaders --json
+```
+
 If `cc docs` is unavailable, verify through local package files or official docs before coding.
 
-## Project Capability Packs
+## Use The QA Gate For Implementation
 
-Domain-specific work should be activated by the project, not added to the global software layer.
+Implementation work that needs verification should use the QA-gate convention:
 
-The shared repo can store dormant packs under `packs/<category>/`. A project activates a pack by exposing selected pack skills through its own local plugin and marketplace entry.
+1. task metadata includes `requiresQa=true`
+2. `$me` stores a `code` work product
+3. `$qa` stores a `test` work product
+4. the QA work product includes a verdict token
 
-This keeps global Codex Copilot focused on making software while allowing a project to opt into capabilities such as writing, legal advisory, sales workflows, or other domain work.
+Verdict tokens:
 
-## Delegated Work
+```text
+VERDICT: APPROVED
+VERDICT: APPROVED-WITH-MINOR-FIXES
+VERDICT: REJECTED
+```
 
-Delegation is intentionally narrow.
+Inspect the gate:
+
+```bash
+scripts/copilot-gate.sh
+```
+
+## Use Delegation Carefully
+
+Codex Copilot works locally in the main session by default.
 
 Use `spawn_agent` only when the user explicitly asks for:
 
@@ -70,15 +115,48 @@ Use `spawn_agent` only when the user explicitly asks for:
 - delegation
 - parallel work
 
-When that happens, `$launcher` maps specialist intent onto Codex’s built-in spawned agent types.
+When delegation is approved, use `$launcher` to map the specialist role to a Codex spawned-agent type and give the subagent a narrow file scope.
 
-## Task Discipline
+## Use Orchestration For Parallel Streams
 
-For substantial work, use `tc` as the system of record:
+For parallel work:
 
-1. get or create the task context
-2. do the work through the right specialist flow
-3. store meaningful work products
-4. update task status
+1. have `$ta` define streams and file ownership
+2. validate streams
+3. get user approval for delegation and worktrees
+4. launch scoped subagents only if requested
+5. route every implementation stream through QA
 
-For implementation tasks that require verification, set `metadata.requiresQa=true`, store a `code` work product, route to `$qa`, and store a `test` work product with a verdict. `scripts/copilot-gate.sh` checks the convention.
+Validate stream plans:
+
+```bash
+scripts/orchestrate-validate.py stream-plan.json
+```
+
+## Activate Optional Packs
+
+The global plugin stays software-focused. Domain capabilities are activated per project:
+
+```bash
+scripts/activate-pack.py --project /path/to/project --pack business-creative
+```
+
+The included `business-creative` pack provides optional `kc`, `cco`, `cw`, `cs`, and `cpa` specialists.
+
+## Good Prompts
+
+```text
+Use $protocol. I want to add SSO, but please route security and QA explicitly.
+```
+
+```text
+Use $ta to turn this migration into tc-backed tasks with test requirements.
+```
+
+```text
+Use $qa to reproduce the bug first, then route to $me if implementation is needed.
+```
+
+```text
+Use $orchestrate to create a stream plan only. Do not spawn agents until I approve.
+```

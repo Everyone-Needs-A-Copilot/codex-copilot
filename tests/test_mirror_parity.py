@@ -59,7 +59,7 @@ class DesignLedContractTest(unittest.TestCase):
 
     def test_catalog_declares_design_led_release(self):
         catalog = self.load_catalog()
-        self.assertEqual(catalog["version"], "0.4.0")
+        self.assertEqual(catalog["version"], "0.4.1")
         self.assertEqual(catalog["entrypoints"]["primary"], "protocol")
         self.assertEqual(catalog["entrypoints"]["launcher"], "launcher")
 
