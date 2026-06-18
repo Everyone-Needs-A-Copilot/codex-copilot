@@ -76,6 +76,10 @@ For three or more related `tc` operations, prefer one `python3` block using `tc.
 
 ### QA Gate Convention
 
+Codex Copilot cannot rely on Claude runtime lifecycle hooks such as SessionStart,
+PreToolUse, or SubagentStop, so implementation work uses explicit `tc` state.
+This does not change the design-led product creation protocol.
+
 - implementation tasks that need verification should carry `metadata.requiresQa=true`
 - `$me` stores an implementation work product and routes to `$qa`
 - `$qa` stores a `test` work product with an `ARTIFACT:` marker and a `VERDICT: APPROVED`, `VERDICT: APPROVED-WITH-MINOR-FIXES`, or `VERDICT: REJECTED` token
