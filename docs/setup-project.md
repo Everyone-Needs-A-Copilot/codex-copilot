@@ -24,6 +24,7 @@ After setup, verify Live Docs and task tooling when available:
 
 ```bash
 cc docs sources
+cc memory check --json
 tc progress --json
 ```
 

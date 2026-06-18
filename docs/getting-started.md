@@ -25,6 +25,7 @@ Verify the shared tools:
 tc --help
 $HOME/.local/bin/cc --help
 $HOME/.local/bin/cc docs sources
+$HOME/.local/bin/cc memory check --json
 ```
 
 Then verify the framework itself:
@@ -83,6 +84,7 @@ In the target project:
 cc skill list --scope project
 tc progress --json
 cc docs sources
+cc memory check --json
 ```
 
 Expected result:
@@ -90,6 +92,7 @@ Expected result:
 - `cc skill list` can see Codex Copilot skills through `.claude/skills/codex-copilot`
 - `tc progress` can find or initialize task state
 - `cc docs sources` reports Live Docs availability
+- `cc memory check` can inspect memory drift after setup or framework updates
 
 ## Step 5: Use Quality Gates
 
@@ -98,7 +101,7 @@ For implementation work that needs verification:
 1. mark the task metadata with `requiresQa`
 2. store an implementation work product
 3. route to `$qa`
-4. store a `test` work product with a verdict
+4. store a `test` work product with an evidence artifact and verdict
 5. run the gate when needed
 
 ```bash

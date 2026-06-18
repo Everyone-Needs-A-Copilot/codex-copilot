@@ -1,6 +1,10 @@
 import json
+import os
 import pathlib
 import re
+import subprocess
+import tempfile
+import textwrap
 import unittest
 
 
@@ -59,9 +63,12 @@ class DesignLedContractTest(unittest.TestCase):
 
     def test_catalog_declares_design_led_release(self):
         catalog = self.load_catalog()
-        self.assertEqual(catalog["version"], "0.4.1")
+        self.assertEqual(catalog["schemaVersion"], "1.0.0")
+        self.assertEqual(catalog["version"], "0.5.0")
         self.assertEqual(catalog["entrypoints"]["primary"], "protocol")
         self.assertEqual(catalog["entrypoints"]["launcher"], "launcher")
+        self.assertEqual(catalog["designChain"], ["sd", "uxd", "uids", "uid", "ta", "me", "qa"])
+        self.assertTrue((ROOT / "plugins/codex-copilot/agent-catalog.schema.json").exists())
 
     def test_specialist_roster_uses_direct_skill_names(self):
         catalog = self.load_catalog()
@@ -94,6 +101,22 @@ class DesignLedContractTest(unittest.TestCase):
         self.assertEqual(workflows["ui_polish"], ["uids", "uid", "qa"])
         self.assertEqual(workflows["security_sensitive"], ["ta", "sec", "me", "qa"])
         self.assertEqual(workflows["infrastructure"], ["do", "me", "qa"])
+
+    def test_catalog_routing_edges_keep_design_chain_explicit(self):
+        catalog = self.load_catalog()
+        edges = {(edge["from"], edge["to"]) for edge in catalog["routingEdges"]}
+        for edge in [
+            ("sd", "uxd"),
+            ("uxd", "uids"),
+            ("uids", "uid"),
+            ("uid", "ta"),
+            ("ta", "me"),
+            ("me", "qa"),
+        ]:
+            self.assertIn(edge, edges)
+        for agent in catalog["agents"]:
+            for field in ["id", "skill", "role", "model", "methodology", "purpose"]:
+                self.assertIn(field, agent)
 
     def test_command_equivalent_skills_exist(self):
         for skill in EXPECTED_COMMAND_SKILLS:
@@ -132,6 +155,23 @@ class DesignLedContractTest(unittest.TestCase):
         catalog_optional = sorted(agent["id"] for agent in self.load_catalog()["optionalAgents"])
         self.assertEqual(catalog_optional, sorted(OPTIONAL_SPECIALISTS))
 
+    def test_all_pack_directories_have_manifests(self):
+        for pack_dir in (ROOT / "packs").iterdir():
+            if not pack_dir.is_dir():
+                continue
+            skills_dir = pack_dir / "skills"
+            if not skills_dir.exists():
+                continue
+            manifest_path = pack_dir / "pack.json"
+            self.assertTrue(manifest_path.exists(), f"missing pack manifest for {pack_dir.name}")
+            manifest = json.loads(manifest_path.read_text())
+            self.assertEqual(manifest["name"], pack_dir.name)
+            for specialist in manifest["specialists"]:
+                self.assertTrue(
+                    (skills_dir / specialist / "SKILL.md").exists(),
+                    f"{pack_dir.name} manifest references missing skill {specialist}",
+                )
+
     def test_required_parity_docs_and_scripts_exist(self):
         baseline = self.load_baseline()
         for rel in baseline["requiredDocs"]:
@@ -169,14 +209,75 @@ class DesignLedContractTest(unittest.TestCase):
             text = path.read_text()
             self.assertIn("requiresQa", text, f"missing requiresQa convention in {path}")
             self.assertIn("VERDICT:", text, f"missing verdict convention in {path}")
+            self.assertIn("ARTIFACT:", text, f"missing artifact convention in {path}")
         script = (ROOT / "scripts/copilot-gate.sh").read_text()
         self.assertIn("QA gate", script)
         self.assertIn("VERDICT: APPROVED", script)
+        self.assertIn("design-fidelity-check", script)
+
+    def test_qa_gate_requires_artifact_for_passing_verdict(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            fake_tc = pathlib.Path(tmp) / "tc"
+            fake_tc.write_text(
+                textwrap.dedent(
+                    """\
+                    #!/usr/bin/env python3
+                    import json
+                    import os
+                    import sys
+
+                    args = sys.argv[1:]
+                    if args[:3] == ["task", "list", "--json"]:
+                        print(json.dumps([{"id": 1, "title": "Example", "metadata": {"requiresQa": True}}]))
+                    elif args[:4] == ["wp", "list", "--task", "1"] and args[4:] == ["--json"]:
+                        print(json.dumps([{"id": 7, "type": "test"}]))
+                    elif args[:3] == ["wp", "get", "7"] and args[3:] == ["--json"]:
+                        print(json.dumps({"content": os.environ["QA_CONTENT"]}))
+                    else:
+                        print(json.dumps({}))
+                    """
+                )
+            )
+            fake_tc.chmod(0o755)
+            env = os.environ.copy()
+            env["PATH"] = f"{tmp}{os.pathsep}{env['PATH']}"
+
+            env["QA_CONTENT"] = "Task: TASK-1 | WP: WP-7\nVERDICT: APPROVED\n"
+            bare = subprocess.run(
+                ["bash", "scripts/copilot-gate.sh"],
+                cwd=ROOT,
+                env=env,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertNotEqual(bare.returncode, 0)
+
+            env["QA_CONTENT"] = (
+                "Task: TASK-1 | WP: WP-7\n"
+                "ARTIFACT: test-run|pytest tests/test_example.py exit=0 \"1 passed\"\n"
+                "VERDICT: APPROVED\n"
+            )
+            evidenced = subprocess.run(
+                ["bash", "scripts/copilot-gate.sh"],
+                cwd=ROOT,
+                env=env,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(evidenced.returncode, 0, evidenced.stdout + evidenced.stderr)
 
     def test_orchestration_validator_has_stream_contract(self):
         script = (ROOT / "scripts/orchestrate-validate.py").read_text()
         for term in ["streamId", "streamDependencies", "files", "cycle detected", "file ownership overlap"]:
             self.assertIn(term, script)
+        self.assertIn("ValidationReport", script)
+
+    def test_validation_result_contract_exists(self):
+        text = (ROOT / "scripts/lib/validation_result.py").read_text()
+        for term in ["CheckResult", "ValidationReport", "to_shell_json", "passed", "failed", "warned"]:
+            self.assertIn(term, text)
 
     def test_shared_behaviors_are_discoverable(self):
         shared = ROOT / "plugins/codex-copilot/skills/specialist-agents/references/shared-behaviors.md"
@@ -247,12 +348,15 @@ class DesignLedContractTest(unittest.TestCase):
             "direct Codex skills",
             "dormant capability packs",
             "cc memory",
+            "cc memory check",
+            "cc usage",
             "cc skill",
             "tc",
-            "Mechanical Claude hooks",
+            "Mechanical Claude lifecycle hooks",
             "Headless worker orchestration",
         ]:
             self.assertIn(term, text)
+        self.assertIn("not the design-led product protocol", text)
 
     def test_getting_started_and_setup_docs_match_bootstrap_outputs(self):
         getting_started = (ROOT / "docs/getting-started.md").read_text()

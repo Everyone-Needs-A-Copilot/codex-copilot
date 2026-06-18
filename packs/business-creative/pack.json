@@ -2,7 +2,7 @@
   "name": "business-creative",
   "displayName": "Business And Creative Specialists",
   "description": "Optional Codex Copilot specialists that mirror Claude Copilot's kc, cco, cw, cs, and cpa agents without loading them into every software project by default.",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "specialists": ["kc", "cco", "cw", "cs", "cpa"],
   "activation": {
     "script": "scripts/activate-pack.py",

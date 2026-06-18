@@ -25,6 +25,7 @@ Use this skill to make quality concrete.
 - Edge cases and regression paths are covered in proportion to risk.
 - Product-facing changes include design-fidelity checks.
 - QA verdict is recorded in a `test` work product when task context exists.
+- Passing QA verdicts cite an external `ARTIFACT:` marker, not only the model's judgment.
 - QA-required tasks can pass `scripts/copilot-gate.sh`.
 
 ## Workflow
@@ -37,7 +38,7 @@ Use this skill to make quality concrete.
 6. Run or write the smallest meaningful tests.
 7. Exercise user-facing flows when UI or workflow behavior changed.
 8. Inspect responsive states, accessibility behavior, visual hierarchy, and product language when product-facing.
-9. Store a `test` work product with `VERDICT: APPROVED`, `VERDICT: APPROVED-WITH-MINOR-FIXES`, or `VERDICT: REJECTED`.
+9. Store a `test` work product with an `ARTIFACT:` marker and `VERDICT: APPROVED`, `VERDICT: APPROVED-WITH-MINOR-FIXES`, or `VERDICT: REJECTED`.
 
 ## Output
 
@@ -62,6 +63,7 @@ Use behavior-first testing and the Meszaros test double taxonomy. Prefer fakes o
 - Do not accept "existing tests pass" as sufficient for new behavior.
 - Do not test implementation details when behavior can be verified.
 - Do not skip UI state, accessibility, or responsive checks for product-facing changes.
+- Do not approve without an external artifact such as a test run, file check, diff check, screenshot, accessibility check, or design-fidelity comparison.
 - Do not approve tasks that cannot pass the Codex QA gate convention.
 
 ## Route To Other Specialist
@@ -72,9 +74,19 @@ Use behavior-first testing and the Meszaros test double taxonomy. Prefer fakes o
 
 ## QA Gate Contract
 
-Every final QA result for a task with `metadata.requiresQa=true` should include a task id and one verdict token:
+Every final QA result for a task with `metadata.requiresQa=true` should include a task id, one artifact marker, and one verdict token.
+
+Accepted artifact marker types:
+
+- `test-run`: a failable command, exit code, and useful output excerpt
+- `file-check`: a file exists in the expected shape
+- `diff-check`: expected and actual values match
+- `screenshot-check`: screenshot or visual inspection evidence for UI work
+- `a11y-check`: keyboard, focus, semantic, or automated accessibility evidence
+- `design-fidelity-check`: comparison against `SOUL.md`, UX/UI specs, or design work products
 
 ```text
 Task: TASK-123 | WP: WP-456
+ARTIFACT: test-run|pytest tests/test_auth.py exit=0 "3 passed"
 VERDICT: APPROVED
 ```

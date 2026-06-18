@@ -10,6 +10,10 @@ import sys
 from pathlib import Path
 from typing import Any
 
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "scripts" / "lib"))
+from validation_result import ValidationReport, failed, passed  # noqa: E402
+
 
 REQUIRED_FIELDS = {"streamId", "files", "streamDependencies"}
 
@@ -107,7 +111,12 @@ def main() -> int:
     except Exception as exc:  # noqa: BLE001 - script should report validation failures clearly
         errors = [str(exc)]
 
-    result = {"valid": not errors, "errors": errors}
+    checks = [
+        failed("stream-validation", error, artifact=args.path or "stdin")
+        for error in errors
+    ] or [passed("stream-validation", f"{len(streams)} stream(s) valid", artifact=args.path or "stdin")]
+    report = ValidationReport(checks=checks, context="orchestrate-validate")
+    result = {"valid": not errors, "errors": errors, "report": report.to_dict()}
     if args.json:
         print(json.dumps(result, indent=2))
     elif errors:

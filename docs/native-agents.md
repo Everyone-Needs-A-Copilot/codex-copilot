@@ -62,4 +62,7 @@ This keeps the system genuinely native to Codex:
 
 ## Machine-readable source
 
-See [agent-catalog.json](../plugins/codex-copilot/agent-catalog.json).
+See [agent-catalog.json](../plugins/codex-copilot/agent-catalog.json) and its
+[schema](../plugins/codex-copilot/agent-catalog.schema.json). The catalog is
+the source of truth for the active roster, optional pack specialists, routing
+edges, and design chain.

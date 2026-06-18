@@ -9,7 +9,19 @@ Usage:
 
 Checks Codex Copilot QA-gate state in tc. A task that declares
 metadata.requiresQa=true must have either metadata.qaStatus=approved or a test
-work product whose content includes VERDICT: APPROVED.
+work product whose content includes a passing VERDICT plus an ARTIFACT marker.
+
+Accepted artifact markers:
+  ARTIFACT: test-run|...
+  ARTIFACT: file-check|...
+  ARTIFACT: diff-check|...
+  ARTIFACT: screenshot-check|...
+  ARTIFACT: a11y-check|...
+  ARTIFACT: design-fidelity-check|...
+
+Accepted passing verdicts:
+  VERDICT: APPROVED
+  VERDICT: APPROVED-WITH-MINOR-FIXES
 EOF
 }
 
@@ -40,6 +52,7 @@ fi
 
 python3 - "$TASK_ID" <<'PY'
 import json
+import re
 import subprocess
 import sys
 
@@ -83,6 +96,22 @@ def wp_content(wp):
     return str(full.get("content") or "")
 
 
+PASSING_VERDICT_RE = re.compile(
+    r"VERDICT:\s*(APPROVED-WITH-MINOR-FIXES|APPROVED)\b",
+    re.IGNORECASE,
+)
+ARTIFACT_RE = re.compile(
+    r"^\s*ARTIFACT:\s*"
+    r"(test-run|file-check|diff-check|screenshot-check|a11y-check|design-fidelity-check)"
+    r"\|.+$",
+    re.IGNORECASE | re.MULTILINE,
+)
+
+
+def approved_with_artifact(content):
+    return bool(PASSING_VERDICT_RE.search(content) and ARTIFACT_RE.search(content))
+
+
 if task_id:
     tasks = [run_json(["tc", "task", "get", task_id, "--json"])]
 else:
@@ -100,14 +129,14 @@ for task in tasks:
         continue
     checked += 1
     qa_status = str(meta.get("qaStatus") or "").lower()
-    if qa_status in {"approved", "approved-with-minor-fixes"}:
+    if qa_status in {"approved", "approved-with-minor-fixes"} and meta.get("qaArtifact"):
         continue
     verdict_ok = False
     for wp in task_wps(task["id"]):
         if wp.get("type") != "test":
             continue
-        content = wp_content(wp).upper()
-        if "VERDICT: APPROVED" in content:
+        content = wp_content(wp)
+        if approved_with_artifact(content):
             verdict_ok = True
             break
     if not verdict_ok:

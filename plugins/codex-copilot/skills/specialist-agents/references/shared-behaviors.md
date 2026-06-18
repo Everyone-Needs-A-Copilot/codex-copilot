@@ -19,6 +19,13 @@ eval "$($HOME/.local/bin/cc env)"
 $HOME/.local/bin/cc memory search "<task topic>"
 ```
 
+After framework updates, repo restructures, or work that relies heavily on
+durable memory, check for deterministic drift:
+
+```bash
+$HOME/.local/bin/cc memory check --json
+```
+
 4. Check the working tree before edits:
 
 ```bash

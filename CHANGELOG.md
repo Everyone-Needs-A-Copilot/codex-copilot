@@ -7,6 +7,22 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-06-18
+
+### Added
+
+- adopted Claude Copilot `5.10.0` parity intent with Codex-native verification and observability contracts
+- added artifact-bound QA gate support for `test-run`, `file-check`, `diff-check`, `screenshot-check`, `a11y-check`, and `design-fidelity-check`
+- added schema-backed agent catalog metadata with routing edges and an explicit design chain
+- added shared `scripts/lib/validation_result.py` for pass/warn/fail script reports
+- added `writing-legal` pack metadata so the documented pack can be activated
+
+### Changed
+
+- updated `cc` baseline to `1.4.0` and documented `cc memory check`
+- clarified that Claude lifecycle hooks are runtime hook surfaces, not the design-led product protocol
+- tightened release fitness expectations for pack manifests and artifact-bound QA
+
 ## [0.4.1] - 2026-06-09
 
 ### Changed

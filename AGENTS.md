@@ -77,12 +77,18 @@ For three or more related `tc` operations, prefer a single `python3` block using
 
 ### QA Gate Convention
 
-Codex Copilot cannot rely on Claude lifecycle hooks, so implementation work uses explicit `tc` state:
+Codex Copilot cannot rely on Claude runtime lifecycle hooks such as SessionStart,
+PreToolUse, or SubagentStop, so implementation work uses explicit `tc` state.
+This does not change the design-led product creation protocol:
 
 - implementation tasks that need verification should carry `metadata.requiresQa=true`
 - `$me` stores an implementation work product and routes to `$qa`
-- `$qa` stores a `test` work product and records a `VERDICT: APPROVED`, `VERDICT: APPROVED-WITH-MINOR-FIXES`, or `VERDICT: REJECTED` token
+- `$qa` stores a `test` work product with an `ARTIFACT:` marker and records a `VERDICT: APPROVED`, `VERDICT: APPROVED-WITH-MINOR-FIXES`, or `VERDICT: REJECTED` token
 - use `scripts/copilot-gate.sh` to inspect QA-required tasks before closure
+
+Passing QA verdicts must be evidence-bound. Valid artifact markers include
+`test-run`, `file-check`, `diff-check`, `screenshot-check`, `a11y-check`, and
+`design-fidelity-check`.
 
 ## Native Specialist Skills
 

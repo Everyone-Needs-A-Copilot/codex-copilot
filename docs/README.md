@@ -58,7 +58,7 @@ Use these when publishing, updating, or verifying releases:
 | `tc` | Task Copilot CLI for PRDs, tasks, streams, handoffs, and work products. |
 | `cc` | Claude Copilot CLI for memory, skill discovery, config, env hydration, known references, and Live Docs. |
 | Live Docs | `cc docs` lookup that verifies installed package APIs before planning or coding. |
-| QA gate | Explicit Codex substitute for Claude hooks, using `tc` metadata, QA work products, verdict tokens, and `scripts/copilot-gate.sh`. |
+| QA gate | Explicit Codex substitute for Claude runtime hooks, using `tc` metadata, artifact-bound QA work products, verdict tokens, and `scripts/copilot-gate.sh`. |
 | Pack | Dormant set of optional skills that a project can activate without making the global plugin noisy. |
 
 ## The Main Workflow

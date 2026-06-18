@@ -70,7 +70,12 @@ Codex Copilot requires specialists to verify installed third-party package APIs 
 
 ### 8. Explicit QA Gate Substitute
 
-Codex Copilot cannot install Claude lifecycle hooks. Instead, QA-required tasks use `tc` metadata, implementation and test work products, verdict tokens, and `scripts/copilot-gate.sh`.
+Codex Copilot cannot install Claude runtime lifecycle hooks such as SessionStart,
+PreToolUse, or SubagentStop. Instead, QA-required tasks use `tc` metadata,
+implementation and test work products, `ARTIFACT:` markers, verdict tokens, and
+`scripts/copilot-gate.sh`.
+
+This boundary does not change the design-led product protocol.
 
 ### 9. Optional Parity Packs
 
@@ -93,7 +98,7 @@ Claude's `kc`, `cco`, `cw`, `cs`, and `cpa` specialists are useful but not alway
 - direct software specialist skill names
 - design-led project decision-instrument scaffolding
 - design-fidelity QA expectations
-- Claude 5.7.0 parity manifest
+- Claude 5.10.0 parity manifest
 - Live Docs guidance
 - QA gate inspection script
 - optional business/creative specialist pack

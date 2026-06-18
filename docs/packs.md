@@ -9,6 +9,7 @@ Use packs for reusable domain capabilities that should not appear in every proje
 ```text
 packs/
   writing-legal/
+    pack.json
     skills/
       pipeline/
         SKILL.md
@@ -45,6 +46,9 @@ scripts/activate-pack.py --project /path/to/project --pack business-creative
 ```
 
 The script refuses to replace existing skill links or marketplace files.
+
+Every pack directory with `skills/` must include `pack.json`; release fitness
+checks treat missing pack manifests as a framework drift issue.
 
 ## Naming
 

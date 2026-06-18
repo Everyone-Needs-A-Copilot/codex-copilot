@@ -13,7 +13,7 @@ Wire a project to Codex Copilot.
 2. Confirm whether existing `AGENTS.md`, plugin links, or skill links would be replaced.
 3. Treat `--force` as compatibility-only; the installer still refuses replacement of existing project wiring.
 4. Verify generated `AGENTS.md`, `.agents/plugins/marketplace.json`, `.claude/cc/config.json`, memory dirs, and plugin links.
-5. Run `cc skill list` from the target project when available.
+5. Run `cc skill list`, `cc docs sources`, `cc memory check --json`, and `tc progress --json` from the target project when available.
 
 ## Output
 

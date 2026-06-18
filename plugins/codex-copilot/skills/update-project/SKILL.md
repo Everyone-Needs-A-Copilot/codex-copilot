@@ -13,7 +13,7 @@ Refresh project-local Codex Copilot wiring.
 2. Compare the project plugin symlink target with the shared framework plugin path.
 3. Re-run `scripts/setup-project.sh` only after reviewing whether it would replace existing files.
 4. Do not use destructive replacement without explicit current user approval for the exact paths.
-5. Validate with `cc skill list`, `cc docs sources`, and `tc progress --json` when available.
+5. Validate with `cc skill list`, `cc docs sources`, `cc memory check --json`, and `tc progress --json` when available.
 6. If optional packs are needed, activate them with `scripts/activate-pack.py` instead of copying pack files manually.
 
 ## Output

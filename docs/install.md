@@ -8,7 +8,7 @@ Codex Copilot can be used directly in this framework repo or linked into other p
 | --- | --- |
 | Codex | Reads `AGENTS.md`, plugin skills, and project instructions. |
 | `tc` | Stores PRDs, tasks, streams, handoffs, and work products. |
-| `cc` | Provides memory, skill discovery, config, env hydration, known references, and Live Docs. |
+| `cc` | Provides memory, memory drift checks, skill discovery, config, env hydration, known references, and Live Docs. |
 | Python 3 | Runs setup and verification scripts. |
 | Git | Supports project detection, safe updates, and optional worktree workflows. |
 
@@ -18,6 +18,7 @@ Check the tools:
 tc --help
 $HOME/.local/bin/cc --help
 $HOME/.local/bin/cc docs sources
+$HOME/.local/bin/cc memory check --json
 python3 --version
 git --version
 ```
@@ -38,8 +39,10 @@ These verify:
 - version alignment
 - plugin manifest alignment
 - parity manifest alignment
+- pack manifest alignment
 - test suite behavior
 - stream validation behavior
+- artifact-bound QA gate behavior
 
 ## Using The Framework Repo Directly
 
@@ -116,6 +119,7 @@ Check:
 
 ```bash
 cc docs sources
+cc memory check --json
 ```
 
 If unavailable, inspect local package files or official docs before coding against third-party APIs.

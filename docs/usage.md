@@ -64,6 +64,18 @@ Useful work product types:
 - `operations`
 - `documentation`
 
+## Check Memory Drift
+
+Before relying on durable memory after restructures, renames, setup changes, or
+framework updates, run:
+
+```bash
+cc memory check --json
+```
+
+This checks stored memory for broken paths, unresolved commands, version
+conflicts, and stale entries without spending model tokens.
+
 ## Use Live Docs Before API Work
 
 Before planning or coding against an installed third-party package API:
@@ -89,15 +101,20 @@ Implementation work that needs verification should use the QA-gate convention:
 1. task metadata includes `requiresQa=true`
 2. `$me` stores a `code` work product
 3. `$qa` stores a `test` work product
-4. the QA work product includes a verdict token
+4. the QA work product includes an evidence artifact and a verdict token
 
 Verdict tokens:
 
 ```text
+ARTIFACT: test-run|pytest tests/ exit=0 "47 passed"
 VERDICT: APPROVED
 VERDICT: APPROVED-WITH-MINOR-FIXES
 VERDICT: REJECTED
 ```
+
+Passing verdicts require an `ARTIFACT:` marker. For product-facing work, use
+evidence such as `screenshot-check`, `a11y-check`, or `design-fidelity-check`
+when the meaningful risk is visual, interaction, or product-taste fidelity.
 
 Inspect the gate:
 

@@ -7,7 +7,7 @@ It is inspired by Claude Copilot, but it does not pretend Codex has Claude-only 
 - `AGENTS.md` for project instructions
 - Codex skills for specialist playbooks
 - `tc` for PRDs, tasks, streams, handoffs, and work products
-- `cc` for memory, skill discovery, configuration, known references, and Live Docs
+- `cc` for memory, memory drift checks, skill discovery, configuration, known references, and Live Docs
 - optional `spawn_agent` delegation only when the user explicitly asks for subagents or parallel work
 - dormant capability packs that projects can activate when they need domain-specific specialists
 
@@ -61,9 +61,9 @@ Codex Copilot fixes those failure modes with a small operating model:
 | `$protocol` routing | Classifies new work and chooses the right specialist workflow. |
 | Specialist skills | Provides direct Codex skills for service design, UX, UI design, UI implementation, architecture, engineering, QA, security, docs, ops, and industrial design. |
 | `tc` task discipline | Stores PRDs, tasks, handoffs, stream metadata, and work products. |
-| `cc` memory and config | Uses the Claude Copilot `cc` CLI for memory, skill discovery, environment hydration, known references, and Live Docs. |
+| `cc` memory and config | Uses the Claude Copilot `cc` CLI for memory, drift checks, skill discovery, environment hydration, known references, and Live Docs. |
 | Live Docs | Requires `cc docs` before planning or coding against installed third-party package APIs. |
-| QA gate substitute | Uses `tc` metadata, QA work products, verdict tokens, and `scripts/copilot-gate.sh`. |
+| QA gate substitute | Uses `tc` metadata, artifact-bound QA work products, verdict tokens, and `scripts/copilot-gate.sh`. |
 | Project setup | Wires projects to the shared framework without copying the framework repo. |
 | Optional packs | Lets projects activate dormant domain skills without making them global. |
 | Stream validation | Checks stream dependencies and file ownership before approved parallel work. |
@@ -108,6 +108,7 @@ Codex Copilot expects `tc` and `cc` to be installed:
 tc --help
 $HOME/.local/bin/cc --help
 $HOME/.local/bin/cc docs sources
+$HOME/.local/bin/cc memory check --json
 ```
 
 Run the framework smoke test:
@@ -175,6 +176,10 @@ For QA-required implementation work, inspect the gate:
 ```bash
 scripts/copilot-gate.sh
 ```
+
+Passing QA verdicts must be evidence-bound with an `ARTIFACT:` marker such as
+`test-run`, `file-check`, `diff-check`, `screenshot-check`, `a11y-check`, or
+`design-fidelity-check`.
 
 ## Specialist Roster
 
@@ -265,8 +270,12 @@ Instead:
 
 - slash commands become Codex skills
 - named agents become direct skill names and launcher mappings
-- hooks become explicit task metadata, scripts, work products, and tests
+- Claude runtime hooks become explicit task metadata, scripts, work products, and tests
 - headless worker orchestration becomes user-approved delegation with stream validation
+
+"Claude lifecycle hooks" means Claude runtime hooks such as SessionStart,
+PreToolUse, and SubagentStop. It does not mean the design-led product creation
+protocol; `$protocol` remains design-led.
 
 That honesty is intentional. It keeps the framework reliable inside Codex instead of depending on runtime features this project cannot provide.
 

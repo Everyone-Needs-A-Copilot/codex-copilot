@@ -11,7 +11,7 @@ Codex Copilot translates the useful parts of Claude Copilot into Codex-native pr
 | `/continue` | `$continue` | Implemented as workflow skill | Reads `tc` and `cc` context when available; no automatic checkpoint runtime. |
 | `/pause` | `$pause` | Implemented as workflow skill | Stores pause state through `tc`/`cc` when available; does not create Claude checkpoints. |
 | `/map` | `$map` | Implemented as workflow skill | Produces or stores a map; writing `PROJECT_MAP.md` requires explicit request. |
-| `/memory` | `$memory` | Implemented as workflow skill | Uses `cc memory` and `tc progress` where configured. |
+| `/memory` | `$memory` | Implemented as workflow skill | Uses `cc memory`, `cc memory check`, and `tc progress` where configured. |
 | `/extensions` | `$extensions` | Implemented as inspection workflow | Explains project/global/base resolution; does not perform automatic prompt assembly. |
 | `/orchestrate` | `$orchestrate` | Explicit-delegation substitute | Plans streams and validates boundaries; does not auto-spawn headless workers without user-approved delegation. |
 | `/setup`, `/setup-copilot` | `$setup-copilot` | Implemented as verification workflow | Provides safe setup/repair guidance; does not remove existing resources. |
@@ -22,12 +22,13 @@ Codex Copilot translates the useful parts of Claude Copilot into Codex-native pr
 | `/config` | `$config` | Implemented as workflow skill | Reads `cc` config and env hydration state. |
 | `/reflect` | `$reflect` | Implemented as workflow skill | Stores lessons through `cc`/`tc` when available. |
 | `/skills-approve` | `$skills-approve` | Implemented as workflow skill | Reviews available skills; no hidden allow-list state. |
-| Memory Copilot MCP | `cc memory` CLI | Implemented dependency | Requires Claude Copilot `cc` CLI installed. |
+| Memory Copilot MCP | `cc memory` and `cc memory check` CLI | Implemented dependency | Requires Claude Copilot `cc` CLI installed; drift checks find broken paths, command references, version conflicts, and stale entries. |
 | Skills Copilot MCP | `cc skill` plus Codex skills | Implemented dependency | `cc skill --scope project` requires running inside a git repo. |
 | Task Copilot | `tc` CLI | Implemented dependency | `tc init` creates `.copilot/tasks.db`; work products are stored through `tc`. |
 | Live Docs | `cc docs` CLI guidance in specialists | Implemented dependency | Requires compatible `cc`; falls back to local package files or official docs when unavailable. |
+| Claude quota observability | `cc usage` CLI | Optional utility | Reports Claude session quota, not Codex/OpenAI usage; useful for Claude Copilot tooling but not a Codex protocol gate. |
 | domain agents and extensions | dormant capability packs | Implemented convention | Packs stay inactive until a project exposes selected skills through its own local plugin. |
-| Mechanical Claude hooks | `tc` metadata, QA work products, `scripts/copilot-gate.sh`, instructions, and tests | Codex-native substitute | Codex has no equivalent runtime hook surface in this project. |
+| Mechanical Claude lifecycle hooks | `tc` metadata, artifact-bound QA work products, `scripts/copilot-gate.sh`, instructions, and tests | Codex-native substitute | This refers to Claude runtime hooks such as SessionStart/PreToolUse/SubagentStop, not the design-led product protocol. Codex has no equivalent runtime hook surface in this project. |
 | Headless worker orchestration | Explicit `spawn_agent` delegation plus stream validation | Limited substitute | Codex delegation is user-approved and scoped; no autonomous background worker loop. |
 | Claude 16-agent roster | 11 active software/product skills plus optional `business-creative` pack | Codex-native substitute | `kc`, `cco`, `cw`, `cs`, and `cpa` are activatable rather than globally loaded. |
 | Worktree stream validation | `scripts/orchestrate-validate.py` | Implemented utility | Validates stream metadata, dependencies, cycles, and file ownership before parallel work. |

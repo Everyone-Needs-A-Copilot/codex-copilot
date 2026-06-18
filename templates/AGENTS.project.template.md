@@ -78,8 +78,12 @@ For three or more related `tc` operations, prefer one `python3` block using `tc.
 
 - implementation tasks that need verification should carry `metadata.requiresQa=true`
 - `$me` stores an implementation work product and routes to `$qa`
-- `$qa` stores a `test` work product and a `VERDICT: APPROVED`, `VERDICT: APPROVED-WITH-MINOR-FIXES`, or `VERDICT: REJECTED` token
+- `$qa` stores a `test` work product with an `ARTIFACT:` marker and a `VERDICT: APPROVED`, `VERDICT: APPROVED-WITH-MINOR-FIXES`, or `VERDICT: REJECTED` token
 - `scripts/copilot-gate.sh` can inspect QA-required tasks before closure
+
+Passing QA verdicts must be evidence-bound. Valid artifact markers include
+`test-run`, `file-check`, `diff-check`, `screenshot-check`, `a11y-check`, and
+`design-fidelity-check`.
 
 ## Framework Rules
 

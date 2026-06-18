@@ -12,7 +12,7 @@ Update and verify the shared framework.
 1. Check git status and preserve user changes.
 2. Fetch from GitHub and inspect incoming changes before merging or rebasing.
 3. Never delete, reset, clean, or force-push without explicit current approval.
-4. Verify plugin metadata, agent catalog, skills, `cc`, and `tc`.
+4. Verify plugin metadata, agent catalog schema, skills, `cc`, `tc`, pack manifests, and artifact-bound QA gate contracts.
 5. Run `scripts/check-versions.sh` and `scripts/smoke-test.sh`.
 6. Run the parity tests.
 
