@@ -12,11 +12,7 @@
 > **It is living.** It changes only when real evidence says the product changed —
 > and every change is logged in **Section 10: Evolution**.
 
-> **STATUS: DRAFT v0.1 — retrofit from documentation; pending owner ratification.** (2026-06-28)
-<!-- This file was retrofitted from the repo's docs (README, AGENTS.md, docs/, parity/,
-     VERSION.json) and code surface. Inferences are marked INFERRED; CONFIRM. Owner-only
-     calls (anti-pattern lines in the sand, founding decisions, priority order) are left
-     as TODO: owner and must NOT be treated as settled until ratified. -->
+> **STATUS: RATIFIED v1.0 — 2026-06-28.** Owner-ratified at read-back: essence re-centered on the shared design-led purpose (native to Codex), priority order confirmed, anti-pattern lines in the sand set, third recovery question added. Evidenced inferences confirmed.
 
 ---
 
@@ -42,10 +38,10 @@ AI coding sessions fail in predictable ways: they jump from vague intent straigh
 ## 2. The Essence
 
 **Soul statement:**
-A Codex-native operating layer that translates Claude Copilot's discipline — specialist routing, durable memory, evidence-bound quality gates — into real Codex primitives, and refuses to fake the runtime features Codex doesn't have.
+A design-led, specialist-driven framework for creating solutions — native to OpenAI Codex. It classifies the work, routes it through the right specialist lens before any code, keeps durable memory in `cc`/`tc`, and gates "done" on real evidence — the same discipline as Claude Copilot, expressed in real Codex primitives and never faked.
 
 **The deeper aim:**
-The developer stops choosing between rigor and honesty. They get a framework that behaves like a disciplined lead engineer *and* never lies about what the platform underneath it can do — so its "done" can be trusted.
+A Codex developer gets the full design-led discipline — build the right thing, then build it right — without choosing between that rigor and honesty about the runtime. The framework behaves like a disciplined lead engineer and never claims a platform feature it can't actually deliver, so its "done" can be trusted.
 
 **As a person, this product would be:**
 An honest senior engineer who has clearly worked somewhere more sophisticated, brings that discipline with them, but never bluffs. When asked for a feature the platform can't support, they say so plainly and offer the real, inspectable substitute instead of a convincing fake.
@@ -96,46 +92,43 @@ Codex Copilot mirrors Claude Copilot, but only its **intent**. A capability is a
 ### When Principles Conflict
 *Settle the priority order in advance, so a live argument doesn't have to.*
 
-<!-- TODO: owner — Ratify the priority order when principles collide. The retrofit's
-     read of the evidence is that honesty is load-bearing above all (the product's stated
-     reason to exist), i.e. Native Over Imitation > Evidence Or It Didn't Pass >
-     Durable Over Chat > Discipline Before Speed > Borrow, Don't Rebuild. CONFIRM or correct. -->
+Priority order: **Native Over Imitation > Evidence Or It Didn't Pass > Durable Over Chat > Discipline Before Speed > Borrow, Don't Rebuild.**
 
-Priority order (proposed, unratified): **Native Over Imitation > Evidence Or It Didn't Pass > Durable Over Chat > Discipline Before Speed > Borrow, Don't Rebuild** <!-- INFERRED FROM DOCS; CONFIRM -->
+*Native Over Imitation* sits on top because honesty about the runtime is the distinguishing trait — the thing that makes its "done" trustworthy. The rest follow in order of what most protects a trustworthy outcome.
 
 ---
 
 ## 4. Anti-Patterns
 
 ### The Claude Cosplay
-**Drift:** To *feel* at parity, someone reimplements Claude slash-command syntax, named-agent syntax, or runtime hook enforcement so the framework "looks like the real thing." <!-- INFERRED FROM DOCS; CONFIRM -->
+**Drift:** To *feel* at parity, someone reimplements Claude slash-command syntax, named-agent syntax, or runtime hook enforcement so the framework "looks like the real thing."
 **Why it kills us:** The fake breaks inside Codex, and the moment one feature is a bluff, the whole framework's "done" stops being trustworthy. Honesty is the product.
 **Early warning:** "Let's add hook support," "describe the gate as a runtime hook," "match Claude's `/command` syntax exactly," "say we're at full parity."
-**Line in the sand:** <!-- TODO: owner — state the non-negotiable. Evidence ("Honest Boundaries", parity "Deferred") says: never describe hook enforcement as implemented until Codex provides a matching lifecycle surface; always substitute, never fake. CONFIRM wording. -->
+**Line in the sand:** Never describe hook enforcement (or any Claude runtime feature) as implemented until Codex provides a matching lifecycle surface. Always substitute with an explicit, inspectable mechanism — never fake.
 
 ### The Rubber Stamp
-**Drift:** Under time pressure, QA records `VERDICT: APPROVED` without an artifact because "the change is obviously fine." <!-- INFERRED FROM DOCS; CONFIRM -->
+**Drift:** Under time pressure, QA records `VERDICT: APPROVED` without an artifact because "the change is obviously fine."
 **Why it kills us:** Evidence-bound QA is the one gate that makes "done" mean something. A passing verdict without evidence is worse than no gate — it's a false signal.
 **Early warning:** "It builds, so it's verified," "skip the artifact this once," "bare approved is fine for small changes."
-**Line in the sand:** <!-- TODO: owner — confirm: a passing verdict is invalid without an `ARTIFACT:` marker, no exceptions; `copilot-gate.sh` is authoritative. -->
+**Line in the sand:** A passing verdict is invalid without an `ARTIFACT:` marker — no exceptions. `copilot-gate.sh` is authoritative.
 
 ### The Markdown Memory
-**Drift:** A plan or decision gets written into a markdown file because it's quick, instead of into `tc`/`cc`. <!-- INFERRED FROM DOCS; CONFIRM -->
+**Drift:** A plan or decision gets written into a markdown file because it's quick, instead of into `tc`/`cc`.
 **Why it kills us:** Plans in markdown rot and fork; the framework's promise of durable context dies and Codex starts forgetting decisions again — the exact failure it exists to fix.
 **Early warning:** "I'll just note the plan in a `.md`," "let's track tasks in a checklist file," "we don't need a `tc` task for this."
-**Line in the sand:** <!-- TODO: owner — confirm: substantial planning/work state lives in `tc`/`cc`, not project markdown. -->
+**Line in the sand:** Substantial planning and work state lives in `tc`/`cc`, never in project markdown.
 
 ### The Hidden Worker
-**Drift:** Background or headless orchestration is added so parallel work "just happens" without the user approving it. <!-- INFERRED FROM DOCS; CONFIRM -->
+**Drift:** Background or headless orchestration is added so parallel work "just happens" without the user approving it.
 **Why it kills us:** Silent automation breaks the user-approved-delegation contract and the trust that the framework only does what was scoped and approved.
 **Early warning:** "Run these agents in the background," "auto-spawn workers," "headless orchestration," "no need to ask the user."
-**Line in the sand:** <!-- TODO: owner — confirm: parallel work is user-approved, scope-validated `spawn_agent` delegation only (via `$launcher`), with stream/file-ownership validation. -->
+**Line in the sand:** Parallel work is user-approved, scope-validated `spawn_agent` delegation only (via `$launcher`), with stream/file-ownership validation. No silent background workers.
 
 ### The Global Pack
-**Drift:** Business/creative specialists (`cco`, `cw`, `cs`, `cpa`, `kc`) get loaded into the default global plugin because "they're useful everywhere." <!-- INFERRED FROM DOCS; CONFIRM -->
+**Drift:** Business/creative specialists (`cco`, `cw`, `cs`, `cpa`, `kc`) get loaded into the default global plugin because "they're useful everywhere."
 **Why it kills us:** It bloats the default surface and erodes the "Codex-native operating layer for *software* work" focus; domain specialists belong opt-in per project, not global.
 **Early warning:** "Just make `cw` global," "add the creative pack to the default roster," "everyone wants these on."
-**Line in the sand:** <!-- TODO: owner — confirm: pack specialists stay dormant in `packs/` until a project runs `activate-pack.py`; never global by default. -->
+**Line in the sand:** Pack specialists stay dormant in `packs/` until a project runs `activate-pack.py`. Never global by default.
 
 ---
 
@@ -193,7 +186,7 @@ If yes → reject, or redesign until it doesn't.
 
 **Non-negotiables:**
 
-- [ ] Release fitness is green: version, manifest, parity, and smoke checks pass (`scripts/smoke-test.sh`, `VERSION.json`, `parity/claude-baseline.json`). <!-- INFERRED FROM DOCS; CONFIRM -->
+- [ ] Release fitness is green: version, manifest, parity, and smoke checks pass (`scripts/smoke-test.sh`, `VERSION.json`, `parity/claude-baseline.json`).
 - [ ] No capability is described or shipped as a Claude runtime feature; hooks are never claimed as "implemented" while platform-deferred.
 - [ ] Every QA-required task passes `copilot-gate.sh`: approved metadata with `qaArtifact` and a `test` work product carrying a valid `ARTIFACT:` marker + `VERDICT:` token.
 - [ ] Substantial planning/work state lives in `tc`/`cc`, not in project markdown.
@@ -262,23 +255,21 @@ Direct, plain, technical, and honest. Lowercase command names (`$protocol`, `cc 
 
 1. Can this be expressed in a real Codex primitive, or are we faking a Claude runtime feature?
 2. Does every "passed" claim still carry a re-runnable artifact?
-3. <!-- TODO: owner — add the third recovery question you'd actually ask when a drift signal fires. -->
+3. If this session vanished, would the plan/decision/result still exist in `tc`/`cc`?
 
 ---
 
 ## 9. Founding Decisions
 
-The settled calls this instrument is built on. Ratified with the owner <!-- TODO: owner — DATE on ratification -->.
+The settled calls this instrument is built on. Ratified with the owner 2026-06-28.
 
-<!-- These are reconstructed from docs as CANDIDATE founding decisions. Owner must ratify;
-     do not treat as locked until then. -->
-
-1. **Honesty over imitation is the reason to exist.** <!-- INFERRED FROM DOCS; CONFIRM --> The framework mirrors Claude Copilot's *intent* only, and never fakes a Claude runtime feature; it substitutes or refuses. Resolves The Claude Cosplay.
-2. **QA is evidence-bound.** <!-- INFERRED FROM DOCS; CONFIRM --> A passing verdict requires an `ARTIFACT:` marker; `copilot-gate.sh` is authoritative. Resolves The Rubber Stamp.
-3. **This is a leaf layer that borrows its engine.** <!-- INFERRED FROM DOCS; CONFIRM --> Memory/task/docs work delegates to shared `cc`/`tc`; no engine is built or vendored here. Resolves engine-scope creep.
-4. **Delegation is user-approved only.** <!-- INFERRED FROM DOCS; CONFIRM --> No hidden background workers; parallel work is scoped, validated, and explicitly requested. Resolves The Hidden Worker.
-5. **Priority order when principles conflict:** <!-- TODO: owner — ratify the order proposed in Section 3. -->
-6. **The anti-patterns are named and kept:** The Claude Cosplay, The Rubber Stamp, The Markdown Memory, The Hidden Worker, The Global Pack. <!-- TODO: owner — confirm this set is complete and correctly named. -->
+1. **Same framework as Claude Copilot, native to Codex.** A design-led, specialist-driven framework for creating solutions — it mirrors Claude Copilot's *intent* and shares its `cc`/`tc` engine, expressed in real Codex primitives. The runtime differs; the discipline does not.
+2. **Honesty over imitation is the distinguishing principle.** It never fakes a Claude runtime feature; it substitutes with an explicit, inspectable mechanism or refuses. Resolves The Claude Cosplay.
+3. **QA is evidence-bound.** A passing verdict requires an `ARTIFACT:` marker; `copilot-gate.sh` is authoritative. Resolves The Rubber Stamp.
+4. **This is a leaf layer that borrows its engine.** Memory/task/docs work delegates to shared `cc`/`tc`; no engine is built or vendored here. Resolves engine-scope creep.
+5. **Delegation is user-approved only.** No hidden background workers; parallel work is scoped, validated, and explicitly requested. Resolves The Hidden Worker.
+6. **Priority order is settled:** Native Over Imitation > Evidence Or It Didn't Pass > Durable Over Chat > Discipline Before Speed > Borrow, Don't Rebuild.
+7. **The anti-patterns are named and kept:** The Claude Cosplay, The Rubber Stamp, The Markdown Memory, The Hidden Worker, The Global Pack.
 
 ---
 
@@ -295,4 +286,5 @@ When updated, add the rationale to the changelog below.
 
 | Date | Version | Change & rationale |
 |------|---------|--------------------|
+| 2026-06-28 | v1.0 | **Ratified** on Discord read-back. Re-centered the essence on the shared design-led purpose (a specialist-driven framework for creating solutions, native to Codex), with native-over-imitation as the top principle/boundary rather than the whole identity. Confirmed the priority order, set the five anti-pattern lines in the sand, added the durability recovery question, ratified the founding decisions. |
 | 2026-06-28 | v0.1 | Drafted as root-level decision instrument, retrofitted from the repo's docs (README, AGENTS.md, `docs/`, `parity/`, `VERSION.json`) and code surface. Inferences marked `INFERRED; CONFIRM`; owner-only calls (anti-pattern lines in the sand, priority order, founding decisions, third recovery question) flagged `TODO: owner`. Pending owner ratification → v1.0. |
