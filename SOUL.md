@@ -163,8 +163,6 @@ If yes → reject, or redesign until it doesn't.
 
 ### Case Law (In / Out)
 
-<!-- Seeded from decisions already visible in docs/code. INFERRED reasoning where the
-     verdict is documented but the rationale is reconstructed; CONFIRM. Grow this forever. -->
 
 | Feature | Verdict | Gate | Reasoning |
 |---------|---------|------|-----------|
