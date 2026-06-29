@@ -20,4 +20,3 @@ Inspect Copilot configuration.
 - effective config summary
 - missing or stale values
 - recommended commands
-

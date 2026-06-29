@@ -19,4 +19,3 @@ Capture durable learning from completed work.
 - decisions stored
 - lessons stored
 - follow-up risks
-

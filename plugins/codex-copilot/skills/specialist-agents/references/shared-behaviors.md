@@ -13,7 +13,7 @@ When the work is substantial or needs durable context:
 eval "$($HOME/.local/bin/cc env)"
 ```
 
-3. Search memory for relevant decisions:
+1. Search memory for relevant decisions:
 
 ```bash
 $HOME/.local/bin/cc memory search "<task topic>"
@@ -26,13 +26,13 @@ durable memory, check for deterministic drift:
 $HOME/.local/bin/cc memory check --json
 ```
 
-4. Check the working tree before edits:
+1. Check the working tree before edits:
 
 ```bash
 git status --short
 ```
 
-5. For third-party API planning or implementation, verify the installed package API with Live Docs:
+1. For third-party API planning or implementation, verify the installed package API with Live Docs:
 
 ```bash
 $HOME/.local/bin/cc docs get <package> --topic <area> --json

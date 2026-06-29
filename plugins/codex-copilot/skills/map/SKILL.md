@@ -21,4 +21,3 @@ Create a compact project map for faster specialist navigation.
 - key directories
 - important files
 - recommended first reads
-

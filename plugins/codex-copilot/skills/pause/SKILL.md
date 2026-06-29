@@ -18,4 +18,3 @@ Preserve current work so it can be resumed later.
 ## Safety
 
 Do not modify files, branches, worktrees, or task data destructively.
-

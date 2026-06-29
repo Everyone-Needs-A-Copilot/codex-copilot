@@ -22,4 +22,3 @@ Resume previous Codex Copilot work.
 - last known state
 - next action
 - blocker list if any
-
