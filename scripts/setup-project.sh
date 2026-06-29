@@ -206,7 +206,6 @@ if [[ ! -f "${CC_CONFIG_PATH}" || "${FORCE}" -eq 1 ]]; then
   "$schema": "cc-config-v1",
   "version": 1,
   "paths": {
-    "shared_docs": "@machine",
     "knowledge_repo": "@machine"
   }
 }

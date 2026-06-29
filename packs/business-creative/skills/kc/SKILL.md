@@ -17,7 +17,7 @@ Use this optional specialist when a project needs a durable knowledge repository
 ## Workflow
 
 1. Run `cc config list --scope effective` when available.
-2. Inspect `paths.knowledge_repo`, `paths.shared_docs`, and `refs.*`.
+2. Inspect `paths.knowledge_repo` and `refs.*`.
 3. Check whether the project already has `.claude/memory/entries/`.
 4. Recommend clone, link, or initialize steps.
 5. Store durable context with `cc memory store --type reference` when configured.

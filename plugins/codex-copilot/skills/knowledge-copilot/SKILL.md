@@ -11,7 +11,7 @@ Guide knowledge repository setup and onboarding.
 
 1. Use this skill for the knowledge-copilot lens.
 2. Inspect `cc config list --scope effective`.
-3. Check `paths.knowledge_repo`, `paths.shared_docs`, and `refs.*`.
+3. Check `paths.knowledge_repo` and `refs.*`.
 4. For an existing team repository, provide clone/link steps.
 5. For a new repository, produce a Git-friendly structure and setup checklist.
 6. Use `$setup-knowledge-sync` when sync wiring or optional pack activation is needed.
