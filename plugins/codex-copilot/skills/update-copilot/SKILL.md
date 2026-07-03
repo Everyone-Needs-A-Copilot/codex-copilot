@@ -1,6 +1,6 @@
 ---
 name: update-copilot
-description: Use when you need the Codex Copilot equivalent of Claude Copilot /update-copilot: update the shared Codex Copilot framework and verify plugin, cc, and tc alignment.
+description: "Use when you need the Codex Copilot equivalent of Claude Copilot /update-copilot: update the shared Codex Copilot framework and verify plugin, cc, and tc alignment."
 ---
 
 # Update Copilot

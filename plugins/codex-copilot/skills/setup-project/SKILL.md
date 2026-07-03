@@ -1,6 +1,6 @@
 ---
 name: setup-project
-description: Use when you need the Codex Copilot equivalent of Claude Copilot /setup-project: wire a target repository to the shared Codex Copilot framework.
+description: "Use when you need the Codex Copilot equivalent of Claude Copilot /setup-project: wire a target repository to the shared Codex Copilot framework."
 ---
 
 # Setup Project

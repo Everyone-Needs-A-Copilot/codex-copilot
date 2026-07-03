@@ -1,6 +1,6 @@
 ---
 name: extensions
-description: Use when you need the Codex Copilot equivalent of Claude Copilot /extensions: inspect knowledge repositories, extension status, active skills, and project/global/base resolution.
+description: "Use when you need the Codex Copilot equivalent of Claude Copilot /extensions: inspect knowledge repositories, extension status, active skills, and project/global/base resolution."
 ---
 
 # Extensions

@@ -1,6 +1,6 @@
 ---
 name: setup-copilot
-description: Use when you need the Codex Copilot equivalent of Claude Copilot /setup-copilot or /setup: install or verify shared Copilot tooling for Codex-native projects.
+description: "Use when you need the Codex Copilot equivalent of Claude Copilot /setup-copilot or /setup: install or verify shared Copilot tooling for Codex-native projects."
 ---
 
 # Setup Copilot

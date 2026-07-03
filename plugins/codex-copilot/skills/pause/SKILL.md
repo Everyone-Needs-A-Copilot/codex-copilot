@@ -1,6 +1,6 @@
 ---
 name: pause
-description: Use when you need the Codex Copilot equivalent of Claude Copilot /pause: preserve current work state in tc and memory before context switching.
+description: "Use when you need the Codex Copilot equivalent of Claude Copilot /pause: preserve current work state in tc and memory before context switching."
 ---
 
 # Pause

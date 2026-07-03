@@ -1,6 +1,6 @@
 ---
 name: memory
-description: Use when you need the Codex Copilot equivalent of Claude Copilot /memory: inspect recent cc memory entries, known references, and task progress.
+description: "Use when you need the Codex Copilot equivalent of Claude Copilot /memory: inspect recent cc memory entries, known references, and task progress."
 ---
 
 # Memory

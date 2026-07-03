@@ -1,6 +1,6 @@
 ---
 name: knowledge-copilot
-description: Use when you need the Codex Copilot equivalent of Claude Copilot /knowledge-copilot: create, link, inspect, or onboard to a shared knowledge repository.
+description: "Use when you need the Codex Copilot equivalent of Claude Copilot /knowledge-copilot: create, link, inspect, or onboard to a shared knowledge repository."
 ---
 
 # Knowledge Copilot
