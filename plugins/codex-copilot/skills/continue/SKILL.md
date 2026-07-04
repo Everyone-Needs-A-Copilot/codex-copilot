@@ -1,6 +1,6 @@
 ---
 name: continue
-description: Use when you need the Codex Copilot equivalent of Claude Copilot /continue: resume paused or previous work from tc tasks, work products, memory, and stream context.
+description: "Use when you need the Codex Copilot equivalent of Claude Copilot /continue: resume paused or previous work from tc tasks, work products, memory, and stream context."
 ---
 
 # Continue

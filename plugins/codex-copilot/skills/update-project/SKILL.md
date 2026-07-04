@@ -1,6 +1,6 @@
 ---
 name: update-project
-description: Use when you need the Codex Copilot equivalent of Claude Copilot /update-project: refresh a project-local Codex Copilot setup from the shared framework.
+description: "Use when you need the Codex Copilot equivalent of Claude Copilot /update-project: refresh a project-local Codex Copilot setup from the shared framework."
 ---
 
 # Update Project

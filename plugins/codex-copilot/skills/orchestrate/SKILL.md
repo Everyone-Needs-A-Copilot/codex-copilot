@@ -1,6 +1,6 @@
 ---
 name: orchestrate
-description: Use when you need the Codex Copilot equivalent of Claude Copilot /orchestrate: plan stream-based work, validate dependencies, and coordinate explicit user-approved Codex subagent execution.
+description: "Use when you need the Codex Copilot equivalent of Claude Copilot /orchestrate: plan stream-based work, validate dependencies, and coordinate explicit user-approved Codex subagent execution."
 ---
 
 # Orchestrate

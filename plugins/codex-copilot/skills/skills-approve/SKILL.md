@@ -1,6 +1,6 @@
 ---
 name: skills-approve
-description: Use when you need the Codex Copilot equivalent of Claude Copilot /skills-approve: review available skills and decide which reusable skills should be trusted or used for a task.
+description: "Use when you need the Codex Copilot equivalent of Claude Copilot /skills-approve: review available skills and decide which reusable skills should be trusted or used for a task."
 ---
 
 # Skills Approve

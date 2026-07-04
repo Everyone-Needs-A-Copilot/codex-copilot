@@ -1,6 +1,6 @@
 ---
 name: map
-description: Use when you need the Codex Copilot equivalent of Claude Copilot /map: produce or refresh a concise codebase map for agent navigation.
+description: "Use when you need the Codex Copilot equivalent of Claude Copilot /map: produce or refresh a concise codebase map for agent navigation."
 ---
 
 # Map

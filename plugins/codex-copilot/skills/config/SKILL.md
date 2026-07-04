@@ -1,6 +1,6 @@
 ---
 name: config
-description: Use when you need the Codex Copilot equivalent of Claude Copilot /config: inspect or explain cc configuration, known references, paths, and environment hydration.
+description: "Use when you need the Codex Copilot equivalent of Claude Copilot /config: inspect or explain cc configuration, known references, paths, and environment hydration."
 ---
 
 # Config

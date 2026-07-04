@@ -1,6 +1,6 @@
 ---
 name: reflect
-description: Use when you need the Codex Copilot equivalent of Claude Copilot /reflect: capture lessons, decisions, and improvement notes after a work session.
+description: "Use when you need the Codex Copilot equivalent of Claude Copilot /reflect: capture lessons, decisions, and improvement notes after a work session."
 ---
 
 # Reflect
