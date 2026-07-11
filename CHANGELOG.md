@@ -7,6 +7,20 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Added
+
+- standardized `docs/40-initiatives/NN-slug/` for initiative briefs, phases, decisions, validation evidence, and retrospectives linked to authoritative `tc` execution state
+- added initiative indexes and templates to repository docs, shared Knowledge Copilot standards, and generated project scaffolding
+- added a target-project `scripts/copilot-gate.sh` link to the shared QA gate
+- added deterministic checks for numbered documentation, the archived legacy-path map, initiative scaffolding, local links, and generated setup output
+
+### Changed
+
+- reorganized documentation into numbered setup, user-guide, developer, architecture, reference, troubleshooting, appendix, and initiative sections
+- reduced the root README to project purpose, audience, quick start, boundaries, and canonical documentation links
+- clarified that machine-readable manifests own capability facts and that initiative Markdown complements rather than replaces `tc`
+- reclassified hidden background workers as a non-goal instead of a future capability
+
 ## [0.5.0] - 2026-06-18
 
 ### Added

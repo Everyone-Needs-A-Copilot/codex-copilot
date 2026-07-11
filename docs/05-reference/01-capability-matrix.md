@@ -1,6 +1,13 @@
 # Capability Matrix
 
-Codex Copilot translates the useful parts of Claude Copilot into Codex-native primitives while keeping the global plugin focused on design-led software creation. This page is the source of truth for what is implemented, what is substituted, and what remains limited by Codex runtime surfaces.
+Codex Copilot translates the useful parts of Claude Copilot into Codex-native primitives while keeping the global plugin focused on design-led software creation. This page explains the current capability surface; machine-readable manifests remain authoritative.
+
+Authoritative sources:
+
+- `plugins/codex-copilot/agent-catalog.json` for specialists and routing
+- `VERSION.json` for framework and dependency versions
+- `parity/claude-baseline.json` for the adopted Claude baseline
+- script behavior and `--help` output for executable contracts
 
 | Claude Copilot Capability | Codex Copilot Equivalent | Status | Boundary |
 | ------------------------- | ------------------------ | ------ | -------- |
@@ -32,3 +39,4 @@ Codex Copilot translates the useful parts of Claude Copilot into Codex-native pr
 | Headless worker orchestration | Explicit `spawn_agent` delegation plus stream validation | Limited substitute | Codex delegation is user-approved and scoped; no autonomous background worker loop. |
 | Claude 16-agent roster | 11 active software/product skills plus optional `business-creative` pack | Codex-native substitute | `kc`, `cco`, `cw`, `cs`, and `cpa` are activatable rather than globally loaded. |
 | Worktree stream validation | `scripts/orchestrate-validate.py` | Implemented utility | Validates stream metadata, dependencies, cycles, and file ownership before parallel work. |
+| Initiative documentation | `docs/40-initiatives/NN-slug/` plus linked `tc` context | Implemented convention | Markdown preserves initiative goals, phases, decisions, validation evidence, and retrospectives; `tc` remains authoritative for live execution and QA state. |

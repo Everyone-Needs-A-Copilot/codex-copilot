@@ -75,6 +75,17 @@ If no PRD/task exists for framework work, create them instead of writing plannin
 
 For three or more related `tc` operations, prefer a single `python3` block using `tc.api` and print only a compact summary. For three or more related `cc` memory/skill operations, use a separate `cc.api` block. Do not mix `tc.api` and `cc.api` in the same Python process.
 
+### Initiative Documentation
+
+Formal multi-phase initiatives live in `docs/40-initiatives/NN-slug/`.
+
+- each initiative includes `README.md`, `phases/`, `decisions/`, and `retrospectives/`
+- initiative Markdown stores durable goals, phase design, decisions, validation evidence, and outcomes
+- `tc` remains authoritative for live tasks, dependencies, assignments, work products, and QA status
+- link initiative documents to their `tc` PRD/tasks instead of maintaining a second task board
+- add every initiative to `docs/40-initiatives/README.md`
+- never create `docs/initiatives/`
+
 ### QA Gate Convention
 
 Codex Copilot cannot rely on Claude runtime lifecycle hooks such as SessionStart,

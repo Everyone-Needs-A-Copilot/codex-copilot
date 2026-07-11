@@ -30,6 +30,15 @@ To activate a pack in a project:
 
 This gives each project an explicit override layer while preserving one reusable source for the pack.
 
+Resolution follows this order when explaining what Codex can use:
+
+1. project-local skills and knowledge
+2. global `cc` knowledge and skills
+3. activated packs
+4. base Codex Copilot plugin skills
+
+Codex cannot dynamically merge prompt sections the way Claude extension documentation describes. Pack activation is explicit and file-based.
+
 ## Current Packs
 
 | Pack | Purpose | Active Globally |

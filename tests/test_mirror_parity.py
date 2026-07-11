@@ -193,7 +193,7 @@ class DesignLedContractTest(unittest.TestCase):
             ROOT / "plugins/codex-copilot/skills/ta/SKILL.md",
             ROOT / "plugins/codex-copilot/skills/me/SKILL.md",
             ROOT / "plugins/codex-copilot/skills/qa/SKILL.md",
-            ROOT / "docs/live-docs.md",
+            ROOT / "docs/02-user-guides/03-live-docs.md",
         ]
         for path in checked:
             self.assertIn("cc docs", path.read_text(), f"missing Live Docs guidance in {path}")
@@ -203,7 +203,7 @@ class DesignLedContractTest(unittest.TestCase):
             ROOT / "AGENTS.md",
             ROOT / "templates/AGENTS.project.template.md",
             ROOT / "plugins/codex-copilot/skills/qa/SKILL.md",
-            ROOT / "docs/quality-gates.md",
+            ROOT / "docs/02-user-guides/04-quality-gates.md",
         ]
         for path in checked:
             text = path.read_text()
@@ -289,8 +289,8 @@ class DesignLedContractTest(unittest.TestCase):
         stale = "sd -> uxd -> uids -> ta -> me -> qa"
         checked = [
             ROOT / "README.md",
-            ROOT / "docs/protocol.md",
-            ROOT / "docs/usage.md",
+            ROOT / "docs/02-user-guides/02-protocol.md",
+            ROOT / "docs/02-user-guides/01-daily-workflow.md",
             ROOT / "plugins/codex-copilot/skills/protocol/SKILL.md",
             ROOT / "plugins/codex-copilot/skills/protocol/references/flows.md",
             ROOT / "plugins/codex-copilot/skills/launcher/references/workflows.md",
@@ -329,7 +329,7 @@ class DesignLedContractTest(unittest.TestCase):
             else:
                 paths.append(item)
 
-        allowed = {ROOT / "docs/publishing.md"}
+        allowed = {ROOT / "docs/03-developer-guides/02-release-and-publishing.md"}
         for path in paths:
             if path in allowed:
                 continue
@@ -338,7 +338,7 @@ class DesignLedContractTest(unittest.TestCase):
             self.assertNotIn("/Volumes/", text, f"local volume path in {path}")
 
     def test_capability_matrix_covers_design_led_surfaces(self):
-        text = (ROOT / "docs/capabilities.md").read_text()
+        text = (ROOT / "docs/05-reference/01-capability-matrix.md").read_text()
         for term in [
             "$protocol",
             "$continue",
@@ -359,13 +359,15 @@ class DesignLedContractTest(unittest.TestCase):
         self.assertIn("not the design-led product protocol", text)
 
     def test_getting_started_and_setup_docs_match_bootstrap_outputs(self):
-        getting_started = (ROOT / "docs/getting-started.md").read_text()
-        setup = (ROOT / "docs/setup-project.md").read_text()
+        getting_started = (ROOT / "docs/01-setup/03-getting-started.md").read_text()
+        setup = (ROOT / "docs/01-setup/02-setup-project.md").read_text()
         for term in [
             ".claude/cc/config.json",
             ".claude/memory/entries/",
             ".claude/skills/codex-copilot",
             "plugins/codex-copilot",
+            "docs/40-initiatives/",
+            "scripts/copilot-gate.sh",
         ]:
             self.assertIn(term, getting_started)
             self.assertIn(term, setup)
@@ -373,11 +375,123 @@ class DesignLedContractTest(unittest.TestCase):
         self.assertIn("git repository", setup)
 
     def test_force_guidance_matches_script_behavior(self):
-        setup_doc = (ROOT / "docs/setup-project.md").read_text()
+        setup_doc = (ROOT / "docs/01-setup/02-setup-project.md").read_text()
         setup_skill = (ROOT / "plugins/codex-copilot/skills/setup-project/SKILL.md").read_text()
         self.assertIn("does not override", setup_doc)
         self.assertIn("compatibility-only", setup_skill)
         self.assertNotIn("Do not use `--force` unless", setup_skill)
+
+    def test_numbered_documentation_and_initiative_contract_exist(self):
+        required = [
+            "docs/00-overview/00-overview.md",
+            "docs/01-setup/00-overview.md",
+            "docs/02-user-guides/00-overview.md",
+            "docs/03-developer-guides/00-overview.md",
+            "docs/04-architecture/00-overview.md",
+            "docs/05-reference/00-overview.md",
+            "docs/07-troubleshooting/00-overview.md",
+            "docs/09-appendix/01-ai-ecosystem-research-methodology.md",
+            "docs/40-initiatives/README.md",
+            "docs/40-initiatives/_template/README.md",
+        ]
+        for rel in required:
+            self.assertTrue((ROOT / rel).exists(), f"missing documentation contract file {rel}")
+
+        for rel in [
+            "AGENTS.md",
+            "templates/AGENTS.project.template.md",
+            "plugins/codex-copilot/skills/protocol/SKILL.md",
+            "plugins/codex-copilot/skills/task-copilot/SKILL.md",
+        ]:
+            text = (ROOT / rel).read_text()
+            self.assertIn("docs/40-initiatives/", text, f"missing initiative convention in {rel}")
+            self.assertIn("tc", text, f"missing task-state boundary in {rel}")
+
+    def test_docs_root_is_clean_and_legacy_paths_are_archived(self):
+        root_markdown = sorted(path.name for path in (ROOT / "docs").glob("*.md"))
+        self.assertEqual(root_markdown, ["README.md"])
+
+        archive = (ROOT / "docs/90-archive/redirects/README.md").read_text()
+        for former, target in {
+            "docs/getting-started.md": "01-setup/03-getting-started.md",
+            "docs/usage.md": "02-user-guides/01-daily-workflow.md",
+            "docs/architecture.md": "04-architecture/00-overview.md",
+            "docs/capabilities.md": "05-reference/01-capability-matrix.md",
+            "docs/parity.md": "05-reference/03-parity-contract.md",
+        }.items():
+            self.assertIn(former, archive)
+            self.assertIn(target, archive)
+
+    def test_local_markdown_links_resolve(self):
+        link_pattern = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
+        checked = [ROOT / "README.md", ROOT / "CONTRIBUTING.md", *sorted((ROOT / "docs").rglob("*.md"))]
+        failures = []
+        for path in checked:
+            for target in link_pattern.findall(path.read_text()):
+                if target.startswith(("http://", "https://", "mailto:", "#")):
+                    continue
+                clean = target.split("#", 1)[0]
+                if not clean:
+                    continue
+                resolved = (path.parent / clean).resolve()
+                if not resolved.exists():
+                    failures.append(f"{path.relative_to(ROOT)} -> {target}")
+        self.assertEqual(failures, [], "broken local Markdown links:\n" + "\n".join(failures))
+
+    def test_setup_scaffolds_initiatives_and_shared_qa_gate(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            target = pathlib.Path(tmp) / "project"
+            target.mkdir()
+            subprocess.run(["git", "init", "-q", str(target)], check=True)
+            result = subprocess.run(
+                [
+                    "bash",
+                    "scripts/setup-project.sh",
+                    "--project",
+                    str(target),
+                    "--name",
+                    "fixture-project",
+                    "--no-tc-init",
+                ],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertTrue((target / "docs/40-initiatives/README.md").exists())
+            self.assertTrue((target / "docs/40-initiatives/_template/phases/phase-1-plan.md").exists())
+            qa_gate = target / "scripts/copilot-gate.sh"
+            self.assertTrue(qa_gate.is_symlink())
+            self.assertTrue(qa_gate.resolve().samefile(ROOT / "scripts/copilot-gate.sh"))
+            self.assertTrue(os.access(qa_gate, os.X_OK))
+
+    def test_setup_preserves_existing_initiative_documentation(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            target = pathlib.Path(tmp) / "project"
+            initiatives = target / "docs/40-initiatives"
+            initiatives.mkdir(parents=True)
+            custom_index = "# Project Initiatives\n\nExisting project-owned content.\n"
+            (initiatives / "README.md").write_text(custom_index)
+            subprocess.run(["git", "init", "-q", str(target)], check=True)
+            result = subprocess.run(
+                [
+                    "bash",
+                    "scripts/setup-project.sh",
+                    "--project",
+                    str(target),
+                    "--name",
+                    "fixture-project",
+                    "--no-tc-init",
+                ],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertEqual((initiatives / "README.md").read_text(), custom_index)
+            self.assertFalse((initiatives / "_template").exists())
 
 
 if __name__ == "__main__":

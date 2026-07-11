@@ -11,7 +11,7 @@ Contributions should preserve three constraints:
 ## Development Setup
 
 1. Clone the repository.
-2. Review [README.md](./README.md), [docs/architecture.md](./docs/architecture.md), and [AGENTS.md](./AGENTS.md).
+2. Review [README.md](./README.md), [Architecture](./docs/04-architecture/00-overview.md), and [AGENTS.md](./AGENTS.md).
 3. Use the installer against a throwaway project to validate bootstrap changes:
 
 ```bash
@@ -60,7 +60,7 @@ Before opening a PR:
 2. Validate the bootstrap flow on a throwaway project.
 3. Run `python3 -m unittest discover -s tests -v`.
 4. Review generated `AGENTS.md`, `.codex-copilot.json`, `.claude/cc/config.json`, and `.claude/skills/codex-copilot`.
-5. Update docs and [docs/capabilities.md](./docs/capabilities.md) when behavior changes.
+5. Update docs and the [Capability Matrix](./docs/05-reference/01-capability-matrix.md) when behavior changes.
 
 ## Security
 

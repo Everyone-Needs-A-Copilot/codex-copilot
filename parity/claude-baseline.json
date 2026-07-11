@@ -109,12 +109,13 @@
     }
   },
   "requiredDocs": [
-    "docs/parity.md",
-    "docs/live-docs.md",
-    "docs/quality-gates.md",
-    "docs/orchestration.md",
-    "docs/extensions.md",
-    "docs/release-fitness.md"
+    "docs/05-reference/03-parity-contract.md",
+    "docs/02-user-guides/03-live-docs.md",
+    "docs/02-user-guides/04-quality-gates.md",
+    "docs/02-user-guides/05-parallel-work.md",
+    "docs/02-user-guides/06-capability-packs.md",
+    "docs/03-developer-guides/02-release-and-publishing.md",
+    "docs/40-initiatives/README.md"
   ],
   "scripts": [
     "scripts/copilot-gate.sh",

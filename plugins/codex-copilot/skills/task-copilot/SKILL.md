@@ -79,6 +79,12 @@ tc prd create --title "..." --content "..." --json
 tc task create --prd <id> --title "..." --description "..." --json
 ```
 
+## Initiative boundary
+
+Formal multi-phase initiative knowledge belongs in `docs/40-initiatives/NN-slug/`: goals, phase designs, decisions, validation evidence, and retrospectives. `tc` remains authoritative for live task state, dependencies, assignments, work products, and QA status.
+
+Link the initiative README to its PRD and tasks. Do not reproduce a live task board in Markdown.
+
 ## Work-product guidance
 
 Store detailed output when:

@@ -28,6 +28,7 @@ Use $protocol to refactor the auth service.
 - chooses the workflow
 - applies the right specialist thinking before implementation
 - uses `tc` for substantial work
+- uses `docs/40-initiatives/NN-slug/` for formal multi-phase initiative knowledge while keeping live execution state in `tc`
 - uses Live Docs before third-party API planning or implementation
 - records QA-required implementation work through the Codex QA gate convention
 - hands off to `$launcher` only when delegated subagents are explicitly desired

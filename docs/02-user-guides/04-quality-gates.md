@@ -1,4 +1,4 @@
-# Codex QA Gate
+# Quality Gates
 
 Claude Copilot uses runtime hooks to block implementation closure until QA passes. Codex Copilot substitutes that with explicit task state, work products, and tests.
 
@@ -63,6 +63,8 @@ or check one task:
 ```bash
 scripts/copilot-gate.sh --task 123
 ```
+
+In projects configured by current `setup-project.sh`, this path is a relative link to the shared framework gate. The shared script remains authoritative.
 
 The script fails when a QA-required task has no approved metadata with `qaArtifact`
 and no approved test work product with a valid `ARTIFACT:` marker.

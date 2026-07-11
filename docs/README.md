@@ -1,89 +1,48 @@
 # Codex Copilot Documentation
 
-Codex Copilot is a Codex-native specialist workflow framework. It helps Codex route work, apply expert playbooks, preserve durable context, verify implementation, and stay honest about Codex runtime boundaries.
+Use this index to find the shortest path to the job you need to complete.
 
-This documentation is organized by the job you are trying to do.
+## Start Here
 
-## New To Codex Copilot
+1. [Overview](./00-overview/00-overview.md)
+2. [Install](./01-setup/01-install.md)
+3. [Setup Project](./01-setup/02-setup-project.md)
+4. [Getting Started](./01-setup/03-getting-started.md)
 
-Read these first:
+## Use Codex Copilot
 
-1. [Getting Started](./getting-started.md)
-2. [Install](./install.md)
-3. [Usage Guide](./usage.md)
-4. [Protocol](./protocol.md)
+- [Daily Workflow](./02-user-guides/01-daily-workflow.md)
+- [Protocol](./02-user-guides/02-protocol.md)
+- [Live Docs](./02-user-guides/03-live-docs.md)
+- [Quality Gates](./02-user-guides/04-quality-gates.md)
+- [Parallel Work And Worktrees](./02-user-guides/05-parallel-work.md)
+- [Capability Packs](./02-user-guides/06-capability-packs.md)
 
-You will learn what the framework is, how to wire it into a project, and how to start work with `$protocol`.
+## Maintain And Extend The Framework
 
-## Understanding The Framework
+- [Developer Guides](./03-developer-guides/00-overview.md)
+- [Architecture](./04-architecture/00-overview.md)
+- [Reference](./05-reference/00-overview.md)
+- [Troubleshooting](./07-troubleshooting/00-overview.md)
+- [Historical Research](./09-appendix/01-ai-ecosystem-research-methodology.md)
 
-Use these when you want the operating model:
+## Initiatives
 
-- [Architecture](./architecture.md): how Codex Copilot maps Claude Copilot ideas into Codex-native primitives
-- [Capabilities](./capabilities.md): what is implemented, substituted, limited, or intentionally deferred
-- [Native Agents](./native-agents.md): how specialist skills work locally and with explicit delegation
-- [Parity Contract](./parity.md): the Claude Copilot baseline this project mirrors
+Formal multi-phase work lives in [`40-initiatives/`](./40-initiatives/README.md). Initiative folders preserve briefs, phases, decisions, validation evidence, and retrospectives; live execution state remains in `tc`.
 
-## Running Work
+## Documentation Contract
 
-Use these during day-to-day project work:
-
-- [Protocol](./protocol.md): routing new work
-- [Usage Guide](./usage.md): common workflows and examples
-- [Live Docs](./live-docs.md): verifying installed third-party APIs before coding
-- [Quality Gates](./quality-gates.md): implementation verification through `tc` metadata and QA work products
-- [Orchestration](./orchestration.md): stream planning, file ownership, and approved parallel work
-
-## Setting Up Projects And Capabilities
-
-Use these when installing or extending the framework:
-
-- [Project Setup](./setup-project.md): generated files and safe setup behavior
-- [Extensions And Packs](./extensions.md): how optional capabilities are activated
-- [Capability Packs](./packs.md): included dormant packs and activation pattern
-
-## Maintaining The Framework
-
-Use these when publishing, updating, or verifying releases:
-
-- [Release Fitness](./release-fitness.md)
-- [Publishing Notes](./publishing.md)
-
-## Core Concepts
-
-| Concept | Meaning |
+| Surface | Job |
 | --- | --- |
-| `$protocol` | Primary entrypoint that classifies work and selects the specialist workflow. |
-| Specialist skill | A Codex skill that applies a focused role such as `$ta`, `$me`, `$qa`, `$sd`, or `$do`. |
-| `tc` | Task Copilot CLI for PRDs, tasks, streams, handoffs, and work products. |
-| `cc` | Claude Copilot CLI for memory, skill discovery, config, env hydration, known references, and Live Docs. |
-| Live Docs | `cc docs` lookup that verifies installed package APIs before planning or coding. |
-| QA gate | Explicit Codex substitute for Claude runtime hooks, using `tc` metadata, artifact-bound QA work products, verdict tokens, and `scripts/copilot-gate.sh`. |
-| Pack | Dormant set of optional skills that a project can activate without making the global plugin noisy. |
+| root `README.md` | project promise, audience, quick start, and links |
+| `00-overview/` | product explanation and boundaries |
+| `01-setup/` | installation and onboarding |
+| `02-user-guides/` | task-oriented procedures |
+| `03-developer-guides/` | framework extension and release procedures |
+| `04-architecture/` | system design and architectural rationale |
+| `05-reference/` | current capability and contract lookup |
+| `07-troubleshooting/` | symptoms, diagnostics, and resolutions |
+| `09-appendix/` | point-in-time research and supporting material |
+| `40-initiatives/` | durable multi-phase initiative knowledge linked to `tc` |
 
-## The Main Workflow
-
-```text
-User request
-  |
-  v
-$protocol
-  |
-  +--> choose specialist sequence
-  +--> create or use tc task context
-  +--> store durable work products
-  +--> verify through qa when implementation is involved
-  |
-  v
-clear summary plus durable task record
-```
-
-## Benefits
-
-- less ambiguous work intake
-- better architecture and UX sequencing
-- fewer unverified implementation changes
-- lower risk from stale third-party API knowledge
-- more durable planning and handoff records
-- safer explicit parallelization
-- project-level customization without global clutter
+Former flat documentation paths are recorded in the [legacy path archive](./90-archive/redirects/README.md). `docs/README.md` is the only Markdown file at the documentation root.

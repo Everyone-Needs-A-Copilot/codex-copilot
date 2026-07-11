@@ -58,9 +58,10 @@ Keep these instruments separate:
 5. load known references and memory when `cc` is configured
 6. for third-party API work, require Live Docs before planning or implementation
 7. record QA-required implementation tasks with `metadata.requiresQa=true`
-8. perform the next appropriate specialist step
-9. do not jump straight to implementation when earlier specialist work is warranted
-10. do not use `spawn_agent` unless the user explicitly asked for delegation or parallel work
+8. use `docs/40-initiatives/NN-slug/` for formal multi-phase initiative knowledge while keeping live execution state in `tc`
+9. perform the next appropriate specialist step
+10. do not jump straight to implementation when earlier specialist work is warranted
+11. do not use `spawn_agent` unless the user explicitly asked for delegation or parallel work
 
 For experience work that does not materially change screens, components, or interface states, `$uid` may be skipped only when the checkpoint states why.
 

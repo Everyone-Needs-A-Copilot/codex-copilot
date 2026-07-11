@@ -12,9 +12,11 @@ The bootstrap script:
 4. creates `.claude/memory/entries/` and ignores the local memory index
 5. links `.claude/skills/codex-copilot` to the shared Codex Copilot skills
 6. writes a thin project `AGENTS.md`
-7. writes design-led decision instruments: `SOUL.md` and `docs/01-architecture/12-architecture-guiding-principles.md`
-8. writes `.codex-copilot.json` with install metadata
-9. optionally runs `tc init --json`
+7. links `scripts/copilot-gate.sh` to the shared framework gate
+8. scaffolds `docs/40-initiatives/` with an index and reusable initiative structure
+9. writes design-led decision instruments: `SOUL.md` and `docs/01-architecture/12-architecture-guiding-principles.md`
+10. writes `.codex-copilot.json` with install metadata
+11. optionally runs `tc init --json`
 
 This keeps the framework centralized while giving each project a stable local plugin path.
 
@@ -95,6 +97,9 @@ The target repo will contain:
 - `.claude/cc/config.json`
 - `.claude/memory/entries/`
 - `.claude/skills/codex-copilot` -> relative symlink to the shared framework skills
+- `scripts/copilot-gate.sh` -> relative symlink to the shared framework gate
+- `docs/40-initiatives/README.md`
+- `docs/40-initiatives/_template/`
 - `docs/01-architecture/12-architecture-guiding-principles.md`
 - `plugins/codex-copilot` -> relative symlink to the shared framework plugin
 
@@ -114,4 +119,5 @@ Read AGENTS.md and use $protocol to route this task through the right codex-copi
 - The installer prefers `$HOME/.local/bin/cc` because bare `cc` may resolve to the system C compiler.
 - If a project already has a hand-written `AGENTS.md`, review it manually before changing it.
 - Existing `SOUL.md` and architecture-principles files are preserved.
+- Existing `docs/40-initiatives/` and QA-gate paths are preserved; setup refuses to replace them.
 - Optional packs can be activated later with `scripts/activate-pack.py`.

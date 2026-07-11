@@ -27,6 +27,7 @@ FRAMEWORK_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 TEMPLATE_PATH="${FRAMEWORK_ROOT}/templates/AGENTS.project.template.md"
 SOUL_TEMPLATE_PATH="${FRAMEWORK_ROOT}/templates/SOUL.template.md"
 ARCH_TEMPLATE_PATH="${FRAMEWORK_ROOT}/templates/architecture-guiding-principles.template.md"
+INITIATIVES_TEMPLATE_PATH="${FRAMEWORK_ROOT}/templates/initiatives"
 
 PROJECT_PATH=""
 PROJECT_NAME=""
@@ -108,6 +109,7 @@ if [[ -n "${FRAMEWORK_ROOT_OVERRIDE}" ]]; then
   TEMPLATE_PATH="${FRAMEWORK_ROOT}/templates/AGENTS.project.template.md"
   SOUL_TEMPLATE_PATH="${FRAMEWORK_ROOT}/templates/SOUL.template.md"
   ARCH_TEMPLATE_PATH="${FRAMEWORK_ROOT}/templates/architecture-guiding-principles.template.md"
+  INITIATIVES_TEMPLATE_PATH="${FRAMEWORK_ROOT}/templates/initiatives"
 fi
 
 if [[ ! -f "${TEMPLATE_PATH}" ]]; then
@@ -127,6 +129,11 @@ if [[ "${DO_DECISION_INSTRUMENTS}" -eq 1 ]]; then
   fi
 fi
 
+if [[ ! -d "${INITIATIVES_TEMPLATE_PATH}" ]]; then
+  echo "Missing initiatives template directory: ${INITIATIVES_TEMPLATE_PATH}" >&2
+  exit 1
+fi
+
 if [[ -n "${RULES_FILE}" && ! -f "${RULES_FILE}" ]]; then
   echo "Rules file does not exist: ${RULES_FILE}" >&2
   exit 1
@@ -137,14 +144,27 @@ mkdir -p "${PROJECT_PATH}/.claude/cc"
 mkdir -p "${PROJECT_PATH}/.claude/memory/entries"
 mkdir -p "${PROJECT_PATH}/.claude/skills"
 mkdir -p "${PROJECT_PATH}/plugins"
+mkdir -p "${PROJECT_PATH}/scripts"
 if [[ "${DO_DECISION_INSTRUMENTS}" -eq 1 ]]; then
   mkdir -p "${PROJECT_PATH}/docs/01-architecture"
+fi
+
+INITIATIVES_PATH="${PROJECT_PATH}/docs/40-initiatives"
+INITIATIVES_EXISTED=0
+if [[ -e "${INITIATIVES_PATH}" ]]; then
+  INITIATIVES_EXISTED=1
+else
+  mkdir -p "${INITIATIVES_PATH}/_template/phases"
+  mkdir -p "${INITIATIVES_PATH}/_template/decisions"
+  mkdir -p "${INITIATIVES_PATH}/_template/retrospectives"
 fi
 
 PLUGIN_LINK="${PROJECT_PATH}/plugins/codex-copilot"
 FRAMEWORK_PLUGIN_PATH="${FRAMEWORK_ROOT}/plugins/codex-copilot"
 SKILLS_LINK="${PROJECT_PATH}/.claude/skills/codex-copilot"
 FRAMEWORK_SKILLS_PATH="${FRAMEWORK_PLUGIN_PATH}/skills"
+QA_GATE_LINK="${PROJECT_PATH}/scripts/copilot-gate.sh"
+FRAMEWORK_QA_GATE_PATH="${FRAMEWORK_ROOT}/scripts/copilot-gate.sh"
 
 if [[ ! -d "${FRAMEWORK_PLUGIN_PATH}" ]]; then
   echo "Missing framework plugin directory: ${FRAMEWORK_PLUGIN_PATH}" >&2
@@ -153,6 +173,11 @@ fi
 
 if [[ ! -d "${FRAMEWORK_SKILLS_PATH}" ]]; then
   echo "Missing framework skills directory: ${FRAMEWORK_SKILLS_PATH}" >&2
+  exit 1
+fi
+
+if [[ ! -x "${FRAMEWORK_QA_GATE_PATH}" ]]; then
+  echo "Missing executable QA gate: ${FRAMEWORK_QA_GATE_PATH}" >&2
   exit 1
 fi
 
@@ -172,6 +197,8 @@ PLUGIN_LINK_DIR="$(dirname "${PLUGIN_LINK}")"
 RELATIVE_PLUGIN_TARGET="$(relative_path "${PLUGIN_LINK_DIR}" "${FRAMEWORK_PLUGIN_PATH}")"
 SKILLS_LINK_DIR="$(dirname "${SKILLS_LINK}")"
 RELATIVE_SKILLS_TARGET="$(relative_path "${SKILLS_LINK_DIR}" "${FRAMEWORK_SKILLS_PATH}")"
+QA_GATE_LINK_DIR="$(dirname "${QA_GATE_LINK}")"
+RELATIVE_QA_GATE_TARGET="$(relative_path "${QA_GATE_LINK_DIR}" "${FRAMEWORK_QA_GATE_PATH}")"
 
 if [[ -L "${PLUGIN_LINK}" || -e "${PLUGIN_LINK}" ]]; then
   echo "Refusing to replace existing plugin link/path: ${PLUGIN_LINK}" >&2
@@ -185,8 +212,15 @@ if [[ -L "${SKILLS_LINK}" || -e "${SKILLS_LINK}" ]]; then
   exit 1
 fi
 
+if [[ -L "${QA_GATE_LINK}" || -e "${QA_GATE_LINK}" ]]; then
+  echo "Refusing to replace existing QA gate link/path: ${QA_GATE_LINK}" >&2
+  echo "Remove or update it manually after reviewing the target." >&2
+  exit 1
+fi
+
 ln -s "${RELATIVE_PLUGIN_TARGET}" "${PLUGIN_LINK}"
 ln -s "${RELATIVE_SKILLS_TARGET}" "${SKILLS_LINK}"
+ln -s "${RELATIVE_QA_GATE_TARGET}" "${QA_GATE_LINK}"
 
 MEMORY_GITIGNORE="${PROJECT_PATH}/.claude/memory/.gitignore"
 if [[ ! -f "${MEMORY_GITIGNORE}" || "${FORCE}" -eq 1 ]]; then
@@ -302,6 +336,14 @@ if [[ "${DO_DECISION_INSTRUMENTS}" -eq 1 ]]; then
   render_project_template "${ARCH_TEMPLATE_PATH}" "${PROJECT_PATH}/docs/01-architecture/12-architecture-guiding-principles.md"
 fi
 
+if [[ "${INITIATIVES_EXISTED}" -eq 0 ]]; then
+  render_project_template "${INITIATIVES_TEMPLATE_PATH}/README.md" "${INITIATIVES_PATH}/README.md"
+  render_project_template "${INITIATIVES_TEMPLATE_PATH}/_template/README.md" "${INITIATIVES_PATH}/_template/README.md"
+  render_project_template "${INITIATIVES_TEMPLATE_PATH}/_template/phases/phase-1-plan.md" "${INITIATIVES_PATH}/_template/phases/phase-1-plan.md"
+  render_project_template "${INITIATIVES_TEMPLATE_PATH}/_template/decisions/ADR-001-template.md" "${INITIATIVES_PATH}/_template/decisions/ADR-001-template.md"
+  render_project_template "${INITIATIVES_TEMPLATE_PATH}/_template/retrospectives/README.md" "${INITIATIVES_PATH}/_template/retrospectives/README.md"
+fi
+
 if [[ "${DO_TC_INIT}" -eq 1 ]]; then
   if command -v tc >/dev/null 2>&1; then
     (cd "${PROJECT_PATH}" && tc init --json >/dev/null) || true
@@ -316,5 +358,7 @@ echo "Plugin link: ${PLUGIN_LINK}"
 echo "Plugin source: ${RELATIVE_PLUGIN_TARGET}"
 echo "Skill link: ${SKILLS_LINK}"
 echo "Skill source: ${RELATIVE_SKILLS_TARGET}"
+echo "QA gate link: ${QA_GATE_LINK}"
+echo "Initiatives: ${INITIATIVES_PATH}"
 echo "cc config: ${CC_CONFIG_PATH}"
 echo "AGENTS.md: ${AGENTS_PATH}"

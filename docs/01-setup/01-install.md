@@ -80,6 +80,8 @@ The setup script creates relative symlinks so generated project files do not emb
 - `.claude/memory/entries/`
 - `.claude/skills/codex-copilot`
 - `plugins/codex-copilot`
+- `scripts/copilot-gate.sh` as a relative link to the shared gate
+- `docs/40-initiatives/` with its index and initiative template
 - `SOUL.md` unless skipped
 - `docs/01-architecture/12-architecture-guiding-principles.md` unless skipped
 - `.copilot/tasks.db` when `tc init` succeeds
@@ -96,38 +98,4 @@ scripts/activate-pack.py --project /absolute/path/to/project --pack business-cre
 
 ## Troubleshooting
 
-### `cc` opens a compiler
-
-Use the absolute shim:
-
-```bash
-$HOME/.local/bin/cc --help
-```
-
-### Skills are not discoverable
-
-Run from a git repository and check:
-
-```bash
-ls -ld .claude/skills/codex-copilot
-cc skill list --scope project
-```
-
-### Live Docs is unavailable
-
-Check:
-
-```bash
-cc docs sources
-cc memory check --json
-```
-
-If unavailable, inspect local package files or official docs before coding against third-party APIs.
-
-### `tc` cannot find a database
-
-Initialize in the target project:
-
-```bash
-tc init --json
-```
+Use the dedicated [Troubleshooting Guide](../07-troubleshooting/00-overview.md) for CLI resolution, skill discovery, Live Docs, task state, and QA-gate wiring.

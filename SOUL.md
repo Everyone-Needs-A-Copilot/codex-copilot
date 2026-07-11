@@ -12,7 +12,7 @@
 > **It is living.** It changes only when real evidence says the product changed —
 > and every change is logged in **Section 10: Evolution**.
 
-> **STATUS: RATIFIED v1.0 — 2026-06-28.** Owner-ratified at read-back: essence re-centered on the shared design-led purpose (native to Codex), priority order confirmed, anti-pattern lines in the sand set, third recovery question added. Evidenced inferences confirmed.
+> **STATUS: RATIFIED v1.1 — 2026-07-11.** Owner-ratified initiative standard: formal multi-phase initiative knowledge belongs in `docs/40-initiatives/`, while live execution and QA state remain authoritative in `tc`/`cc`.
 
 ---
 
@@ -75,9 +75,9 @@ Codex Copilot mirrors Claude Copilot, but only its **intent**. A capability is a
 **Test:** "Does this claim of 'done' carry a failable artifact someone else could re-run?" No artifact → not passed.
 
 ### Principle 3: Durable Over Chat
-**Meaning:** Decisions, specs, implementation notes, and test results live in `tc`/`cc`, not only in chat or markdown that vanishes.
-**Rejection:** We reject writing planning or work state into markdown. If a PRD/task doesn't exist for substantial work, create it in `tc` rather than narrating a plan into the session.
-**Test:** "If this session disappeared, does the plan/decision/result still exist in `tc`/`cc`?" If only in chat → not durable.
+**Meaning:** Live execution state, implementation notes, and test results live in `tc`/`cc`, not only in chat. Formal multi-phase initiatives also preserve their goals, phase designs, decisions, validation evidence, and retrospectives in `docs/40-initiatives/`, linked to authoritative `tc` state.
+**Rejection:** We reject ad hoc Markdown task boards that compete with `tc`. If a PRD/task doesn't exist for substantial work, create it in `tc`; use initiative Markdown for durable program knowledge rather than assignments or live task status.
+**Test:** "If this session disappeared, would both the execution state and the initiative rationale survive in their canonical systems?" If either exists only in chat or duplicated task lists → not durable.
 
 ### Principle 4: Discipline Before Speed
 **Meaning:** Classify and frame work, then apply the right specialist lens, before writing code. `$protocol` routes; specialists carry distinct jobs.
@@ -113,10 +113,10 @@ Priority order: **Native Over Imitation > Evidence Or It Didn't Pass > Durable O
 **Line in the sand:** A passing verdict is invalid without an `ARTIFACT:` marker — no exceptions. `copilot-gate.sh` is authoritative.
 
 ### The Markdown Memory
-**Drift:** A plan or decision gets written into a markdown file because it's quick, instead of into `tc`/`cc`.
-**Why it kills us:** Plans in markdown rot and fork; the framework's promise of durable context dies and Codex starts forgetting decisions again — the exact failure it exists to fix.
-**Early warning:** "I'll just note the plan in a `.md`," "let's track tasks in a checklist file," "we don't need a `tc` task for this."
-**Line in the sand:** Substantial planning and work state lives in `tc`/`cc`, never in project markdown.
+**Drift:** Live task state or QA status gets copied into an ad hoc Markdown checklist instead of remaining authoritative in `tc`.
+**Why it kills us:** Duplicate task boards rot and fork; the framework's promise of durable, queryable context dies.
+**Early warning:** "Let's track assignments in the initiative README," "we don't need a `tc` task," "mark it complete in Markdown only."
+**Line in the sand:** Live execution state stays in `tc`/`cc`. Formal initiative Markdown is allowed only under `docs/40-initiatives/` for durable goals, phases, decisions, validation evidence, and retrospectives linked back to `tc`.
 
 ### The Hidden Worker
 **Drift:** Background or headless orchestration is added so parallel work "just happens" without the user approving it.
@@ -187,7 +187,7 @@ If yes → reject, or redesign until it doesn't.
 - [ ] Release fitness is green: version, manifest, parity, and smoke checks pass (`scripts/smoke-test.sh`, `VERSION.json`, `parity/claude-baseline.json`).
 - [ ] No capability is described or shipped as a Claude runtime feature; hooks are never claimed as "implemented" while platform-deferred.
 - [ ] Every QA-required task passes `copilot-gate.sh`: approved metadata with `qaArtifact` and a `test` work product carrying a valid `ARTIFACT:` marker + `VERDICT:` token.
-- [ ] Substantial planning/work state lives in `tc`/`cc`, not in project markdown.
+- [ ] Live planning/work state lives in `tc`/`cc`; formal initiative knowledge lives in `docs/40-initiatives/` and links to that state.
 - [ ] `setup-project.sh` refuses to overwrite existing `AGENTS.md`, plugin links, or skill links (never clobbers user work).
 - [ ] Parity additions update `parity/` and `VERSION.json` so adoption stays auditable.
 
@@ -245,7 +245,7 @@ Direct, plain, technical, and honest. Lowercase command names (`$protocol`, `cc 
 |--------|---------------|
 | A doc starts describing hook enforcement as "implemented" | Honesty drift → The Claude Cosplay. |
 | QA-required tasks closing without `ARTIFACT:` markers | Gate rot → The Rubber Stamp. |
-| Plans and decisions appearing in project markdown | Durable-context rot → The Markdown Memory. |
+| Live task or QA state duplicated in project markdown | Durable-context rot → The Markdown Memory. |
 | `packs/` specialists showing up in the default global roster | Scope creep → The Global Pack. |
 | New in-repo code that duplicates `cc`/`tc` behavior | Engine drift → Borrow, Don't Rebuild is breaking. |
 
@@ -253,7 +253,7 @@ Direct, plain, technical, and honest. Lowercase command names (`$protocol`, `cc 
 
 1. Can this be expressed in a real Codex primitive, or are we faking a Claude runtime feature?
 2. Does every "passed" claim still carry a re-runnable artifact?
-3. If this session vanished, would the plan/decision/result still exist in `tc`/`cc`?
+3. If this session vanished, would execution state survive in `tc`/`cc` and initiative rationale survive in `docs/40-initiatives/` when applicable?
 
 ---
 
@@ -268,6 +268,7 @@ The settled calls this instrument is built on. Ratified with the owner 2026-06-2
 5. **Delegation is user-approved only.** No hidden background workers; parallel work is scoped, validated, and explicitly requested. Resolves The Hidden Worker.
 6. **Priority order is settled:** Native Over Imitation > Evidence Or It Didn't Pass > Durable Over Chat > Discipline Before Speed > Borrow, Don't Rebuild.
 7. **The anti-patterns are named and kept:** The Claude Cosplay, The Rubber Stamp, The Markdown Memory, The Hidden Worker, The Global Pack.
+8. **Initiatives have a canonical durable home.** Formal multi-phase initiative knowledge lives in `docs/40-initiatives/`; live execution and QA state remain authoritative in `tc`/`cc`. This preserves coherent program rationale without recreating The Markdown Memory.
 
 ---
 
@@ -284,5 +285,6 @@ When updated, add the rationale to the changelog below.
 
 | Date | Version | Change & rationale |
 |------|---------|--------------------|
+| 2026-07-11 | v1.1 | Ratified `docs/40-initiatives/` as the durable home for multi-phase goals, phase designs, decisions, validation evidence, and retrospectives. Clarified that The Markdown Memory rejects duplicate live task boards, not formal initiative knowledge linked to authoritative `tc`/`cc` state. |
 | 2026-06-28 | v1.0 | **Ratified** on Discord read-back. Re-centered the essence on the shared design-led purpose (a specialist-driven framework for creating solutions, native to Codex), with native-over-imitation as the top principle/boundary rather than the whole identity. Confirmed the priority order, set the five anti-pattern lines in the sand, added the durability recovery question, ratified the founding decisions. |
 | 2026-06-28 | v0.1 | Drafted as root-level decision instrument, retrofitted from the repo's docs (README, AGENTS.md, `docs/`, `parity/`, `VERSION.json`) and code surface. Inferences marked `INFERRED; CONFIRM`; owner-only calls (anti-pattern lines in the sand, priority order, founding decisions, third recovery question) flagged `TODO: owner`. Pending owner ratification → v1.0. |

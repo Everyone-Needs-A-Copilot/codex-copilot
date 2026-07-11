@@ -1,4 +1,4 @@
-# Orchestration And Worktrees
+# Parallel Work And Worktrees
 
 Codex Copilot supports approval-based parallel work. It does not silently auto-spawn workers.
 

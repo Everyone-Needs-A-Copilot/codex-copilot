@@ -13,6 +13,8 @@ Codex Copilot adds a specialist operating layer to a project. After setup, the t
 - project memory entries under `.claude/memory/entries/`
 - a skill discovery bridge under `.claude/skills/codex-copilot`
 - optional decision instruments for product and architecture judgment
+- `docs/40-initiatives/` with an initiative index and reusable structure
+- `scripts/copilot-gate.sh` linked to the shared framework gate
 - optional `tc` initialization
 
 The framework stays centralized in the shared `codex-copilot` repo. Linked projects point back to it.
@@ -31,6 +33,7 @@ $HOME/.local/bin/cc memory check --json
 Then verify the framework itself:
 
 ```bash
+cd /path/to/codex-copilot
 scripts/smoke-test.sh
 ```
 
@@ -105,13 +108,14 @@ For implementation work that needs verification:
 5. run the gate when needed
 
 ```bash
-scripts/copilot-gate.sh
+./scripts/copilot-gate.sh
 ```
 
 ## What To Do Next
 
-- Read [Usage Guide](./usage.md) for daily workflows.
-- Read [Protocol](./protocol.md) for routing behavior.
-- Read [Native Agents](./native-agents.md) for specialist roles.
-- Read [Live Docs](./live-docs.md) before API-heavy work.
-- Read [Quality Gates](./quality-gates.md) before shipping implementation.
+- Read [Daily Workflow](../02-user-guides/01-daily-workflow.md) for common work.
+- Read [Protocol](../02-user-guides/02-protocol.md) for routing behavior.
+- Read [Specialist Catalog](../05-reference/02-specialist-catalog.md) for specialist roles.
+- Read [Live Docs](../02-user-guides/03-live-docs.md) before API-heavy work.
+- Read [Quality Gates](../02-user-guides/04-quality-gates.md) before shipping implementation.
+- Read [Initiatives](../40-initiatives/README.md) before starting multi-phase work.

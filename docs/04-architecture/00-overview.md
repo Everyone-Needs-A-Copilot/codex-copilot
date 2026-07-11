@@ -15,7 +15,7 @@ Port the `claude-copilot` framework into Codex-native constructs without faking 
 | Memory Copilot / Skills Copilot MCP servers | `cc` CLI |
 | Task Copilot via `tc` | unchanged |
 | knowledge/extensions | dormant capability packs plus project-local plugin activation |
-| orchestration worktrees | future Codex workflow built on `spawn_agent` + git worktrees |
+| orchestration worktrees | user-approved `spawn_agent` delegation plus stream validation and explicit git worktree handling |
 
 ## Design Choices
 
@@ -31,7 +31,9 @@ This port therefore uses:
 
 ### 2. Keep `tc` as the System of Record
 
-The most valuable non-model-specific part of the original framework is its task/work-product discipline. That remains unchanged.
+The most valuable non-model-specific part of the original framework is its task/work-product discipline. Live tasks, dependencies, assignments, work products, and QA status remain in `tc`.
+
+Formal multi-phase initiative knowledge lives in `docs/40-initiatives/NN-slug/`. Initiative documents hold goals, phase designs, decisions, closure evidence, and retrospectives while linking back to authoritative `tc` execution state.
 
 ### 3. Use `cc` For Memory And Skill Discovery
 
@@ -106,7 +108,38 @@ Claude's `kc`, `cco`, `cw`, `cs`, and `cpa` specialists are useful but not alway
 
 ### Deliberately deferred
 
-- hidden runtime hook enforcement
-- autonomous background worker loops without explicit user approval
+- automatic runtime hook enforcement, unless Codex provides a matching lifecycle surface
 
-Those can be added in later phases once the core Codex workflow is validated.
+### Non-goals
+
+- hidden or autonomous background worker loops
+- delegation without explicit user approval
+- a second task or memory engine inside this repository
+
+These boundaries are intentional. Hidden workers are not a roadmap item; approved delegation remains explicit and scope-validated.
+
+## System Context
+
+```mermaid
+flowchart LR
+    U[Developer] --> C[Codex]
+    C --> A[AGENTS.md]
+    C --> P[Codex Copilot plugin and skills]
+    P --> TC[tc task state and work products]
+    P --> CC[cc memory, config, skills, Live Docs]
+    P --> S[Explicit scripts and tests]
+    P --> I[docs/40-initiatives]
+    I -. links durable initiative context .-> TC
+    C -. user-approved delegation only .-> SA[spawn_agent]
+```
+
+## Ownership Boundaries
+
+| Surface | Owner |
+| --- | --- |
+| specialist behavior and routing | Codex Copilot plugin skills and catalog |
+| live execution state and QA metadata | `tc` |
+| memory, config, skill discovery, and Live Docs | `cc` |
+| initiative briefs, phases, decisions, and retrospectives | `docs/40-initiatives/` in the consuming project |
+| domain-specific optional skills | dormant packs activated by a project |
+| runtime lifecycle hooks | host platform; not implemented by this project |

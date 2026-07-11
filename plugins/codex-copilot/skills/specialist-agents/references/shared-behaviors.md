@@ -58,6 +58,8 @@ tc task update <taskId> --status completed --json
 
 If no task exists, create a PRD and task rather than writing planning state into ad hoc markdown.
 
+For formal multi-phase initiatives, store durable goals, phase designs, decisions, validation evidence, and retrospectives under `docs/40-initiatives/NN-slug/`. Link those documents to `tc`; do not duplicate live task state in Markdown.
+
 For three or more related `tc` operations, prefer a single `python3` block importing `tc.api` and print one compact result. For three or more related `cc` memory or skill operations, use a separate block importing `cc.api`. Do not mix `tc.api` and `cc.api` in one process.
 
 ## Specification Workflow

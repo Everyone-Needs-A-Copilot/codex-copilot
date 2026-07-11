@@ -1,4 +1,4 @@
-# Usage Guide
+# Daily Workflow
 
 This guide covers the daily Codex Copilot workflow.
 
@@ -63,6 +63,12 @@ Useful work product types:
 - `security`
 - `operations`
 - `documentation`
+
+## Use Initiatives For Multi-Phase Work
+
+Formal initiatives live in `docs/40-initiatives/NN-slug/` with `README.md`, `phases/`, `decisions/`, and `retrospectives/`.
+
+Use initiative Markdown for durable goals, phase design, decisions, validation evidence, and outcomes. Keep live task state, dependencies, assignments, work products, and QA status in `tc`, then link the two surfaces.
 
 ## Check Memory Drift
 
