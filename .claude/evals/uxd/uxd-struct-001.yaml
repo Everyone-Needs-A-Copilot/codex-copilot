@@ -1,0 +1,8 @@
+id: uxd-struct-001
+name: "UX design retains interaction rigor"
+priority: P0
+type: structural
+source: {type: file, path: "plugins/codex-copilot/skills/uxd/SKILL.md"}
+assertions:
+  - {type: contains, value: "Nielsen heuristics", description: "Usability methodology is present"}
+  - {type: regex, pattern: "empty.*loading.*error.*success", description: "Core interface states are required"}

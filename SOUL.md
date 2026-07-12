@@ -12,7 +12,7 @@
 > **It is living.** It changes only when real evidence says the product changed —
 > and every change is logged in **Section 10: Evolution**.
 
-> **STATUS: RATIFIED v1.1 — 2026-07-11.** Owner-ratified initiative standard: formal multi-phase initiative knowledge belongs in `docs/40-initiatives/`, while live execution and QA state remain authoritative in `tc`/`cc`.
+> **STATUS: RATIFIED v1.2 — 2026-07-11.** QA evidence is now accepted only from a task-bound test work product; metadata may index evidence but can never replace it.
 
 ---
 
@@ -71,7 +71,7 @@ Codex Copilot mirrors Claude Copilot, but only its **intent**. A capability is a
 
 ### Principle 2: Evidence Or It Didn't Pass
 **Meaning:** A passing QA verdict is only valid when paired with an external, failable artifact (`test-run`, `file-check`, `diff-check`, `screenshot-check`, `a11y-check`, `design-fidelity-check`).
-**Rejection:** We reject a bare `VERDICT: APPROVED`. `scripts/copilot-gate.sh` fails a QA-required task that has no approved metadata with `qaArtifact` and no `ARTIFACT:` marker.
+**Rejection:** We reject a bare `VERDICT: APPROVED` and metadata-only approval. `scripts/copilot-gate.sh` fails a QA-required task unless an attached `test` work product carries both a passing verdict and an `ARTIFACT:` marker.
 **Test:** "Does this claim of 'done' carry a failable artifact someone else could re-run?" No artifact → not passed.
 
 ### Principle 3: Durable Over Chat
@@ -285,6 +285,7 @@ When updated, add the rationale to the changelog below.
 
 | Date | Version | Change & rationale |
 |------|---------|--------------------|
+| 2026-07-11 | v1.2 | Closed the metadata-only QA bypass discovered by executable audit. Metadata remains an index, while the task-bound test work product is the sole passing evidence source. |
 | 2026-07-11 | v1.1 | Ratified `docs/40-initiatives/` as the durable home for multi-phase goals, phase designs, decisions, validation evidence, and retrospectives. Clarified that The Markdown Memory rejects duplicate live task boards, not formal initiative knowledge linked to authoritative `tc`/`cc` state. |
 | 2026-06-28 | v1.0 | **Ratified** on Discord read-back. Re-centered the essence on the shared design-led purpose (a specialist-driven framework for creating solutions, native to Codex), with native-over-imitation as the top principle/boundary rather than the whole identity. Confirmed the priority order, set the five anti-pattern lines in the sand, added the durability recovery question, ratified the founding decisions. |
 | 2026-06-28 | v0.1 | Drafted as root-level decision instrument, retrofitted from the repo's docs (README, AGENTS.md, `docs/`, `parity/`, `VERSION.json`) and code surface. Inferences marked `INFERRED; CONFIRM`; owner-only calls (anti-pattern lines in the sand, priority order, founding decisions, third recovery question) flagged `TODO: owner`. Pending owner ratification → v1.0. |

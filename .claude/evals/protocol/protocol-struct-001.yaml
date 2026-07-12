@@ -1,0 +1,10 @@
+id: protocol-struct-001
+name: "Protocol keeps decision instruments and catalog routing"
+priority: P0
+type: structural
+source: {type: file, path: "plugins/codex-copilot/skills/protocol/SKILL.md"}
+assertions:
+  - {type: contains, value: "SOUL.md", description: "Product decisions use SOUL.md"}
+  - {type: contains, value: "architecture-guiding-principles.md", description: "Technical decisions use architecture principles"}
+  - {type: contains, value: "generated-workflows.md", description: "Sequences come from the catalog-generated contract"}
+  - {type: contains, value: "do not use `spawn_agent` unless the user explicitly asked", description: "Delegation remains user-approved"}

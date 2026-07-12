@@ -64,7 +64,7 @@ class DesignLedContractTest(unittest.TestCase):
     def test_catalog_declares_design_led_release(self):
         catalog = self.load_catalog()
         self.assertEqual(catalog["schemaVersion"], "1.0.0")
-        self.assertEqual(catalog["version"], "0.5.0")
+        self.assertEqual(catalog["version"], "0.6.0")
         self.assertEqual(catalog["entrypoints"]["primary"], "protocol")
         self.assertEqual(catalog["entrypoints"]["launcher"], "launcher")
         self.assertEqual(catalog["designChain"], ["sd", "uxd", "uids", "uid", "ta", "me", "qa"])
@@ -101,6 +101,54 @@ class DesignLedContractTest(unittest.TestCase):
         self.assertEqual(workflows["ui_polish"], ["uids", "uid", "qa"])
         self.assertEqual(workflows["security_sensitive"], ["ta", "sec", "me", "qa"])
         self.assertEqual(workflows["infrastructure"], ["do", "me", "qa"])
+
+    def test_generated_routing_is_current(self):
+        result = subprocess.run(
+            ["python3", "scripts/generate-routing.py", "--check"],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_upstream_freshness_detects_component_drift(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            upstream = pathlib.Path(tmp)
+            (upstream / "VERSION.json").write_text(json.dumps({
+                "framework": "99.0.0",
+                "components": {"cc": {"version": "99.0.0"}, "tc": {"version": "99.0.0"}},
+            }))
+            result = subprocess.run(
+                ["python3", "scripts/check-upstream-parity.py", "--upstream", str(upstream), "--json"],
+                cwd=ROOT, capture_output=True, text=True, check=False,
+            )
+            self.assertNotEqual(result.returncode, 0)
+            self.assertEqual(json.loads(result.stdout)["status"], "fail")
+
+    def test_specialist_chain_comparator_requires_evidence_and_compares(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = pathlib.Path(tmp)
+            def scorecard(variant, score):
+                return {"variant": variant, "cases": [{"id": "case-1", "criteria": {"correctness": {"score": score, "evidence": "test-run|example"}}}]}
+            generalist = tmp_path / "generalist.json"
+            specialist = tmp_path / "specialist.json"
+            generalist.write_text(json.dumps(scorecard("generalist", 0.5)))
+            specialist.write_text(json.dumps(scorecard("specialist", 0.8)))
+            result = subprocess.run(
+                ["python3", "scripts/compare-specialist-chain.py", "--generalist", str(generalist), "--specialist", str(specialist), "--json"],
+                cwd=ROOT, capture_output=True, text=True, check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertEqual(json.loads(result.stdout)["verdict"], "specialist-chain")
+            invalid = scorecard("specialist", 0.8)
+            invalid["cases"][0]["criteria"]["correctness"]["evidence"] = ""
+            specialist.write_text(json.dumps(invalid))
+            rejected = subprocess.run(
+                ["python3", "scripts/compare-specialist-chain.py", "--generalist", str(generalist), "--specialist", str(specialist)],
+                cwd=ROOT, capture_output=True, text=True, check=False,
+            )
+            self.assertNotEqual(rejected.returncode, 0)
 
     def test_catalog_routing_edges_keep_design_chain_explicit(self):
         catalog = self.load_catalog()
@@ -267,6 +315,48 @@ class DesignLedContractTest(unittest.TestCase):
                 check=False,
             )
             self.assertEqual(evidenced.returncode, 0, evidenced.stdout + evidenced.stderr)
+
+    def test_qa_gate_rejects_metadata_only_approval(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            fake_tc = pathlib.Path(tmp) / "tc"
+            fake_tc.write_text(
+                textwrap.dedent(
+                    """\
+                    #!/usr/bin/env python3
+                    import json
+                    import sys
+
+                    args = sys.argv[1:]
+                    if args[:3] == ["task", "list", "--json"]:
+                        print(json.dumps([{
+                            "id": 1,
+                            "title": "Metadata-only approval",
+                            "metadata": {
+                                "requiresQa": True,
+                                "qaStatus": "approved",
+                                "qaArtifact": "trust me"
+                            }
+                        }]))
+                    elif args[:4] == ["wp", "list", "--task", "1"]:
+                        print("[]")
+                    else:
+                        print(json.dumps({}))
+                    """
+                )
+            )
+            fake_tc.chmod(0o755)
+            env = os.environ.copy()
+            env["PATH"] = f"{tmp}{os.pathsep}{env['PATH']}"
+            result = subprocess.run(
+                ["bash", "scripts/copilot-gate.sh"],
+                cwd=ROOT,
+                env=env,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("TASK-1", result.stdout)
 
     def test_orchestration_validator_has_stream_contract(self):
         script = (ROOT / "scripts/orchestrate-validate.py").read_text()
@@ -492,6 +582,45 @@ class DesignLedContractTest(unittest.TestCase):
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             self.assertEqual((initiatives / "README.md").read_text(), custom_index)
             self.assertFalse((initiatives / "_template").exists())
+
+    def test_setup_refusal_is_atomic_and_force_does_not_clobber(self):
+        for force in (False, True):
+            with self.subTest(force=force), tempfile.TemporaryDirectory() as tmp:
+                target = pathlib.Path(tmp) / "project"
+                target.mkdir()
+                agents = target / "AGENTS.md"
+                agents.write_text("# Existing instructions\n")
+                config = target / ".claude/cc/config.json"
+                config.parent.mkdir(parents=True)
+                config.write_text('{"custom":"keep-me"}\n')
+                before = sorted(
+                    str(path.relative_to(target))
+                    for path in target.rglob("*")
+                )
+                command = [
+                    "bash",
+                    "scripts/setup-project.sh",
+                    "--project",
+                    str(target),
+                    "--no-tc-init",
+                ]
+                if force:
+                    command.append("--force")
+                result = subprocess.run(
+                    command,
+                    cwd=ROOT,
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                )
+                after = sorted(
+                    str(path.relative_to(target))
+                    for path in target.rglob("*")
+                )
+                self.assertNotEqual(result.returncode, 0)
+                self.assertEqual(before, after)
+                self.assertEqual(config.read_text(), '{"custom":"keep-me"}\n')
+                self.assertFalse((target / "plugins/codex-copilot").exists())
 
 
 if __name__ == "__main__":

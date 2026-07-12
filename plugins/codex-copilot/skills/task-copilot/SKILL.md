@@ -95,3 +95,7 @@ Store detailed output when:
 - the final user response should stay short
 
 Read `references/work-product-types.md` for type guidance.
+
+For a large work product that benefits from token-free review, use
+`tc wp render <id> --html`. The HTML is a rendering of the authoritative work
+product, not a second source of task state.

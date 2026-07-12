@@ -13,7 +13,7 @@ Implementation tasks that need verification should carry:
 }
 ```
 
-After QA approval, record:
+After QA approval, metadata may index the evidence-bearing work product:
 
 ```json
 {
@@ -38,8 +38,9 @@ VERDICT: APPROVED-WITH-MINOR-FIXES
 VERDICT: REJECTED
 ```
 
-Passing verdicts are only valid when paired with an external artifact. A bare
-`VERDICT: APPROVED` does not pass `scripts/copilot-gate.sh`.
+Passing verdicts are only valid when paired with an external artifact in a
+`test` work product attached to the same task. A bare `VERDICT: APPROVED`, or
+approved metadata without that work product, does not pass `scripts/copilot-gate.sh`.
 
 Accepted artifact marker types:
 
@@ -66,8 +67,9 @@ scripts/copilot-gate.sh --task 123
 
 In projects configured by current `setup-project.sh`, this path is a relative link to the shared framework gate. The shared script remains authoritative.
 
-The script fails when a QA-required task has no approved metadata with `qaArtifact`
-and no approved test work product with a valid `ARTIFACT:` marker.
+The script fails when a QA-required task has no attached test work product with
+a valid `ARTIFACT:` marker and passing verdict. Metadata never bypasses that
+check; it only provides a convenient index for humans and other tooling.
 
 ## Boundary
 

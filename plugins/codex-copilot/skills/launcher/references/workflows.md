@@ -2,15 +2,8 @@
 
 ## Standard Sequences
 
-| Workflow | Sequence |
-|----------|----------|
-| bug | `qa -> me -> qa` |
-| technical feature | `ta -> me -> qa` |
-| experience feature | `sd -> uxd -> uids -> uid -> ta -> me -> qa` |
-| physical-digital feature | `ind -> sd -> uxd -> uids -> uid -> ta -> me -> qa` |
-| UI polish | `uids -> uid -> qa` |
-| security-sensitive feature | `ta -> sec -> me -> qa` |
-| infrastructure | `do -> me -> qa` |
+Read `../../protocol/references/generated-workflows.md`. It is generated from
+`agent-catalog.json`, the single workflow source of truth.
 
 ## Spawn Guidance
 

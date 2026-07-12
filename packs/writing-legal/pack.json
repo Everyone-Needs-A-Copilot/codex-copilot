@@ -2,7 +2,7 @@
   "name": "writing-legal",
   "displayName": "Writing And Legal Specialists",
   "description": "Optional Codex Copilot skills for creative writing, proposal/SOW copy, contract review, IP, privacy, employment, government contracting, and AI governance.",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "specialists": [
     "alignment-document",
     "background-ip-schedule",

@@ -40,12 +40,9 @@ If the user explicitly asked for delegation or parallel work, you may spawn suba
 
 ## Routing patterns
 
-- bug: `qa -> me -> qa`
-- backend feature: `ta -> me -> qa`
-- experience feature: `sd -> uxd -> uids -> uid` as needed, then `ta -> me -> qa`
-- physical-digital feature: `ind -> sd -> uxd -> uids -> uid` as needed, then `ta -> me -> qa`
-- security-sensitive feature: primary flow plus `sec` before completion
-- infrastructure: `do -> me -> qa`
+Read `../protocol/references/generated-workflows.md` for the catalog-derived
+sequences. This router classifies requests; it does not maintain another copy
+of the workflow graph.
 
 ## References
 

@@ -19,6 +19,9 @@ Codex Copilot does not auto-spawn workers unless the user explicitly asks for de
 4. Spawn Codex subagents only when explicitly requested.
 5. Keep write scopes disjoint and route each implementation stream through `qa`.
 6. Treat merge, cleanup, and removal operations as separate actions requiring explicit current approval when destructive.
+7. For a user-requested cost-capped non-interactive worker, pass
+   `--max-budget-usd` through `tc worker`; do not imply that stored metadata
+   enforces a cap unless the installed `tc` contract says so.
 
 ## Stream Metadata
 

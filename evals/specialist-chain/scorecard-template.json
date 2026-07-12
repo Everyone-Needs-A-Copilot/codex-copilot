@@ -1,0 +1,12 @@
+{
+  "variant": "generalist-or-specialist-chain",
+  "cases": [{
+    "id": "representative-task-1",
+    "criteria": {
+      "correctness": {"score": 0.0, "evidence": "Replace with a failable artifact or reviewer finding."},
+      "requirement_coverage": {"score": 0.0, "evidence": "Replace with acceptance-criteria coverage evidence."},
+      "maintainability": {"score": 0.0, "evidence": "Replace with concrete design or diff evidence."},
+      "context_efficiency": {"score": 0.0, "evidence": "Replace with measured token/context evidence."}
+    }
+  }]
+}

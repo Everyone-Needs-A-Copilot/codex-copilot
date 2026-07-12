@@ -40,13 +40,13 @@ Keep these instruments separate:
 
 | Request type | Signals | Workflow |
 |--------------|---------|----------|
-| defect | broken behavior, regression, failing tests, bug fix | `qa -> me -> qa` |
-| technical | architecture, refactor, backend, migration, optimization | `ta -> me -> qa` |
-| experience | user-facing feature, workflow, screen, UI, UX | `sd -> uxd -> uids -> uid -> ta -> me -> qa` |
-| physical-digital | hardware, connected product, tangible service touchpoint, physical object plus software | `ind -> sd -> uxd -> uids -> uid -> ta -> me -> qa` |
-| UI polish | visual refinement, component styling, layout polish | `uids -> uid -> qa` |
-| security-sensitive | auth, permissions, secrets, trust boundaries | `ta -> sec -> me -> qa` |
-| infrastructure | CI, deploy, environment, observability, worktrees, release automation | `do -> me -> qa` |
+| defect | broken behavior, regression, failing tests, bug fix | `bug` |
+| technical | architecture, refactor, backend, migration, optimization | `technical_feature` |
+| experience | user-facing feature, workflow, screen, UI, UX | `experience_feature` |
+| physical-digital | hardware, connected product, tangible service touchpoint, physical object plus software | `physical_digital_feature` |
+| UI polish | visual refinement, component styling, layout polish | `ui_polish` |
+| security-sensitive | auth, permissions, secrets, trust boundaries | `security_sensitive` |
+| infrastructure | CI, deploy, environment, observability, worktrees, release automation | `infrastructure` |
 | ambiguous | improve, update, change, enhance without clear direction | ask for clarification before routing |
 
 ## Required behavior
@@ -115,4 +115,5 @@ For substantial work:
 
 ## References
 
-Read `references/flows.md` for workflow details and `references/checkpoints.md` for checkpoint behavior.
+Read `references/generated-workflows.md` for the catalog-derived specialist sequences,
+`references/flows.md` for routing details, and `references/checkpoints.md` for checkpoint behavior.

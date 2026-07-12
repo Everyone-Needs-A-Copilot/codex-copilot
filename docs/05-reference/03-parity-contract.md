@@ -4,10 +4,10 @@ Codex Copilot mirrors Claude Copilot capability intent, not Claude-only syntax.
 
 The current baseline is recorded in `parity/claude-baseline.json`:
 
-- Claude Copilot framework: `5.10.0`
-- `cc`: `1.4.0`
-- `tc`: `1.1.0`
-- Codex Copilot parity release: `0.5.0`
+- Claude Copilot framework: `5.13.0`
+- `cc`: `1.7.0`
+- `tc`: `1.3.0`
+- Codex Copilot parity release: `0.6.0`
 
 ## Implemented
 
@@ -19,6 +19,9 @@ The current baseline is recorded in `parity/claude-baseline.json`:
 - artifact-bound QA-gate state convention through `tc` metadata, QA work products, and `scripts/copilot-gate.sh`
 - optional specialist packs for `kc`, `cco`, `cw`, `cs`, and `cpa`
 - stream validation through `scripts/orchestrate-validate.py`
+- deterministic specialist contract evals through `cc eval`
+- `cc memory export`, layered knowledge repositories, and `cc config add/remove`
+- `tc wp render`, `tc worker`, and per-task `--max-budget-usd` metadata
 
 ## Substituted
 
@@ -41,6 +44,10 @@ Headless worker orchestration is substituted with explicit user-approved `spawn_
 
 Automatic runtime hook enforcement remains platform-dependent. Codex Copilot should not describe hook enforcement as implemented until Codex provides a matching lifecycle surface.
 
+Claude's hook-backed `/careful` and `/freeze` safety primitives are therefore
+deferred rather than imitated. Codex host safety policy and explicit project
+instructions remain the honest substitute, not equivalent mechanical enforcement.
+
 ## Updating The Baseline
 
 When Claude Copilot changes, update:
@@ -56,3 +63,8 @@ Then run:
 ```bash
 scripts/smoke-test.sh
 ```
+
+When a Claude Copilot checkout is available at `../claude-copilot` or through
+`CLAUDE_COPILOT_ROOT`, smoke testing also requires exact upstream component
+version agreement. This prevents an internally consistent but stale snapshot
+from being reported as current.

@@ -139,24 +139,10 @@ if [[ -n "${RULES_FILE}" && ! -f "${RULES_FILE}" ]]; then
   exit 1
 fi
 
-mkdir -p "${PROJECT_PATH}/.agents/plugins"
-mkdir -p "${PROJECT_PATH}/.claude/cc"
-mkdir -p "${PROJECT_PATH}/.claude/memory/entries"
-mkdir -p "${PROJECT_PATH}/.claude/skills"
-mkdir -p "${PROJECT_PATH}/plugins"
-mkdir -p "${PROJECT_PATH}/scripts"
-if [[ "${DO_DECISION_INSTRUMENTS}" -eq 1 ]]; then
-  mkdir -p "${PROJECT_PATH}/docs/01-architecture"
-fi
-
 INITIATIVES_PATH="${PROJECT_PATH}/docs/40-initiatives"
 INITIATIVES_EXISTED=0
 if [[ -e "${INITIATIVES_PATH}" ]]; then
   INITIATIVES_EXISTED=1
-else
-  mkdir -p "${INITIATIVES_PATH}/_template/phases"
-  mkdir -p "${INITIATIVES_PATH}/_template/decisions"
-  mkdir -p "${INITIATIVES_PATH}/_template/retrospectives"
 fi
 
 PLUGIN_LINK="${PROJECT_PATH}/plugins/codex-copilot"
@@ -165,6 +151,9 @@ SKILLS_LINK="${PROJECT_PATH}/.claude/skills/codex-copilot"
 FRAMEWORK_SKILLS_PATH="${FRAMEWORK_PLUGIN_PATH}/skills"
 QA_GATE_LINK="${PROJECT_PATH}/scripts/copilot-gate.sh"
 FRAMEWORK_QA_GATE_PATH="${FRAMEWORK_ROOT}/scripts/copilot-gate.sh"
+MARKETPLACE_PATH="${PROJECT_PATH}/.agents/plugins/marketplace.json"
+INSTALL_METADATA_PATH="${PROJECT_PATH}/.codex-copilot.json"
+AGENTS_PATH="${PROJECT_PATH}/AGENTS.md"
 
 if [[ ! -d "${FRAMEWORK_PLUGIN_PATH}" ]]; then
   echo "Missing framework plugin directory: ${FRAMEWORK_PLUGIN_PATH}" >&2
@@ -218,12 +207,44 @@ if [[ -L "${QA_GATE_LINK}" || -e "${QA_GATE_LINK}" ]]; then
   exit 1
 fi
 
+if [[ -e "${AGENTS_PATH}" ]]; then
+  echo "Refusing to overwrite existing AGENTS.md: ${AGENTS_PATH}" >&2
+  echo "Review and update it manually or move it aside first." >&2
+  exit 1
+fi
+
+if [[ -e "${MARKETPLACE_PATH}" ]]; then
+  echo "Refusing to overwrite existing marketplace: ${MARKETPLACE_PATH}" >&2
+  exit 1
+fi
+
+if [[ -e "${INSTALL_METADATA_PATH}" ]]; then
+  echo "Refusing to overwrite existing install metadata: ${INSTALL_METADATA_PATH}" >&2
+  exit 1
+fi
+
+# Mutation starts only after every collision and input check has passed.
+mkdir -p "${PROJECT_PATH}/.agents/plugins"
+mkdir -p "${PROJECT_PATH}/.claude/cc"
+mkdir -p "${PROJECT_PATH}/.claude/memory/entries"
+mkdir -p "${PROJECT_PATH}/.claude/skills"
+mkdir -p "${PROJECT_PATH}/plugins"
+mkdir -p "${PROJECT_PATH}/scripts"
+if [[ "${DO_DECISION_INSTRUMENTS}" -eq 1 ]]; then
+  mkdir -p "${PROJECT_PATH}/docs/01-architecture"
+fi
+if [[ "${INITIATIVES_EXISTED}" -eq 0 ]]; then
+  mkdir -p "${INITIATIVES_PATH}/_template/phases"
+  mkdir -p "${INITIATIVES_PATH}/_template/decisions"
+  mkdir -p "${INITIATIVES_PATH}/_template/retrospectives"
+fi
+
 ln -s "${RELATIVE_PLUGIN_TARGET}" "${PLUGIN_LINK}"
 ln -s "${RELATIVE_SKILLS_TARGET}" "${SKILLS_LINK}"
 ln -s "${RELATIVE_QA_GATE_TARGET}" "${QA_GATE_LINK}"
 
 MEMORY_GITIGNORE="${PROJECT_PATH}/.claude/memory/.gitignore"
-if [[ ! -f "${MEMORY_GITIGNORE}" || "${FORCE}" -eq 1 ]]; then
+if [[ ! -f "${MEMORY_GITIGNORE}" ]]; then
   cat > "${MEMORY_GITIGNORE}" <<'EOF'
 memory.db
 memory.db-shm
@@ -234,7 +255,7 @@ fi
 touch "${PROJECT_PATH}/.claude/memory/entries/.gitkeep"
 
 CC_CONFIG_PATH="${PROJECT_PATH}/.claude/cc/config.json"
-if [[ ! -f "${CC_CONFIG_PATH}" || "${FORCE}" -eq 1 ]]; then
+if [[ ! -f "${CC_CONFIG_PATH}" ]]; then
   cat > "${CC_CONFIG_PATH}" <<'EOF'
 {
   "$schema": "cc-config-v1",
@@ -246,7 +267,7 @@ if [[ ! -f "${CC_CONFIG_PATH}" || "${FORCE}" -eq 1 ]]; then
 EOF
 fi
 
-cat > "${PROJECT_PATH}/.agents/plugins/marketplace.json" <<'EOF'
+cat > "${MARKETPLACE_PATH}" <<'EOF'
 {
   "name": "codex-copilot-project",
   "interface": {
@@ -269,7 +290,7 @@ cat > "${PROJECT_PATH}/.agents/plugins/marketplace.json" <<'EOF'
 }
 EOF
 
-cat > "${PROJECT_PATH}/.codex-copilot.json" <<EOF
+cat > "${INSTALL_METADATA_PATH}" <<EOF
 {
   "installType": "symlink",
   "pluginPath": "./plugins/codex-copilot",
@@ -308,13 +329,6 @@ export PROJECT_RULES
 export PROJECT_NAME
 export PROJECT_DESCRIPTION
 export TECH_STACK
-
-AGENTS_PATH="${PROJECT_PATH}/AGENTS.md"
-if [[ -f "${AGENTS_PATH}" ]]; then
-  echo "Refusing to overwrite existing AGENTS.md: ${AGENTS_PATH}" >&2
-  echo "Review and update it manually or move it aside first." >&2
-  exit 1
-fi
 
 python3 - "${TEMPLATE_PATH}" "${AGENTS_PATH}" <<'PY'
 from pathlib import Path

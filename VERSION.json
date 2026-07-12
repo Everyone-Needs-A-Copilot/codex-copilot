@@ -1,26 +1,26 @@
 {
   "name": "codex-copilot",
-  "version": "0.5.0",
-  "releaseDate": "2026-06-18",
-  "codename": "evidence-bound-design",
+  "version": "0.6.0",
+  "releaseDate": "2026-07-11",
+  "codename": "verified-parity",
   "status": "stable",
   "mirrors": {
     "project": "claude-copilot",
-    "frameworkVersion": "5.10.0",
+    "frameworkVersion": "5.13.0",
     "baselineManifest": "parity/claude-baseline.json",
-    "capturedDate": "2026-06-18",
-    "adoptionNote": "Adopts Claude Copilot 5.10.0 capability intent through Codex-native scripts, tc state, and skills; Claude runtime lifecycle hooks are not implemented."
+    "capturedDate": "2026-07-11",
+    "adoptionNote": "Adopts Claude Copilot 5.13.0 capability intent through Codex-native scripts, tc state, skills, and deterministic evals; Claude runtime lifecycle hooks remain explicitly deferred."
   },
   "components": {
     "cc": {
-      "requiredVersion": "1.4.0",
+      "requiredVersion": "1.7.0",
       "source": "Claude Copilot tools/cc",
-      "provides": ["cc memory", "cc memory check", "cc skill", "cc config", "cc env", "cc docs", "cc usage"]
+      "provides": ["cc memory", "cc memory check", "cc memory export", "cc skill", "cc config", "cc env", "cc docs", "cc usage", "cc eval"]
     },
     "tc": {
-      "requiredVersion": "1.1.0",
+      "requiredVersion": "1.3.0",
       "source": "Claude Copilot tools/tc",
-      "provides": ["tc prd", "tc task", "tc wp", "tc stream", "tc progress"]
+      "provides": ["tc prd", "tc task", "tc wp", "tc wp render", "tc stream", "tc progress", "tc worker", "tc --max-budget-usd"]
     }
   }
 }

@@ -7,6 +7,26 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-07-11
+
+### Added
+
+- upstream-aware Claude, `cc`, and `tc` parity freshness checks
+- deterministic `cc eval` cases for protocol and specialist contracts
+- catalog-derived generated workflow reference and drift check
+- specialist-chain comparison protocol for recording A/B evidence without claiming unmeasured quality
+
+### Changed
+
+- adopted Claude Copilot `5.13.0`, `cc 1.7.0`, and `tc 1.3.0` capability intent
+- made project setup preflight-only before mutation; `--force` no longer overwrites project-owned config
+- required QA approval to come from an attached, evidence-bearing test work product rather than metadata alone
+
+### Fixed
+
+- closed the arbitrary `qaArtifact` metadata bypass in `copilot-gate.sh`
+- prevented partial setup mutations when existing project wiring causes refusal
+
 ### Added
 
 - standardized `docs/40-initiatives/NN-slug/` for initiative briefs, phases, decisions, validation evidence, and retrospectives linked to authoritative `tc` execution state

@@ -8,8 +8,9 @@ Usage:
   scripts/copilot-gate.sh [--task TASK_ID]
 
 Checks Codex Copilot QA-gate state in tc. A task that declares
-metadata.requiresQa=true must have either metadata.qaStatus=approved or a test
-work product whose content includes a passing VERDICT plus an ARTIFACT marker.
+metadata.requiresQa=true must have a test work product attached to that task
+whose content includes a passing VERDICT plus an ARTIFACT marker. Metadata may
+index the QA result, but it is never accepted as evidence by itself.
 
 Accepted artifact markers:
   ARTIFACT: test-run|...
@@ -92,8 +93,8 @@ def wp_content(wp):
     try:
         full = run_json(["tc", "wp", "get", str(wid), "--json"]) or {}
     except subprocess.CalledProcessError:
-        return ""
-    return str(full.get("content") or "")
+        return {}, ""
+    return full, str(full.get("content") or "")
 
 
 PASSING_VERDICT_RE = re.compile(
@@ -128,14 +129,14 @@ for task in tasks:
     if not requires_qa:
         continue
     checked += 1
-    qa_status = str(meta.get("qaStatus") or "").lower()
-    if qa_status in {"approved", "approved-with-minor-fixes"} and meta.get("qaArtifact"):
-        continue
     verdict_ok = False
     for wp in task_wps(task["id"]):
         if wp.get("type") != "test":
             continue
-        content = wp_content(wp)
+        full_wp, content = wp_content(wp)
+        wp_task_id = full_wp.get("task_id", full_wp.get("task"))
+        if wp_task_id is not None and str(wp_task_id) != str(task["id"]):
+            continue
         if approved_with_artifact(content):
             verdict_ok = True
             break

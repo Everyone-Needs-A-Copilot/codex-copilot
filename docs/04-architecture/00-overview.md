@@ -100,7 +100,7 @@ Claude's `kc`, `cco`, `cw`, `cs`, and `cpa` specialists are useful but not alway
 - direct software specialist skill names
 - design-led project decision-instrument scaffolding
 - design-fidelity QA expectations
-- Claude 5.10.0 parity manifest
+- Claude 5.13.0 parity manifest with upstream freshness detection
 - Live Docs guidance
 - QA gate inspection script
 - optional business/creative specialist pack

@@ -1,0 +1,9 @@
+id: do-struct-001
+name: "Operations retains reproducibility and rollback safety"
+priority: P0
+type: structural
+source: {type: file, path: "plugins/codex-copilot/skills/do/SKILL.md"}
+assertions:
+  - {type: contains, value: "12-factor", description: "Operational methodology is present"}
+  - {type: contains, value: "rollback", description: "Rollback safety is required"}
+  - {type: contains, value: "Live Docs", description: "Third-party operational APIs are checked"}

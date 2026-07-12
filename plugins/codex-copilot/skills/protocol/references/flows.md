@@ -11,15 +11,9 @@ Use `SOUL.md` to decide whether the product direction belongs in the product. Us
 
 ## Default workflows
 
-| Request type | Workflow |
-|--------------|----------|
-| defect | `qa -> me -> qa` |
-| technical | `ta -> me -> qa` |
-| experience | `sd -> uxd -> uids -> uid -> ta -> me -> qa` |
-| physical-digital | `ind -> sd -> uxd -> uids -> uid -> ta -> me -> qa` |
-| UI polish | `uids -> uid -> qa` |
-| security-sensitive | `ta -> sec -> me -> qa` |
-| infrastructure | `do -> me -> qa` |
+The authoritative sequences are generated from `agent-catalog.json` into
+`generated-workflows.md`. Read that file before routing; do not duplicate the
+sequences here.
 
 ## Routing notes
 

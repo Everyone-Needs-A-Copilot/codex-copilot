@@ -1,0 +1,10 @@
+id: qa-struct-001
+name: "QA retains evidence-bound verdicts"
+priority: P0
+type: structural
+source: {type: file, path: "plugins/codex-copilot/skills/qa/SKILL.md"}
+assertions:
+  - {type: contains, value: "ARTIFACT:", description: "Artifact marker is mandatory"}
+  - {type: contains, value: "VERDICT: APPROVED", description: "Passing verdict is defined"}
+  - {type: contains, value: "VERDICT: REJECTED", description: "Failing verdict is defined"}
+  - {type: contains, value: "Meszaros", description: "Test-double methodology is present"}

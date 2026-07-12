@@ -40,6 +40,8 @@ for pack in (root / "packs").iterdir():
         errors.append(f"pack {pack.name} is missing pack.json")
         continue
     manifest = json.loads(manifest_path.read_text())
+    if manifest.get("version") != expected:
+        errors.append(f"pack {pack.name} version {manifest.get('version')} != VERSION.json {expected}")
     if manifest.get("name") != pack.name:
         errors.append(f"pack {pack.name} manifest name mismatch")
     for specialist in manifest.get("specialists", []):

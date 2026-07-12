@@ -1,0 +1,8 @@
+id: doc-struct-001
+name: "Documentation retains Diataxis"
+priority: P0
+type: structural
+source: {type: file, path: "plugins/codex-copilot/skills/doc/SKILL.md"}
+assertions:
+  - {type: contains, value: "Diataxis", description: "Documentation modes stay distinct"}
+  - {type: contains, value: "Route To Other Specialist", description: "Routing boundary is explicit"}

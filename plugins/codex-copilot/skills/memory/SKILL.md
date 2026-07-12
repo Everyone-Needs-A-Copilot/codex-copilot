@@ -16,6 +16,10 @@ Show memory and task state for transparency.
 5. Run `tc progress --json` when `tc` is initialized.
 6. Present a compact dashboard.
 
+When the user requests a portable snapshot, use `cc memory export` with an
+explicit output path or JSON output. Export is user-requested; it is not an
+automatic memory-to-knowledge sync.
+
 ## Output
 
 - recent decisions
