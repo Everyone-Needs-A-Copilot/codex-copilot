@@ -2,6 +2,7 @@ import json
 import os
 import pathlib
 import re
+import shutil
 import subprocess
 import tempfile
 import textwrap
@@ -125,6 +126,76 @@ class DesignLedContractTest(unittest.TestCase):
             )
             self.assertNotEqual(result.returncode, 0)
             self.assertEqual(json.loads(result.stdout)["status"], "fail")
+
+    def find_upstream_checkout(self):
+        candidate = pathlib.Path(
+            os.environ.get("CLAUDE_COPILOT_ROOT", ROOT.parent / "claude-copilot")
+        ).expanduser().resolve()
+        if not (candidate / "VERSION.json").is_file():
+            self.skipTest("no local claude-copilot checkout available for content parity tests")
+        return candidate
+
+    def test_content_baseline_matches_manifest_schema(self):
+        manifest = json.loads((ROOT / "parity/upstream-content-hashes.json").read_text())
+        self.assertEqual(set(manifest.keys()), {"generated_at", "upstream_commit", "files", "versions"})
+        self.assertIsInstance(manifest["files"], dict)
+        self.assertTrue(manifest["files"], "content baseline has no hashed files")
+
+        sha256_re = re.compile(r"^[0-9a-f]{64}$")
+        for relpath, digest in manifest["files"].items():
+            self.assertTrue(sha256_re.match(digest), f"bad sha256 for {relpath}: {digest}")
+            self.assertTrue(
+                relpath.startswith((".claude/agents/", ".claude/commands/", ".claude/skills/")),
+                f"unexpected file in content manifest: {relpath}",
+            )
+            self.assertTrue(relpath.endswith(".md"), f"non-markdown file in content manifest: {relpath}")
+
+        self.assertEqual(set(manifest["versions"].keys()), {"framework", "agents", "commands"})
+        self.assertRegex(manifest["upstream_commit"], r"^[0-9a-f]{40}$")
+
+    def test_content_check_detects_synthetic_agent_drift(self):
+        upstream_root = self.find_upstream_checkout()
+        with tempfile.TemporaryDirectory() as tmp:
+            upstream = pathlib.Path(tmp) / "upstream"
+            shutil.copytree(upstream_root / ".claude" / "agents", upstream / ".claude" / "agents")
+            shutil.copytree(upstream_root / ".claude" / "commands", upstream / ".claude" / "commands")
+            shutil.copytree(upstream_root / ".claude" / "skills", upstream / ".claude" / "skills")
+            shutil.copyfile(upstream_root / "VERSION.json", upstream / "VERSION.json")
+
+            drifted = upstream / ".claude" / "agents" / "qa.md"
+            drifted.write_text(drifted.read_text() + "\n<!-- synthetic drift marker -->\n")
+
+            result = subprocess.run(
+                ["python3", "scripts/check-upstream-parity.py", "--upstream", str(upstream), "--content", "--json"],
+                cwd=ROOT, capture_output=True, text=True, check=False,
+            )
+            self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+            content = json.loads(result.stdout)["content"]
+            self.assertEqual(content["status"], "drift")
+            self.assertEqual(content["changed"], [".claude/agents/qa.md"])
+            self.assertEqual(content["added"], [])
+            self.assertEqual(content["removed"], [])
+            self.assertEqual(content["version_diffs"], {})
+
+    def test_content_update_baseline_round_trips_to_pass(self):
+        self.find_upstream_checkout()
+        with tempfile.TemporaryDirectory() as tmp:
+            baseline_path = pathlib.Path(tmp) / "upstream-content-hashes.json"
+
+            update = subprocess.run(
+                ["python3", "scripts/check-upstream-parity.py", "--update-baseline", "--baseline", str(baseline_path), "--json"],
+                cwd=ROOT, capture_output=True, text=True, check=False,
+            )
+            self.assertEqual(update.returncode, 0, update.stdout + update.stderr)
+            self.assertTrue(baseline_path.is_file())
+            self.assertEqual(json.loads(update.stdout)["status"], "updated")
+
+            check = subprocess.run(
+                ["python3", "scripts/check-upstream-parity.py", "--content", "--baseline", str(baseline_path), "--json"],
+                cwd=ROOT, capture_output=True, text=True, check=False,
+            )
+            self.assertEqual(check.returncode, 0, check.stdout + check.stderr)
+            self.assertEqual(json.loads(check.stdout)["content"]["status"], "pass")
 
     def test_specialist_chain_comparator_requires_evidence_and_compares(self):
         with tempfile.TemporaryDirectory() as tmp:

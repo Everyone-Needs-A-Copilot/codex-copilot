@@ -48,6 +48,53 @@ Claude's hook-backed `/careful` and `/freeze` safety primitives are therefore
 deferred rather than imitated. Codex host safety policy and explicit project
 instructions remain the honest substitute, not equivalent mechanical enforcement.
 
+## Content-Level Parity
+
+Claude Copilot versions its agents (`.claude/agents`) and commands
+(`.claude/commands`) independently of the top-level `framework` string in
+`VERSION.json`. That means a content change to an agent or command file that
+doesn't bump the framework version passes the version-only check above while
+Claude Copilot and Codex Copilot still diverge in substance. Content-level
+parity closes that gap by hashing the files instead of trusting a version
+number to move when they change.
+
+`scripts/check-upstream-parity.py --content` sha256-hashes every upstream file
+that defines shared, mirrored behavior:
+
+- `.claude/agents/*.md`
+- `.claude/commands/*.md`
+- `.claude/skills/**/SKILL.md`
+
+and compares those hashes, plus the upstream `framework`/`agents`/`commands`
+version fields, against the committed manifest
+`parity/upstream-content-hashes.json` (`{generated_at, upstream_commit,
+files: {relpath: sha256}, versions: {framework, agents, commands}}`). The
+`--content` result is nested under a `content` key in the existing JSON
+output (`status: pass|drift`, `changed`/`added`/`removed` file lists, and
+`version_diffs`) so the original version-only contract (`status`,
+`upstream`, `mismatches`) is unchanged for callers that don't pass
+`--content`. The script exits nonzero on drift when `--content` is used.
+`scripts/smoke-test.sh` runs both the version-only check and
+`--content` as separate steps, so content drift is visible on every smoke
+run against a local Claude Copilot checkout, not just when someone remembers
+to ask for it.
+
+### Sweep Workflow
+
+1. **Drift**: `python3 scripts/check-upstream-parity.py --content --json`
+   reports `content.status: "drift"` with the specific agent/command/skill
+   files that changed (or were added/removed) and any `agents`/`commands`/
+   `framework` version-field diffs.
+2. **Catch up**: port the upstream content change into Codex Copilot's
+   mirrored surface (skills, `agent-catalog.json`, prompts, docs) the same
+   way any other parity update is handled.
+3. **`--update-baseline`**: once Codex Copilot has caught up, run
+   `python3 scripts/check-upstream-parity.py --update-baseline` to
+   regenerate `parity/upstream-content-hashes.json` from the current
+   upstream checkout. This is the explicit "we caught up" action — it is
+   never implicit, so a drifted baseline can't silently start passing again
+   without someone deciding it should.
+
 ## Updating The Baseline
 
 When Claude Copilot changes, update:
