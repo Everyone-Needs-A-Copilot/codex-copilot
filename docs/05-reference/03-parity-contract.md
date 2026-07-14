@@ -95,6 +95,26 @@ to ask for it.
    never implicit, so a drifted baseline can't silently start passing again
    without someone deciding it should.
 
+### Recurrence prevention: the parity-warn hook
+
+Drift has previously recurred not because the sweep steps above don't work,
+but because nothing prompted anyone to re-run them after a later Claude
+Copilot commit landed. `scripts/warn-parity-drift.sh` closes that gap:
+`scripts/install-parity-warn-hook.sh` installs it as a managed block in
+Claude Copilot's own `pre-commit` hook (chained onto whatever hooks are
+already there, following the same idempotent managed-block convention as
+`copilot-control-tower/tools/cse-bench/install-claim-sweep-hook.sh`). It
+fires only when a commit stages a file under the tracked glob
+(`.claude/agents/*.md`, `.claude/commands/*.md`, `.claude/skills/**/SKILL.md`)
+and the content baseline is not confirmed in sync, and it prints the exact
+Sweep Workflow commands to run. It is a WARNING, not a gate — it always
+exits 0, because a downstream mirror's sync lag should never block work in
+the upstream repo. Install/refresh it with:
+
+```bash
+cd codex-copilot && scripts/install-parity-warn-hook.sh
+```
+
 ## Updating The Baseline
 
 When Claude Copilot changes, update:

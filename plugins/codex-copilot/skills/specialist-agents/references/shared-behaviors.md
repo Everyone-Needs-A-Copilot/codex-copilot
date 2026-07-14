@@ -58,6 +58,18 @@ tc task update <taskId> --status completed --json
 
 If no task exists, create a PRD and task rather than writing planning state into ad hoc markdown.
 
+`--task` on `tc wp store` is optional (`task_id` is schema-nullable): if a
+work product needs to be externalized and no task ID exists yet, omit
+`--task` and store a standalone work product instead — it stays fully
+listable/gettable/searchable. No task ID is never a valid reason to skip
+storage and fall back to inlining the full deliverable in chat.
+
+Never trust `which tc` as an availability gate — the common
+`alias which='type -all'` dotfile pattern makes `which <anything>` fail
+regardless of whether the target exists, producing false negatives. If you
+need to check availability first, use `command -v tc`, or just attempt the
+real command directly.
+
 For formal multi-phase initiatives, store durable goals, phase designs, decisions, validation evidence, and retrospectives under `docs/40-initiatives/NN-slug/`. Link those documents to `tc`; do not duplicate live task state in Markdown.
 
 For three or more related `tc` operations, prefer a single `python3` block importing `tc.api` and print one compact result. For three or more related `cc` memory or skill operations, use a separate block importing `cc.api`. Do not mix `tc.api` and `cc.api` in one process.
