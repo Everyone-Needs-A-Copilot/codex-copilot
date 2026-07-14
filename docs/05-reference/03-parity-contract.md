@@ -95,6 +95,41 @@ to ask for it.
    never implicit, so a drifted baseline can't silently start passing again
    without someone deciding it should.
 
+### The port guard (`--update-baseline` cannot resolve drift on trust alone)
+
+Step 3 above used to be trust-based: `--update-baseline` regenerated the
+manifest from whatever the upstream checkout looked like, with **no check
+that codex-copilot's own mirrored surface had actually been touched** —
+running it alone, with nothing ported, silently marked real drift
+"resolved." That gap is now closed mechanically. When a prior baseline
+already exists and shows real content drift against the freshly-hashed
+upstream, `--update-baseline` **refuses** (exits 1, leaves the baseline
+file untouched) unless one of two things is true at the moment it runs:
+
+- codex-copilot's own working tree has a **live, uncommitted change**
+  outside `parity/` (the normal flow: port the mirrored surface, leave it
+  staged/unstaged, run `--update-baseline`, then commit both together in
+  one commit — exactly how commit `ce087be1` did it); or
+- the caller passes `--attest-no-port-needed "<reason>"`, which unblocks
+  the update and records the reason in `parity/baseline-update-log.json`
+  instead of resolving the drift silently (for genuine no-mirror-to-touch
+  cases, e.g. a pure renumbering/comment-only upstream change).
+
+A candidate third signal — "codex-copilot's HEAD moved since the last
+recorded update" — was tried and **rejected**: it let a prior, unrelated
+port commit silently unlock resolving a later, different drift that was
+never actually ported for. Only a live diff at the moment of the update
+counts; see `scripts/check-upstream-parity.py`'s `run_update_baseline()`
+and `tests/test_mirror_parity.py`'s
+`test_update_baseline_port_guard_*` tests for the exact mechanics and the
+regression coverage for that rejected signal.
+
+`parity/baseline-update-log.json` records the provenance of the most
+recent successful update (`codex_head_commit`,
+`codex_working_tree_dirty_at_update`, `port_attestation`) for audit —
+separate from `parity/upstream-content-hashes.json` so the baseline
+manifest's own schema is unchanged.
+
 ### Recurrence prevention: the parity-warn hook
 
 Drift has previously recurred not because the sweep steps above don't work,

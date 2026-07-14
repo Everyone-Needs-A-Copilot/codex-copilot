@@ -181,9 +181,13 @@ class DesignLedContractTest(unittest.TestCase):
         self.find_upstream_checkout()
         with tempfile.TemporaryDirectory() as tmp:
             baseline_path = pathlib.Path(tmp) / "upstream-content-hashes.json"
+            update_log_path = pathlib.Path(tmp) / "baseline-update-log.json"
 
             update = subprocess.run(
-                ["python3", "scripts/check-upstream-parity.py", "--update-baseline", "--baseline", str(baseline_path), "--json"],
+                [
+                    "python3", "scripts/check-upstream-parity.py", "--update-baseline",
+                    "--baseline", str(baseline_path), "--update-log", str(update_log_path), "--json",
+                ],
                 cwd=ROOT, capture_output=True, text=True, check=False,
             )
             self.assertEqual(update.returncode, 0, update.stdout + update.stderr)
@@ -196,6 +200,140 @@ class DesignLedContractTest(unittest.TestCase):
             )
             self.assertEqual(check.returncode, 0, check.stdout + check.stderr)
             self.assertEqual(json.loads(check.stdout)["content"]["status"], "pass")
+
+    def _make_synthetic_upstream(self, path: pathlib.Path, marker: str = "v1") -> None:
+        agents = path / ".claude" / "agents"
+        agents.mkdir(parents=True, exist_ok=True)
+        (agents / "sample.md").write_text(f"# sample agent ({marker})\n")
+        (path / "VERSION.json").write_text(json.dumps({
+            "framework": "1.0.0",
+            "components": {"agents": {"version": "1.0.0"}, "commands": {"version": "1.0.0"}},
+        }))
+        subprocess.run(["git", "init", "-q", str(path)], check=True)
+        subprocess.run(["git", "-C", str(path), "add", "-A"], check=True)
+        subprocess.run(
+            ["git", "-c", "user.email=t@t.com", "-c", "user.name=t", "-C", str(path), "commit", "-q", "-m", "init"],
+            check=True,
+        )
+
+    def _make_synthetic_codex_root(self, path: pathlib.Path) -> None:
+        mirror = path / "plugins" / "codex-copilot" / "mirrored.md"
+        mirror.parent.mkdir(parents=True, exist_ok=True)
+        mirror.write_text("mirrored content, v1\n")
+        subprocess.run(["git", "init", "-q", str(path)], check=True)
+        subprocess.run(["git", "-C", str(path), "add", "-A"], check=True)
+        subprocess.run(
+            ["git", "-c", "user.email=t@t.com", "-c", "user.name=t", "-C", str(path), "commit", "-q", "-m", "init"],
+            check=True,
+        )
+
+    def _run_update_baseline(self, tmp, upstream, codex_root, baseline_path, update_log_path, extra=None):
+        cmd = [
+            "python3", "scripts/check-upstream-parity.py", "--update-baseline",
+            "--upstream", str(upstream), "--codex-root", str(codex_root),
+            "--baseline", str(baseline_path), "--update-log", str(update_log_path), "--json",
+        ]
+        return subprocess.run(cmd + (extra or []), cwd=ROOT, capture_output=True, text=True, check=False)
+
+    def test_update_baseline_port_guard_refuses_untouched_drift_and_unblocks_on_real_port(self):
+        """QA-style fabrication guard (this session's t6 close): --update-baseline must not
+        be able to silently 'resolve' real upstream drift when codex-copilot's own repo shows
+        no corresponding change. Exercises all three paths: refuse (no port), succeed (real
+        port present as an uncommitted change), succeed (explicit --attest-no-port-needed)."""
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = pathlib.Path(tmp)
+            upstream = tmp_path / "upstream"
+            codex_root = tmp_path / "codex-copilot"
+            baseline_path = tmp_path / "baseline.json"
+            update_log_path = tmp_path / "update-log.json"
+
+            self._make_synthetic_upstream(upstream, marker="v1")
+            self._make_synthetic_codex_root(codex_root)
+
+            # First run: no prior baseline -> always allowed (nothing to guard against yet).
+            seed = self._run_update_baseline(tmp, upstream, codex_root, baseline_path, update_log_path)
+            self.assertEqual(seed.returncode, 0, seed.stdout + seed.stderr)
+            self.assertEqual(json.loads(seed.stdout)["status"], "updated")
+
+            # Upstream drifts; codex-copilot's own repo is untouched -> REFUSE.
+            baseline_before_refusal = baseline_path.read_text()
+            (upstream / ".claude" / "agents" / "sample.md").write_text("# sample agent (v2)\n")
+            refused = self._run_update_baseline(tmp, upstream, codex_root, baseline_path, update_log_path)
+            self.assertEqual(refused.returncode, 1, refused.stdout + refused.stderr)
+            refused_body = json.loads(refused.stdout)
+            self.assertEqual(refused_body["status"], "refused")
+            self.assertIn(".claude/agents/sample.md", refused_body["drift"]["changed"])
+            # A refused update must not have touched the baseline file on disk at all.
+            self.assertEqual(baseline_path.read_text(), baseline_before_refusal)
+
+            # A real port lands (uncommitted, matching the real observed ce087be workflow) -> SUCCEED.
+            (codex_root / "plugins" / "codex-copilot" / "mirrored.md").write_text("mirrored content, v2\n")
+            ported = self._run_update_baseline(tmp, upstream, codex_root, baseline_path, update_log_path)
+            self.assertEqual(ported.returncode, 0, ported.stdout + ported.stderr)
+            ported_body = json.loads(ported.stdout)
+            self.assertEqual(ported_body["status"], "updated")
+            self.assertTrue(ported_body["port_guard"]["codex_working_tree_dirty_at_update"])
+            self.assertIsNone(ported_body["port_guard"]["port_attestation"])
+
+            # Commit the port so the tree goes clean again, then drift a SECOND time --
+            # the already-committed port must NOT count as evidence for this new,
+            # unrelated drift (only a LIVE uncommitted change does) -- refuse again...
+            subprocess.run(["git", "-C", str(codex_root), "add", "-A"], check=True)
+            subprocess.run(
+                ["git", "-c", "user.email=t@t.com", "-c", "user.name=t", "-C", str(codex_root),
+                 "commit", "-q", "-m", "port"],
+                check=True,
+            )
+            (upstream / ".claude" / "agents" / "sample.md").write_text("# sample agent (v3, cosmetic only)\n")
+            refused_again = self._run_update_baseline(tmp, upstream, codex_root, baseline_path, update_log_path)
+            self.assertEqual(refused_again.returncode, 1, refused_again.stdout + refused_again.stderr)
+
+            # ...but an explicit --attest-no-port-needed unblocks it and records why.
+            attested = self._run_update_baseline(
+                tmp, upstream, codex_root, baseline_path, update_log_path,
+                extra=["--attest-no-port-needed", "cosmetic-only upstream change, no mirror to touch"],
+            )
+            self.assertEqual(attested.returncode, 0, attested.stdout + attested.stderr)
+            attested_body = json.loads(attested.stdout)
+            self.assertEqual(
+                attested_body["port_guard"]["port_attestation"],
+                "cosmetic-only upstream change, no mirror to touch",
+            )
+
+    def test_update_baseline_port_guard_an_unrelated_commit_does_not_unlock_it(self):
+        """A commit that landed for an unrelated reason before the drift even existed must not
+        count as port evidence for that drift -- only a LIVE uncommitted change (outside
+        parity/) at the moment --update-baseline runs does. Guards against exactly the "stale
+        HEAD-moved signal" bug this guard's implementation history already found and removed."""
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = pathlib.Path(tmp)
+            upstream = tmp_path / "upstream"
+            codex_root = tmp_path / "codex-copilot"
+            baseline_path = tmp_path / "baseline.json"
+            update_log_path = tmp_path / "update-log.json"
+
+            self._make_synthetic_upstream(upstream, marker="v1")
+            self._make_synthetic_codex_root(codex_root)
+
+            seed = self._run_update_baseline(tmp, upstream, codex_root, baseline_path, update_log_path)
+            self.assertEqual(seed.returncode, 0, seed.stdout + seed.stderr)
+
+            # codex-copilot gets an unrelated commit that touches nothing mirrored...
+            (codex_root / "README.md").write_text("unrelated docs tweak\n")
+            subprocess.run(["git", "-C", str(codex_root), "add", "-A"], check=True)
+            subprocess.run(
+                ["git", "-c", "user.email=t@t.com", "-c", "user.name=t", "-C", str(codex_root),
+                 "commit", "-q", "-m", "unrelated"],
+                check=True,
+            )
+
+            # ...upstream drifts...
+            (upstream / ".claude" / "agents" / "sample.md").write_text("# sample agent (v2)\n")
+
+            # ...an unrelated commit having landed must NOT unlock the resolve.
+            refused = self._run_update_baseline(tmp, upstream, codex_root, baseline_path, update_log_path)
+            self.assertEqual(refused.returncode, 1, refused.stdout + refused.stderr)
+            self.assertEqual(json.loads(refused.stdout)["status"], "refused")
 
     def test_specialist_chain_comparator_requires_evidence_and_compares(self):
         with tempfile.TemporaryDirectory() as tmp:

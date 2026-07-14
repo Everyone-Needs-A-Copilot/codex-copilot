@@ -29,6 +29,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CONTENT_BASELINE = ROOT / "parity" / "upstream-content-hashes.json"
+DEFAULT_UPDATE_LOG = ROOT / "parity" / "baseline-update-log.json"
 
 # Relative (to the upstream checkout root) glob patterns for every file that
 # defines shared, mirrored behavior. Order is significant only for readability;
@@ -147,15 +148,127 @@ def diff_content(baseline: dict, current: dict) -> dict:
     }
 
 
-def run_update_baseline(upstream: Path | None, baseline_path: Path, use_json: bool) -> int:
+def codex_repo_head(codex_root: Path) -> str | None:
+    """HEAD commit of codex-copilot ITSELF (never the upstream checkout) --
+    recorded purely for audit provenance in the update log; NOT used as port
+    evidence. A "HEAD moved since the last recorded update" signal was
+    tried and rejected (see run_update_baseline's docstring/comment): it let
+    a prior, unrelated port commit silently unlock resolving a later,
+    different drift it had nothing to do with."""
+    try:
+        result = subprocess.run(
+            ["git", "-C", str(codex_root), "rev-parse", "HEAD"],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+    except (subprocess.CalledProcessError, FileNotFoundError, OSError):
+        return None
+    return result.stdout.strip() or None
+
+
+def codex_repo_dirty(codex_root: Path, baseline_path: Path) -> bool:
+    """True if codex-copilot's own working tree has an uncommitted change to
+    any TRACKED file OUTSIDE parity/ (the content baseline manifest and the
+    update log are this script's own bookkeeping output -- the very update
+    being guarded is expected to rewrite them, so their own diff can't count
+    as evidence that a mirrored-surface port happened)."""
+    try:
+        result = subprocess.run(
+            ["git", "-C", str(codex_root), "status", "--porcelain"],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+    except (subprocess.CalledProcessError, FileNotFoundError, OSError):
+        return False
+    for line in result.stdout.splitlines():
+        if not line.strip():
+            continue
+        # porcelain v1: "XY <path>" (renames: "XY <old> -> <new>")
+        changed_path = line[3:].split(" -> ")[-1].strip().strip('"')
+        if changed_path.startswith("parity/"):
+            continue
+        return True
+    return False
+
+
+def run_update_baseline(
+    upstream: Path | None,
+    baseline_path: Path,
+    use_json: bool,
+    codex_root: Path = ROOT,
+    update_log_path: Path = DEFAULT_UPDATE_LOG,
+    attest_no_port_needed: str | None = None,
+) -> int:
     if upstream is None:
         reason = "Claude Copilot VERSION.json not available; cannot update content baseline"
         print(json.dumps({"status": "error", "reason": reason}) if use_json else reason)
         return 1
 
     manifest = build_content_manifest(upstream)
+    old_baseline = load_content_baseline(baseline_path)
+
+    # Port guard (fixes the "re-baselining alone silently resolves drift"
+    # trust gap): if the OLD baseline already existed and shows real content
+    # drift against the freshly-hashed upstream, --update-baseline must not
+    # be able to mark that drift resolved unless codex-copilot's own working
+    # tree has an uncommitted change RIGHT NOW outside parity/ -- the exact
+    # "port the mirrored surface, then run --update-baseline before
+    # committing both together" flow this repo's own history already uses
+    # (commit ce087be1: the shared-behaviors.md port was staged/unstaged
+    # when --update-baseline ran, then both landed in one commit). A
+    # candidate "HEAD moved since the last recorded update" signal was
+    # tried and REJECTED here (see git history of this function): it let a
+    # PRIOR, unrelated port commit silently "unlock" resolving a completely
+    # different, later drift that was never actually ported -- a real
+    # instance of exactly the fabrication-resistance gap this guard exists
+    # to close, caught by this file's own regression tests, not by
+    # inspection. Absent live evidence, the update is refused unless the
+    # caller explicitly attests nothing needed porting (recorded, never
+    # silent) -- e.g. a pure renumbering/comment-only upstream change with
+    # no codex-side mirror to touch.
+    if old_baseline is not None:
+        drift = diff_content(old_baseline, manifest)
+        has_drift = bool(drift["changed"] or drift["added"] or drift["removed"])
+        if has_drift:
+            dirty = codex_repo_dirty(codex_root, baseline_path)
+            head = codex_repo_head(codex_root)
+            if not dirty and not attest_no_port_needed:
+                reason = (
+                    "REFUSING to update the content baseline: upstream content drift was "
+                    f"detected ({len(drift['changed'])} changed, {len(drift['added'])} added, "
+                    f"{len(drift['removed'])} removed: {sorted(drift['changed'] + drift['added'] + drift['removed'])}) "
+                    "but codex-copilot's own working tree has no corresponding uncommitted change "
+                    "outside parity/ right now -- nothing appears to have been ported. Port the change "
+                    "into codex-copilot's mirrored surface first (leave it staged/unstaged), then "
+                    "re-run --update-baseline so the port and the baseline resync land together; if this "
+                    "drift genuinely needs no port (e.g. a pure renumbering/comment-only upstream change), "
+                    "re-run with --attest-no-port-needed \"<reason>\" to record that decision explicitly "
+                    "rather than resolving it silently."
+                )
+                result = {
+                    "status": "refused",
+                    "reason": reason,
+                    "drift": drift,
+                    "codex_working_tree_dirty": dirty,
+                    "codex_head_commit": head,
+                }
+                print(json.dumps(result, indent=2) if use_json else reason)
+                return 1
+
     baseline_path.parent.mkdir(parents=True, exist_ok=True)
     baseline_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n")
+
+    log_entry = {
+        "updated_at": manifest["generated_at"],
+        "upstream_commit": manifest["upstream_commit"],
+        "codex_head_commit": codex_repo_head(codex_root),
+        "codex_working_tree_dirty_at_update": codex_repo_dirty(codex_root, baseline_path),
+        "port_attestation": attest_no_port_needed,
+    }
+    update_log_path.parent.mkdir(parents=True, exist_ok=True)
+    update_log_path.write_text(json.dumps(log_entry, indent=2, sort_keys=True) + "\n")
 
     result = {
         "status": "updated",
@@ -163,6 +276,7 @@ def run_update_baseline(upstream: Path | None, baseline_path: Path, use_json: bo
         "baseline": str(baseline_path),
         "file_count": len(manifest["files"]),
         "upstream_commit": manifest["upstream_commit"],
+        "port_guard": log_entry,
     }
     if use_json:
         print(json.dumps(result, indent=2))
@@ -170,6 +284,11 @@ def run_update_baseline(upstream: Path | None, baseline_path: Path, use_json: bo
         print(
             f"Updated content baseline: {result['file_count']} files "
             f"@ {result['upstream_commit'] or 'unknown commit'} -> {baseline_path}"
+        )
+        print(
+            f"Port guard: codex HEAD {log_entry['codex_head_commit']}, "
+            f"working tree dirty at update: {log_entry['codex_working_tree_dirty_at_update']}"
+            + (f", attestation: {log_entry['port_attestation']!r}" if attest_no_port_needed else "")
         )
     return 0
 
@@ -193,13 +312,42 @@ def main() -> int:
         "--baseline",
         help="Override the content baseline manifest path (default: parity/upstream-content-hashes.json)",
     )
+    parser.add_argument(
+        "--update-log",
+        help="Override the port-guard update-log path (default: parity/baseline-update-log.json)",
+    )
+    parser.add_argument(
+        "--attest-no-port-needed",
+        metavar="REASON",
+        help=(
+            "Required to force --update-baseline through the port guard when upstream content "
+            "drifted but codex-copilot's own repo shows no corresponding change (working tree "
+            "clean, HEAD unmoved since the last recorded update). Records REASON in the update "
+            "log instead of resolving the drift silently."
+        ),
+    )
+    parser.add_argument(
+        "--codex-root",
+        help="Override which git repo is treated as 'codex-copilot itself' for the port guard's "
+        "working-tree/HEAD checks (default: this script's own repo root). Test-only escape hatch; "
+        "production use should rely on the default.",
+    )
     args = parser.parse_args()
 
     baseline_path = Path(args.baseline).expanduser().resolve() if args.baseline else DEFAULT_CONTENT_BASELINE
+    update_log_path = Path(args.update_log).expanduser().resolve() if args.update_log else DEFAULT_UPDATE_LOG
+    codex_root = Path(args.codex_root).expanduser().resolve() if args.codex_root else ROOT
     upstream = find_upstream(args.upstream)
 
     if args.update_baseline:
-        return run_update_baseline(upstream, baseline_path, args.json)
+        return run_update_baseline(
+            upstream,
+            baseline_path,
+            args.json,
+            codex_root=codex_root,
+            update_log_path=update_log_path,
+            attest_no_port_needed=args.attest_no_port_needed,
+        )
 
     if upstream is None:
         result = {"status": "skipped", "reason": "Claude Copilot VERSION.json not available"}
