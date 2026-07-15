@@ -14,6 +14,7 @@ Formal initiative documentation lives only in `docs/40-initiatives/NN-slug/`.
 | Folder | Initiative | Goal | Status | `tc` context |
 | --- | --- | --- | --- | --- |
 | [`01-documentation-architecture/`](./01-documentation-architecture/) | Documentation Architecture | Establish the numbered documentation system and canonical initiative workspace | Complete | PRD-6 / TASK-22 |
+| [`02-repository-portable-copilot/`](./02-repository-portable-copilot/) | Repository-Portable Copilot | Make Claude Copilot and Codex Copilot project configuration and durable state travel with a repository | Proposed | PRD-5 / TASK-6 |
 
 ## Directory Contract
 
