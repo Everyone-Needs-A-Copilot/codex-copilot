@@ -2,7 +2,10 @@
   "name": "codex-copilot",
   "version": "0.6.0",
   "description": "Codex-native software specialist framework with tc-backed workflow discipline and Claude Copilot parity contracts.",
-  "author": "Everyone Needs A Copilot",
+  "author": {
+    "name": "Everyone Needs A Copilot",
+    "url": "https://ineedacopilot.com"
+  },
   "homepage": "https://ineedacopilot.com",
   "repository": "https://github.com/Everyone-Needs-A-Copilot/codex-copilot",
   "license": "MIT",
@@ -29,22 +32,8 @@
     "defaultPrompt": [
       "Route this request through the codex-copilot protocol.",
       "Use $ta, $me, and $qa with tc to ship this task.",
-      "Use $sd, $uxd, $uids, and $uid for product experience work.",
-      "Use Live Docs before coding against third-party APIs.",
-      "Set up a Codex specialist workflow for this repo."
+      "Use $sd, $uxd, $uids, and $uid for product experience work."
     ],
     "brandColor": "#1F6FEB"
-  },
-  "requires_external": {
-    "cc": {
-      "description": "cc CLI for memory, memory drift checks, skill discovery, config, env hydration, known references, Live Docs, and optional Claude usage inspection.",
-      "requiredVersion": "1.4.0",
-      "degraded_without": ["cc memory", "cc memory check", "cc skill", "cc config", "cc env", "cc docs", "cc usage"]
-    },
-    "tc": {
-      "description": "tc CLI for PRDs, tasks, streams, handoffs, and work products.",
-      "requiredVersion": "1.1.0",
-      "degraded_without": ["tc prd", "tc task", "tc wp", "tc stream", "tc progress"]
-    }
   }
 }

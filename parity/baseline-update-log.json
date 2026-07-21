@@ -1,7 +1,7 @@
 {
-  "codex_head_commit": "ce087be1d7b32391329369809fe5952085c857f8",
+  "codex_head_commit": "a325050f002ad194cd9f4e4e507539708a1a7eec",
   "codex_working_tree_dirty_at_update": true,
-  "port_attestation": null,
-  "updated_at": "2026-07-14T15:45:03.453188Z",
-  "upstream_commit": "0c73f654327ecf56c527d80ae71d102a25a6de3f"
+  "port_attestation": "Re-pin to canonical Claude main lineage at e359a6c; the previous baseline was captured from unmerged docs/40-initiatives-migration. Codex retains the already-adopted specialist behavior as a supported superset; no reverse port is appropriate.",
+  "updated_at": "2026-07-21T19:15:03.454875Z",
+  "upstream_commit": "e359a6cee57cd128fdd85e74bb6b04e254707215"
 }

@@ -162,11 +162,28 @@ class DesignLedContractTest(unittest.TestCase):
             shutil.copytree(upstream_root / ".claude" / "skills", upstream / ".claude" / "skills")
             shutil.copyfile(upstream_root / "VERSION.json", upstream / "VERSION.json")
 
+            baseline_path = pathlib.Path(tmp) / "synthetic-baseline.json"
+            update_log_path = pathlib.Path(tmp) / "synthetic-update-log.json"
+            seeded = subprocess.run(
+                [
+                    "python3", "scripts/check-upstream-parity.py",
+                    "--upstream", str(upstream),
+                    "--update-baseline", "--baseline", str(baseline_path),
+                    "--update-log", str(update_log_path), "--json",
+                ],
+                cwd=ROOT, capture_output=True, text=True, check=False,
+            )
+            self.assertEqual(seeded.returncode, 0, seeded.stdout + seeded.stderr)
+
             drifted = upstream / ".claude" / "agents" / "qa.md"
             drifted.write_text(drifted.read_text() + "\n<!-- synthetic drift marker -->\n")
 
             result = subprocess.run(
-                ["python3", "scripts/check-upstream-parity.py", "--upstream", str(upstream), "--content", "--json"],
+                [
+                    "python3", "scripts/check-upstream-parity.py",
+                    "--upstream", str(upstream), "--content",
+                    "--baseline", str(baseline_path), "--json",
+                ],
                 cwd=ROOT, capture_output=True, text=True, check=False,
             )
             self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
@@ -400,6 +417,14 @@ class DesignLedContractTest(unittest.TestCase):
         self.assertEqual(catalog["version"], version["version"])
         self.assertEqual(sorted(baseline["activeSpecialists"]), sorted(EXPECTED_SPECIALISTS))
         self.assertEqual(sorted(baseline["optionalSpecialists"]), sorted(OPTIONAL_SPECIALISTS))
+
+    def test_plugin_manifest_uses_supported_codex_shape(self):
+        plugin = json.loads((ROOT / "plugins/codex-copilot/.codex-plugin/plugin.json").read_text())
+
+        self.assertIsInstance(plugin["author"], dict)
+        self.assertTrue(plugin["author"]["name"])
+        self.assertNotIn("requires_external", plugin)
+        self.assertLessEqual(len(plugin["interface"]["defaultPrompt"]), 3)
 
     def test_optional_business_creative_pack_is_activatable(self):
         manifest = json.loads((ROOT / "packs/business-creative/pack.json").read_text())

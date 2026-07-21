@@ -36,7 +36,7 @@
         "tc watch",
         "tc worker",
         "tc wp render",
-        "tc task --max-budget-usd"
+        "tc worker --max-budget-usd"
       ]
     }
   },
