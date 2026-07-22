@@ -65,7 +65,7 @@ or check one task:
 scripts/copilot-gate.sh --task 123
 ```
 
-In projects configured by current `setup-project.sh`, this path is a relative link to the shared framework gate. The shared script remains authoritative.
+In projects configured by current `setup-project.sh`, this path is a project-local framework-owned copy recorded for safe updates.
 
 The script fails when a QA-required task has no attached test work product with
 a valid `ARTIFACT:` marker and passing verdict. Metadata never bypasses that

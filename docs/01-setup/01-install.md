@@ -1,6 +1,6 @@
 # Install
 
-Codex Copilot can be used directly in this framework repo or linked into other projects.
+Codex Copilot can be used directly in this framework repo or installed portably into other projects.
 
 ## Requirements
 
@@ -57,7 +57,7 @@ Start with:
 Use $protocol to route this task through the right workflow.
 ```
 
-## Linking A Target Project
+## Installing A Target Project
 
 Run:
 
@@ -69,7 +69,7 @@ Run:
   --stack "React / Next.js"
 ```
 
-The setup script creates relative symlinks so generated project files do not embed machine-specific framework paths.
+The setup script copies the small project plugin and creates only an internal relative skills bridge, so a clone never depends on a machine-specific framework path.
 
 ## What Gets Installed In A Project
 
@@ -80,7 +80,7 @@ The setup script creates relative symlinks so generated project files do not emb
 - `.claude/memory/entries/`
 - `.claude/skills/codex-copilot`
 - `plugins/codex-copilot`
-- `scripts/copilot-gate.sh` as a relative link to the shared gate
+- `scripts/copilot-gate.sh` as a project-local executable copy
 - `docs/40-initiatives/` with its index and initiative template
 - `SOUL.md` unless skipped
 - `docs/01-architecture/12-architecture-guiding-principles.md` unless skipped

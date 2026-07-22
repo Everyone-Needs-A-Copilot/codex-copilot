@@ -786,9 +786,28 @@ class DesignLedContractTest(unittest.TestCase):
             self.assertTrue((target / "docs/40-initiatives/README.md").exists())
             self.assertTrue((target / "docs/40-initiatives/_template/phases/phase-1-plan.md").exists())
             qa_gate = target / "scripts/copilot-gate.sh"
-            self.assertTrue(qa_gate.is_symlink())
-            self.assertTrue(qa_gate.resolve().samefile(ROOT / "scripts/copilot-gate.sh"))
+            self.assertTrue(qa_gate.is_file())
+            self.assertFalse(qa_gate.is_symlink())
+            self.assertEqual(qa_gate.read_bytes(), (ROOT / "scripts/copilot-gate.sh").read_bytes())
             self.assertTrue(os.access(qa_gate, os.X_OK))
+            plugin = target / "plugins/codex-copilot"
+            self.assertTrue(plugin.is_dir())
+            self.assertFalse(plugin.is_symlink())
+            skills = target / ".claude/skills/codex-copilot"
+            self.assertTrue(skills.is_symlink())
+            self.assertTrue(skills.resolve().samefile(plugin / "skills"))
+            metadata = json.loads((target / ".codex-copilot.json").read_text())
+            self.assertEqual(metadata["installType"], "copy")
+            relocated = pathlib.Path(tmp) / "unrelated" / "clone"
+            relocated.parent.mkdir()
+            shutil.copytree(target, relocated, symlinks=True)
+            relocated_skills = relocated / ".claude/skills/codex-copilot"
+            self.assertTrue(relocated_skills.is_symlink())
+            self.assertTrue(
+                relocated_skills.resolve().samefile(
+                    relocated / "plugins/codex-copilot/skills"
+                )
+            )
 
     def test_setup_preserves_existing_initiative_documentation(self):
         with tempfile.TemporaryDirectory() as tmp:

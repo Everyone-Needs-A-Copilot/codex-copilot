@@ -36,6 +36,6 @@ tc init --json
 
 ## The QA Gate Command Is Missing
 
-New project setup creates `scripts/copilot-gate.sh` as a relative link to the shared framework script. For an older project, rerun the safe update workflow or invoke the framework copy directly after confirming its location.
+New project setup creates `scripts/copilot-gate.sh` as a project-local executable copy. For an older project, rerun the safe update workflow after reviewing existing paths.
 
 Do not create an unrelated replacement script in the target project; keep the shared gate authoritative.

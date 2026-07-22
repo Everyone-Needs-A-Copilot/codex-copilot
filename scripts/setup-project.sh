@@ -182,12 +182,9 @@ print(os.path.relpath(target, source))
 PY
 }
 
-PLUGIN_LINK_DIR="$(dirname "${PLUGIN_LINK}")"
-RELATIVE_PLUGIN_TARGET="$(relative_path "${PLUGIN_LINK_DIR}" "${FRAMEWORK_PLUGIN_PATH}")"
 SKILLS_LINK_DIR="$(dirname "${SKILLS_LINK}")"
-RELATIVE_SKILLS_TARGET="$(relative_path "${SKILLS_LINK_DIR}" "${FRAMEWORK_SKILLS_PATH}")"
-QA_GATE_LINK_DIR="$(dirname "${QA_GATE_LINK}")"
-RELATIVE_QA_GATE_TARGET="$(relative_path "${QA_GATE_LINK_DIR}" "${FRAMEWORK_QA_GATE_PATH}")"
+PROJECT_PLUGIN_SKILLS_PATH="${PLUGIN_LINK}/skills"
+RELATIVE_SKILLS_TARGET="$(relative_path "${SKILLS_LINK_DIR}" "${PROJECT_PLUGIN_SKILLS_PATH}")"
 
 if [[ -L "${PLUGIN_LINK}" || -e "${PLUGIN_LINK}" ]]; then
   echo "Refusing to replace existing plugin link/path: ${PLUGIN_LINK}" >&2
@@ -239,9 +236,10 @@ if [[ "${INITIATIVES_EXISTED}" -eq 0 ]]; then
   mkdir -p "${INITIATIVES_PATH}/_template/retrospectives"
 fi
 
-ln -s "${RELATIVE_PLUGIN_TARGET}" "${PLUGIN_LINK}"
+cp -R "${FRAMEWORK_PLUGIN_PATH}" "${PLUGIN_LINK}"
 ln -s "${RELATIVE_SKILLS_TARGET}" "${SKILLS_LINK}"
-ln -s "${RELATIVE_QA_GATE_TARGET}" "${QA_GATE_LINK}"
+cp "${FRAMEWORK_QA_GATE_PATH}" "${QA_GATE_LINK}"
+chmod +x "${QA_GATE_LINK}"
 
 MEMORY_GITIGNORE="${PROJECT_PATH}/.claude/memory/.gitignore"
 if [[ ! -f "${MEMORY_GITIGNORE}" ]]; then
@@ -292,7 +290,7 @@ EOF
 
 cat > "${INSTALL_METADATA_PATH}" <<EOF
 {
-  "installType": "symlink",
+  "installType": "copy",
   "pluginPath": "./plugins/codex-copilot",
   "projectName": "${PROJECT_NAME}"
 }
@@ -368,11 +366,11 @@ fi
 
 echo "Configured project: ${PROJECT_PATH}"
 echo "Framework root: ${FRAMEWORK_ROOT}"
-echo "Plugin link: ${PLUGIN_LINK}"
-echo "Plugin source: ${RELATIVE_PLUGIN_TARGET}"
+echo "Project plugin: ${PLUGIN_LINK}"
+echo "Plugin source: ${FRAMEWORK_PLUGIN_PATH}"
 echo "Skill link: ${SKILLS_LINK}"
 echo "Skill source: ${RELATIVE_SKILLS_TARGET}"
-echo "QA gate link: ${QA_GATE_LINK}"
+echo "QA gate: ${QA_GATE_LINK}"
 echo "Initiatives: ${INITIATIVES_PATH}"
 echo "cc config: ${CC_CONFIG_PATH}"
 echo "AGENTS.md: ${AGENTS_PATH}"

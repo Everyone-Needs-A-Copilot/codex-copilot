@@ -8,16 +8,16 @@ Codex Copilot adds a specialist operating layer to a project. After setup, the t
 
 - `AGENTS.md` with project-specific Codex instructions
 - local plugin registration under `.agents/plugins/`
-- a symlink to the shared `plugins/codex-copilot` plugin
+- a portable copy of the `plugins/codex-copilot` project plugin
 - a `cc` config file at `.claude/cc/config.json`
 - project memory entries under `.claude/memory/entries/`
 - a skill discovery bridge under `.claude/skills/codex-copilot`
 - optional decision instruments for product and architecture judgment
 - `docs/40-initiatives/` with an initiative index and reusable structure
-- `scripts/copilot-gate.sh` linked to the shared framework gate
+- a project-local `scripts/copilot-gate.sh`
 - optional `tc` initialization
 
-The framework stays centralized in the shared `codex-copilot` repo. Linked projects point back to it.
+The authoring framework stays centralized, while each configured project carries the small runtime plugin surface it needs on every machine.
 
 ## Before You Start
 
@@ -51,7 +51,7 @@ From the `codex-copilot` repo:
 
 Use a git repository as the target project when you want `cc skill list --scope project` to discover project skills immediately.
 
-The installer is intentionally conservative. It refuses to overwrite existing `AGENTS.md`, plugin links, or skill links.
+The installer is intentionally conservative. It refuses to overwrite existing `AGENTS.md`, plugin paths, or skill links.
 
 ## Step 2: Open The Project In Codex
 
