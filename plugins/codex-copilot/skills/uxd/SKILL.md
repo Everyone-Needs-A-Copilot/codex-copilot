@@ -47,6 +47,16 @@ Use Nielsen heuristics, task analysis, and recognition-over-recall as practical 
 - Do not use labels or CTAs that describe implementation instead of user intent.
 - Do not route to UI implementation before interaction states are clear.
 
+## HTML Walkthrough Deliverable (Required)
+
+Every design engagement ships two artifacts: the markdown specification and a clickable HTML walkthrough — a single self-contained file that steps through the designed flow screen by screen, so the owner sees and feels the process before any code is written.
+
+- One file per design stage, never shared: `$uxd` produces `<feature>-uxd-walkthrough.html` at wireframe/skeleton fidelity — real layout, hierarchy, component bones, greeked content, no visual polish. `$uids` later produces its own `<feature>-uids-walkthrough.html` at visual fidelity. Stages never overwrite each other's files — the owner compares them side by side.
+- Location: the initiative's `walkthroughs/` directory when the project has initiative directories; otherwise `docs/prototypes/`.
+- Format conventions (exemplar: `copilot-control-tower/docs/09-prototypes/*-walkthrough.html`): a commentary register (what the user sees, decides, and where trust is won) wrapping a mock-window register (the screens); numbered screens with TOC navigation and prev/next; light and dark themes via `prefers-color-scheme` plus a `data-theme` toggle; reduced-motion respected; fully self-contained, no external requests, system-font stacks with graceful fallback.
+- Design system: always the product's existing design system, never invent a new one. Render the skeleton only — real layout, hierarchy, component bones, greeked content — leave color and type polish to `$uids`.
+- Coverage: the full journey in order, including empty, loading, error, and edge states, plus resolved design-decision variants.
+
 ## Output
 
 Return a concise UX specification:
@@ -56,6 +66,7 @@ Return a concise UX specification:
 - required states
 - product language notes for labels, CTAs, empty states, errors, validation, and feedback
 - accessibility notes
+- walkthrough path: `<feature>-uxd-walkthrough.html`
 - unresolved questions
 
 ## Route To Other Specialist
