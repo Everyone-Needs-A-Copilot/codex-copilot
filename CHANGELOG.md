@@ -7,6 +7,13 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.6.1] - 2026-07-27
+
+### Security
+
+- prepared the first immutable foundation snapshot release signed by the
+  dedicated ENAC release identity
+
 ## [0.6.0] - 2026-07-11
 
 ### Added

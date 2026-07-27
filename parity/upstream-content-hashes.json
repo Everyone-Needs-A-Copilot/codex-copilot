@@ -14,8 +14,8 @@
     ".claude/agents/sec.md": "fff4923b8690b509bc27fbefd5e885b64dfe3914d40056e8776117a67158f715",
     ".claude/agents/ta.md": "4a62d3fff4f8b9946dd44426e42f14dd803a826e867a1d99430f1fde67648108",
     ".claude/agents/uid.md": "0a0495798fd93f73478f56ec8dccfb256ba57ba922767a0a7c40b807d1e64889",
-    ".claude/agents/uids.md": "6c500dbba079599d6209b132cf961fa75db6fb7eba4f25af58e541594087ddaa",
-    ".claude/agents/uxd.md": "f2f42f6f9f2493433638a0b2c012b48aa69028011bdee26dfe7a8376c495ccc4",
+    ".claude/agents/uids.md": "0b4156dc09b69289bd61597f78572966e5dec37ae941e0faba1c924646f4476a",
+    ".claude/agents/uxd.md": "dd71474433a8cc2e94da41f4dc0eea5b1d8eda50fbd3d46247957e6d79dd9f3c",
     ".claude/commands/config.md": "e43f7a6108546018a80c0e6dff6efb3b9e1ab283d6051ead2f4ac9445830ce4a",
     ".claude/commands/continue.md": "773978787113ddf6b20de18cfd263d8a1373610afd9dc145c2b761da4b6220ee",
     ".claude/commands/extensions.md": "371decd75a7ba143930e4703e19956a667f505a9b26a455c364797868c827521",
@@ -71,8 +71,8 @@
     ".claude/skills/testing/jest-patterns/SKILL.md": "a6c942e2df6b678a31b214fd1000697a59e0e812886b6778f19848e463816a80",
     ".claude/skills/testing/pytest-patterns/SKILL.md": "565c21b017ec32be7b7b6076bcb900a79e8118327e6dc7212c1b1f8443352b00"
   },
-  "generated_at": "2026-07-21T19:15:03.454875Z",
-  "upstream_commit": "e359a6cee57cd128fdd85e74bb6b04e254707215",
+  "generated_at": "2026-07-27T17:50:48.823442Z",
+  "upstream_commit": "40af9f94f2b1bd62152da1a8a5bed79ea3eee4ff",
   "versions": {
     "agents": "5.6.0",
     "commands": "5.3.2",
