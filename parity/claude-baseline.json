@@ -1,0 +1,144 @@
+{
+  "baseline": {
+    "source": "claude-copilot",
+    "frameworkVersion": "5.13.0",
+    "capturedDate": "2026-07-11",
+    "codexParityVersion": "0.6.1",
+    "notes": "Codex Copilot mirrors Claude Copilot capability intent with Codex-native substitutes where Claude runtime hooks or named-agent syntax are unavailable. Claude 5.11-5.13 CLI and eval capabilities are adopted; hook-only safety enforcement remains deferred."
+  },
+  "components": {
+    "cc": {
+      "version": "1.7.0",
+      "requiredCommands": [
+        "cc memory",
+        "cc memory check",
+        "cc skill",
+        "cc config",
+        "cc env",
+        "cc docs",
+        "cc usage",
+        "cc eval",
+        "cc memory export",
+        "cc config add",
+        "cc config remove"
+      ]
+    },
+    "tc": {
+      "version": "1.3.0",
+      "requiredCommands": [
+        "tc prd",
+        "tc task",
+        "tc wp",
+        "tc stream",
+        "tc progress",
+        "tc handoff",
+        "tc log",
+        "tc watch",
+        "tc worker",
+        "tc wp render",
+        "tc worker --max-budget-usd"
+      ]
+    }
+  },
+  "activeSpecialists": [
+    "do",
+    "doc",
+    "ind",
+    "me",
+    "qa",
+    "sd",
+    "sec",
+    "ta",
+    "uid",
+    "uids",
+    "uxd"
+  ],
+  "optionalSpecialists": [
+    "cco",
+    "cpa",
+    "cs",
+    "cw",
+    "kc"
+  ],
+  "commandSkills": [
+    "config",
+    "continue",
+    "extensions",
+    "knowledge-copilot",
+    "map",
+    "memory",
+    "orchestrate",
+    "pause",
+    "protocol",
+    "reflect",
+    "setup",
+    "setup-copilot",
+    "setup-knowledge-sync",
+    "setup-project",
+    "skills-approve",
+    "update-copilot",
+    "update-project"
+  ],
+  "workflows": {
+    "bug": ["qa", "me", "qa"],
+    "technical_feature": ["ta", "me", "qa"],
+    "experience_feature": ["sd", "uxd", "uids", "uid", "ta", "me", "qa"],
+    "physical_digital_feature": ["ind", "sd", "uxd", "uids", "uid", "ta", "me", "qa"],
+    "ui_polish": ["uids", "uid", "qa"],
+    "security_sensitive": ["ta", "sec", "me", "qa"],
+    "infrastructure": ["do", "me", "qa"]
+  },
+  "runtimeSubstitutes": {
+    "claudeHooks": {
+      "status": "substituted",
+      "codexMechanisms": [
+        "scripts/copilot-gate.sh",
+        "tc QA metadata",
+        "artifact-bound specialist output contracts",
+        "parity tests"
+      ]
+    },
+    "headlessWorkers": {
+      "status": "substituted",
+      "codexMechanisms": [
+        "explicit spawn_agent approval",
+        "stream ownership metadata",
+        "git worktree utilities"
+      ]
+    },
+    "namedAgentSyntax": {
+      "status": "substituted",
+      "codexMechanisms": [
+        "direct skill names",
+        "agent-catalog.json",
+        "optional pack activation"
+      ]
+    },
+    "hookSafetyPrimitives": {
+      "status": "deferred",
+      "reason": "Codex Copilot has no PreToolUse lifecycle hook; destructive-action policy remains explicit in AGENTS.md and host instructions rather than being described as mechanically enforced."
+    }
+  },
+  "requiredDocs": [
+    "docs/05-reference/03-parity-contract.md",
+    "docs/02-user-guides/03-live-docs.md",
+    "docs/02-user-guides/04-quality-gates.md",
+    "docs/02-user-guides/05-parallel-work.md",
+    "docs/02-user-guides/06-capability-packs.md",
+    "docs/03-developer-guides/02-release-and-publishing.md",
+    "docs/03-developer-guides/03-specialist-chain-evaluation.md",
+    "docs/40-initiatives/README.md"
+  ],
+  "scripts": [
+    "scripts/copilot-gate.sh",
+    "scripts/orchestrate-validate.py",
+    "scripts/lib/validation_result.py",
+    "scripts/activate-pack.py",
+    "scripts/check-versions.sh",
+    "scripts/check-upstream-parity.py",
+    "scripts/compare-specialist-chain.py",
+    "scripts/generate-routing.py",
+    "scripts/run-agent-evals.sh",
+    "scripts/smoke-test.sh"
+  ]
+}

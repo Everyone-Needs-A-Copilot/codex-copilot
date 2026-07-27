@@ -1,0 +1,9 @@
+id: uid-struct-001
+name: "UI implementation retains responsive accessibility"
+priority: P0
+type: structural
+source: {type: file, path: "plugins/codex-copilot/skills/uid/SKILL.md"}
+assertions:
+  - {type: contains, value: "responsive behavior", description: "Responsive behavior is required"}
+  - {type: contains, value: "accessibility", description: "Accessibility is required"}
+  - {type: contains, value: "Route To Other Specialist", description: "Routing boundary is explicit"}

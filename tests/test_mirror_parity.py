@@ -1,0 +1,880 @@
+import json
+import os
+import pathlib
+import re
+import shutil
+import subprocess
+import tempfile
+import textwrap
+import unittest
+
+
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+EXPECTED_SPECIALISTS = [
+    "do",
+    "doc",
+    "ind",
+    "me",
+    "qa",
+    "sd",
+    "sec",
+    "ta",
+    "uid",
+    "uids",
+    "uxd",
+]
+
+EXPECTED_COMMAND_SKILLS = [
+    "config",
+    "continue",
+    "extensions",
+    "knowledge-copilot",
+    "map",
+    "memory",
+    "orchestrate",
+    "pause",
+    "reflect",
+    "setup",
+    "setup-copilot",
+    "setup-knowledge-sync",
+    "setup-project",
+    "skills-approve",
+    "update-copilot",
+    "update-project",
+]
+
+OPTIONAL_SPECIALISTS = ["cco", "cpa", "cs", "cw", "kc"]
+
+REQUIRED_SPECIALIST_SECTIONS = [
+    "## Success Criteria",
+    "## Workflow",
+    "## Iteration Loop",
+    "## Methodology",
+    "## Anti-Generic Rules",
+    "## Route To Other Specialist",
+]
+
+
+class DesignLedContractTest(unittest.TestCase):
+    def load_catalog(self):
+        return json.loads((ROOT / "plugins/codex-copilot/agent-catalog.json").read_text())
+
+    def load_baseline(self):
+        return json.loads((ROOT / "parity/claude-baseline.json").read_text())
+
+    def test_catalog_declares_design_led_release(self):
+        catalog = self.load_catalog()
+        self.assertEqual(catalog["schemaVersion"], "1.0.0")
+        self.assertEqual(catalog["version"], "0.6.1")
+        self.assertEqual(catalog["entrypoints"]["primary"], "protocol")
+        self.assertEqual(catalog["entrypoints"]["launcher"], "launcher")
+        self.assertEqual(catalog["designChain"], ["sd", "uxd", "uids", "uid", "ta", "me", "qa"])
+        self.assertTrue((ROOT / "plugins/codex-copilot/agent-catalog.schema.json").exists())
+
+    def test_specialist_roster_uses_direct_skill_names(self):
+        catalog = self.load_catalog()
+        actual = sorted(agent["id"] for agent in catalog["agents"])
+        self.assertEqual(actual, sorted(EXPECTED_SPECIALISTS))
+
+        for agent_id in EXPECTED_SPECIALISTS:
+            self.assertTrue(
+                (ROOT / f"plugins/codex-copilot/skills/{agent_id}/SKILL.md").exists(),
+                f"missing skill for agent {agent_id}",
+            )
+            self.assertFalse(
+                (ROOT / f"plugins/codex-copilot/skills/agent-{agent_id}/SKILL.md").exists(),
+                f"stale agent-* skill for {agent_id}",
+            )
+        self.assertTrue((ROOT / "plugins/codex-copilot/skills/launcher/SKILL.md").exists())
+
+    def test_workflows_match_design_led_contract(self):
+        workflows = self.load_catalog()["workflows"]
+        self.assertEqual(workflows["bug"], ["qa", "me", "qa"])
+        self.assertEqual(workflows["technical_feature"], ["ta", "me", "qa"])
+        self.assertEqual(
+            workflows["experience_feature"],
+            ["sd", "uxd", "uids", "uid", "ta", "me", "qa"],
+        )
+        self.assertEqual(
+            workflows["physical_digital_feature"],
+            ["ind", "sd", "uxd", "uids", "uid", "ta", "me", "qa"],
+        )
+        self.assertEqual(workflows["ui_polish"], ["uids", "uid", "qa"])
+        self.assertEqual(workflows["security_sensitive"], ["ta", "sec", "me", "qa"])
+        self.assertEqual(workflows["infrastructure"], ["do", "me", "qa"])
+
+    def test_generated_routing_is_current(self):
+        result = subprocess.run(
+            ["python3", "scripts/generate-routing.py", "--check"],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_upstream_freshness_detects_component_drift(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            upstream = pathlib.Path(tmp)
+            (upstream / "VERSION.json").write_text(json.dumps({
+                "framework": "99.0.0",
+                "components": {"cc": {"version": "99.0.0"}, "tc": {"version": "99.0.0"}},
+            }))
+            result = subprocess.run(
+                ["python3", "scripts/check-upstream-parity.py", "--upstream", str(upstream), "--json"],
+                cwd=ROOT, capture_output=True, text=True, check=False,
+            )
+            self.assertNotEqual(result.returncode, 0)
+            self.assertEqual(json.loads(result.stdout)["status"], "fail")
+
+    def find_upstream_checkout(self):
+        candidate = pathlib.Path(
+            os.environ.get("CLAUDE_COPILOT_ROOT", ROOT.parent / "claude-copilot")
+        ).expanduser().resolve()
+        if not (candidate / "VERSION.json").is_file():
+            self.skipTest("no local claude-copilot checkout available for content parity tests")
+        return candidate
+
+    def test_content_baseline_matches_manifest_schema(self):
+        manifest = json.loads((ROOT / "parity/upstream-content-hashes.json").read_text())
+        self.assertEqual(set(manifest.keys()), {"generated_at", "upstream_commit", "files", "versions"})
+        self.assertIsInstance(manifest["files"], dict)
+        self.assertTrue(manifest["files"], "content baseline has no hashed files")
+
+        sha256_re = re.compile(r"^[0-9a-f]{64}$")
+        for relpath, digest in manifest["files"].items():
+            self.assertTrue(sha256_re.match(digest), f"bad sha256 for {relpath}: {digest}")
+            self.assertTrue(
+                relpath.startswith((".claude/agents/", ".claude/commands/", ".claude/skills/")),
+                f"unexpected file in content manifest: {relpath}",
+            )
+            self.assertTrue(relpath.endswith(".md"), f"non-markdown file in content manifest: {relpath}")
+
+        self.assertEqual(set(manifest["versions"].keys()), {"framework", "agents", "commands"})
+        self.assertRegex(manifest["upstream_commit"], r"^[0-9a-f]{40}$")
+
+    def test_content_check_detects_synthetic_agent_drift(self):
+        upstream_root = self.find_upstream_checkout()
+        with tempfile.TemporaryDirectory() as tmp:
+            upstream = pathlib.Path(tmp) / "upstream"
+            shutil.copytree(upstream_root / ".claude" / "agents", upstream / ".claude" / "agents")
+            shutil.copytree(upstream_root / ".claude" / "commands", upstream / ".claude" / "commands")
+            shutil.copytree(upstream_root / ".claude" / "skills", upstream / ".claude" / "skills")
+            shutil.copyfile(upstream_root / "VERSION.json", upstream / "VERSION.json")
+
+            baseline_path = pathlib.Path(tmp) / "synthetic-baseline.json"
+            update_log_path = pathlib.Path(tmp) / "synthetic-update-log.json"
+            seeded = subprocess.run(
+                [
+                    "python3", "scripts/check-upstream-parity.py",
+                    "--upstream", str(upstream),
+                    "--update-baseline", "--baseline", str(baseline_path),
+                    "--update-log", str(update_log_path), "--json",
+                ],
+                cwd=ROOT, capture_output=True, text=True, check=False,
+            )
+            self.assertEqual(seeded.returncode, 0, seeded.stdout + seeded.stderr)
+
+            drifted = upstream / ".claude" / "agents" / "qa.md"
+            drifted.write_text(drifted.read_text() + "\n<!-- synthetic drift marker -->\n")
+
+            result = subprocess.run(
+                [
+                    "python3", "scripts/check-upstream-parity.py",
+                    "--upstream", str(upstream), "--content",
+                    "--baseline", str(baseline_path), "--json",
+                ],
+                cwd=ROOT, capture_output=True, text=True, check=False,
+            )
+            self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+            content = json.loads(result.stdout)["content"]
+            self.assertEqual(content["status"], "drift")
+            self.assertEqual(content["changed"], [".claude/agents/qa.md"])
+            self.assertEqual(content["added"], [])
+            self.assertEqual(content["removed"], [])
+            self.assertEqual(content["version_diffs"], {})
+
+    def test_content_update_baseline_round_trips_to_pass(self):
+        self.find_upstream_checkout()
+        with tempfile.TemporaryDirectory() as tmp:
+            baseline_path = pathlib.Path(tmp) / "upstream-content-hashes.json"
+            update_log_path = pathlib.Path(tmp) / "baseline-update-log.json"
+
+            update = subprocess.run(
+                [
+                    "python3", "scripts/check-upstream-parity.py", "--update-baseline",
+                    "--baseline", str(baseline_path), "--update-log", str(update_log_path), "--json",
+                ],
+                cwd=ROOT, capture_output=True, text=True, check=False,
+            )
+            self.assertEqual(update.returncode, 0, update.stdout + update.stderr)
+            self.assertTrue(baseline_path.is_file())
+            self.assertEqual(json.loads(update.stdout)["status"], "updated")
+
+            check = subprocess.run(
+                ["python3", "scripts/check-upstream-parity.py", "--content", "--baseline", str(baseline_path), "--json"],
+                cwd=ROOT, capture_output=True, text=True, check=False,
+            )
+            self.assertEqual(check.returncode, 0, check.stdout + check.stderr)
+            self.assertEqual(json.loads(check.stdout)["content"]["status"], "pass")
+
+    def _make_synthetic_upstream(self, path: pathlib.Path, marker: str = "v1") -> None:
+        agents = path / ".claude" / "agents"
+        agents.mkdir(parents=True, exist_ok=True)
+        (agents / "sample.md").write_text(f"# sample agent ({marker})\n")
+        (path / "VERSION.json").write_text(json.dumps({
+            "framework": "1.0.0",
+            "components": {"agents": {"version": "1.0.0"}, "commands": {"version": "1.0.0"}},
+        }))
+        subprocess.run(["git", "init", "-q", str(path)], check=True)
+        subprocess.run(["git", "-C", str(path), "add", "-A"], check=True)
+        subprocess.run(
+            ["git", "-c", "user.email=t@t.com", "-c", "user.name=t", "-C", str(path), "commit", "-q", "-m", "init"],
+            check=True,
+        )
+
+    def _make_synthetic_codex_root(self, path: pathlib.Path) -> None:
+        mirror = path / "plugins" / "codex-copilot" / "mirrored.md"
+        mirror.parent.mkdir(parents=True, exist_ok=True)
+        mirror.write_text("mirrored content, v1\n")
+        subprocess.run(["git", "init", "-q", str(path)], check=True)
+        subprocess.run(["git", "-C", str(path), "add", "-A"], check=True)
+        subprocess.run(
+            ["git", "-c", "user.email=t@t.com", "-c", "user.name=t", "-C", str(path), "commit", "-q", "-m", "init"],
+            check=True,
+        )
+
+    def _run_update_baseline(self, tmp, upstream, codex_root, baseline_path, update_log_path, extra=None):
+        cmd = [
+            "python3", "scripts/check-upstream-parity.py", "--update-baseline",
+            "--upstream", str(upstream), "--codex-root", str(codex_root),
+            "--baseline", str(baseline_path), "--update-log", str(update_log_path), "--json",
+        ]
+        return subprocess.run(cmd + (extra or []), cwd=ROOT, capture_output=True, text=True, check=False)
+
+    def test_update_baseline_port_guard_refuses_untouched_drift_and_unblocks_on_real_port(self):
+        """QA-style fabrication guard (this session's t6 close): --update-baseline must not
+        be able to silently 'resolve' real upstream drift when codex-copilot's own repo shows
+        no corresponding change. Exercises all three paths: refuse (no port), succeed (real
+        port present as an uncommitted change), succeed (explicit --attest-no-port-needed)."""
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = pathlib.Path(tmp)
+            upstream = tmp_path / "upstream"
+            codex_root = tmp_path / "codex-copilot"
+            baseline_path = tmp_path / "baseline.json"
+            update_log_path = tmp_path / "update-log.json"
+
+            self._make_synthetic_upstream(upstream, marker="v1")
+            self._make_synthetic_codex_root(codex_root)
+
+            # First run: no prior baseline -> always allowed (nothing to guard against yet).
+            seed = self._run_update_baseline(tmp, upstream, codex_root, baseline_path, update_log_path)
+            self.assertEqual(seed.returncode, 0, seed.stdout + seed.stderr)
+            self.assertEqual(json.loads(seed.stdout)["status"], "updated")
+
+            # Upstream drifts; codex-copilot's own repo is untouched -> REFUSE.
+            baseline_before_refusal = baseline_path.read_text()
+            (upstream / ".claude" / "agents" / "sample.md").write_text("# sample agent (v2)\n")
+            refused = self._run_update_baseline(tmp, upstream, codex_root, baseline_path, update_log_path)
+            self.assertEqual(refused.returncode, 1, refused.stdout + refused.stderr)
+            refused_body = json.loads(refused.stdout)
+            self.assertEqual(refused_body["status"], "refused")
+            self.assertIn(".claude/agents/sample.md", refused_body["drift"]["changed"])
+            # A refused update must not have touched the baseline file on disk at all.
+            self.assertEqual(baseline_path.read_text(), baseline_before_refusal)
+
+            # A real port lands (uncommitted, matching the real observed ce087be workflow) -> SUCCEED.
+            (codex_root / "plugins" / "codex-copilot" / "mirrored.md").write_text("mirrored content, v2\n")
+            ported = self._run_update_baseline(tmp, upstream, codex_root, baseline_path, update_log_path)
+            self.assertEqual(ported.returncode, 0, ported.stdout + ported.stderr)
+            ported_body = json.loads(ported.stdout)
+            self.assertEqual(ported_body["status"], "updated")
+            self.assertTrue(ported_body["port_guard"]["codex_working_tree_dirty_at_update"])
+            self.assertIsNone(ported_body["port_guard"]["port_attestation"])
+
+            # Commit the port so the tree goes clean again, then drift a SECOND time --
+            # the already-committed port must NOT count as evidence for this new,
+            # unrelated drift (only a LIVE uncommitted change does) -- refuse again...
+            subprocess.run(["git", "-C", str(codex_root), "add", "-A"], check=True)
+            subprocess.run(
+                ["git", "-c", "user.email=t@t.com", "-c", "user.name=t", "-C", str(codex_root),
+                 "commit", "-q", "-m", "port"],
+                check=True,
+            )
+            (upstream / ".claude" / "agents" / "sample.md").write_text("# sample agent (v3, cosmetic only)\n")
+            refused_again = self._run_update_baseline(tmp, upstream, codex_root, baseline_path, update_log_path)
+            self.assertEqual(refused_again.returncode, 1, refused_again.stdout + refused_again.stderr)
+
+            # ...but an explicit --attest-no-port-needed unblocks it and records why.
+            attested = self._run_update_baseline(
+                tmp, upstream, codex_root, baseline_path, update_log_path,
+                extra=["--attest-no-port-needed", "cosmetic-only upstream change, no mirror to touch"],
+            )
+            self.assertEqual(attested.returncode, 0, attested.stdout + attested.stderr)
+            attested_body = json.loads(attested.stdout)
+            self.assertEqual(
+                attested_body["port_guard"]["port_attestation"],
+                "cosmetic-only upstream change, no mirror to touch",
+            )
+
+    def test_update_baseline_port_guard_an_unrelated_commit_does_not_unlock_it(self):
+        """A commit that landed for an unrelated reason before the drift even existed must not
+        count as port evidence for that drift -- only a LIVE uncommitted change (outside
+        parity/) at the moment --update-baseline runs does. Guards against exactly the "stale
+        HEAD-moved signal" bug this guard's implementation history already found and removed."""
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = pathlib.Path(tmp)
+            upstream = tmp_path / "upstream"
+            codex_root = tmp_path / "codex-copilot"
+            baseline_path = tmp_path / "baseline.json"
+            update_log_path = tmp_path / "update-log.json"
+
+            self._make_synthetic_upstream(upstream, marker="v1")
+            self._make_synthetic_codex_root(codex_root)
+
+            seed = self._run_update_baseline(tmp, upstream, codex_root, baseline_path, update_log_path)
+            self.assertEqual(seed.returncode, 0, seed.stdout + seed.stderr)
+
+            # codex-copilot gets an unrelated commit that touches nothing mirrored...
+            (codex_root / "README.md").write_text("unrelated docs tweak\n")
+            subprocess.run(["git", "-C", str(codex_root), "add", "-A"], check=True)
+            subprocess.run(
+                ["git", "-c", "user.email=t@t.com", "-c", "user.name=t", "-C", str(codex_root),
+                 "commit", "-q", "-m", "unrelated"],
+                check=True,
+            )
+
+            # ...upstream drifts...
+            (upstream / ".claude" / "agents" / "sample.md").write_text("# sample agent (v2)\n")
+
+            # ...an unrelated commit having landed must NOT unlock the resolve.
+            refused = self._run_update_baseline(tmp, upstream, codex_root, baseline_path, update_log_path)
+            self.assertEqual(refused.returncode, 1, refused.stdout + refused.stderr)
+            self.assertEqual(json.loads(refused.stdout)["status"], "refused")
+
+    def test_specialist_chain_comparator_requires_evidence_and_compares(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = pathlib.Path(tmp)
+            def scorecard(variant, score):
+                return {"variant": variant, "cases": [{"id": "case-1", "criteria": {"correctness": {"score": score, "evidence": "test-run|example"}}}]}
+            generalist = tmp_path / "generalist.json"
+            specialist = tmp_path / "specialist.json"
+            generalist.write_text(json.dumps(scorecard("generalist", 0.5)))
+            specialist.write_text(json.dumps(scorecard("specialist", 0.8)))
+            result = subprocess.run(
+                ["python3", "scripts/compare-specialist-chain.py", "--generalist", str(generalist), "--specialist", str(specialist), "--json"],
+                cwd=ROOT, capture_output=True, text=True, check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertEqual(json.loads(result.stdout)["verdict"], "specialist-chain")
+            invalid = scorecard("specialist", 0.8)
+            invalid["cases"][0]["criteria"]["correctness"]["evidence"] = ""
+            specialist.write_text(json.dumps(invalid))
+            rejected = subprocess.run(
+                ["python3", "scripts/compare-specialist-chain.py", "--generalist", str(generalist), "--specialist", str(specialist)],
+                cwd=ROOT, capture_output=True, text=True, check=False,
+            )
+            self.assertNotEqual(rejected.returncode, 0)
+
+    def test_catalog_routing_edges_keep_design_chain_explicit(self):
+        catalog = self.load_catalog()
+        edges = {(edge["from"], edge["to"]) for edge in catalog["routingEdges"]}
+        for edge in [
+            ("sd", "uxd"),
+            ("uxd", "uids"),
+            ("uids", "uid"),
+            ("uid", "ta"),
+            ("ta", "me"),
+            ("me", "qa"),
+        ]:
+            self.assertIn(edge, edges)
+        for agent in catalog["agents"]:
+            for field in ["id", "skill", "role", "model", "methodology", "purpose"]:
+                self.assertIn(field, agent)
+
+    def test_command_equivalent_skills_exist(self):
+        for skill in EXPECTED_COMMAND_SKILLS:
+            self.assertTrue(
+                (ROOT / f"plugins/codex-copilot/skills/{skill}/SKILL.md").exists(),
+                f"missing command-equivalent skill {skill}",
+            )
+            self.assertTrue(
+                (ROOT / f"plugins/codex-copilot/agent-prompts/{skill}.openai.yaml").exists(),
+                f"missing command-equivalent prompt metadata {skill}",
+            )
+
+    def test_parity_baseline_matches_version_and_catalog(self):
+        baseline = self.load_baseline()
+        version = json.loads((ROOT / "VERSION.json").read_text())
+        catalog = self.load_catalog()
+        plugin = json.loads((ROOT / "plugins/codex-copilot/.codex-plugin/plugin.json").read_text())
+
+        self.assertEqual(version["version"], baseline["baseline"]["codexParityVersion"])
+        self.assertEqual(version["mirrors"]["frameworkVersion"], baseline["baseline"]["frameworkVersion"])
+        self.assertEqual(version["components"]["cc"]["requiredVersion"], baseline["components"]["cc"]["version"])
+        self.assertEqual(version["components"]["tc"]["requiredVersion"], baseline["components"]["tc"]["version"])
+        self.assertEqual(plugin["version"], version["version"])
+        self.assertEqual(catalog["version"], version["version"])
+        self.assertEqual(sorted(baseline["activeSpecialists"]), sorted(EXPECTED_SPECIALISTS))
+        self.assertEqual(sorted(baseline["optionalSpecialists"]), sorted(OPTIONAL_SPECIALISTS))
+
+    def test_plugin_manifest_uses_supported_codex_shape(self):
+        plugin = json.loads((ROOT / "plugins/codex-copilot/.codex-plugin/plugin.json").read_text())
+
+        self.assertIsInstance(plugin["author"], dict)
+        self.assertTrue(plugin["author"]["name"])
+        self.assertNotIn("requires_external", plugin)
+        self.assertLessEqual(len(plugin["interface"]["defaultPrompt"]), 3)
+
+    def test_optional_business_creative_pack_is_activatable(self):
+        manifest = json.loads((ROOT / "packs/business-creative/pack.json").read_text())
+        self.assertEqual(sorted(manifest["specialists"]), sorted(OPTIONAL_SPECIALISTS))
+        for specialist in OPTIONAL_SPECIALISTS:
+            self.assertTrue(
+                (ROOT / f"packs/business-creative/skills/{specialist}/SKILL.md").exists(),
+                f"missing optional specialist {specialist}",
+            )
+        catalog_optional = sorted(agent["id"] for agent in self.load_catalog()["optionalAgents"])
+        self.assertEqual(catalog_optional, sorted(OPTIONAL_SPECIALISTS))
+
+    def test_all_pack_directories_have_manifests(self):
+        for pack_dir in (ROOT / "packs").iterdir():
+            if not pack_dir.is_dir():
+                continue
+            skills_dir = pack_dir / "skills"
+            if not skills_dir.exists():
+                continue
+            manifest_path = pack_dir / "pack.json"
+            self.assertTrue(manifest_path.exists(), f"missing pack manifest for {pack_dir.name}")
+            manifest = json.loads(manifest_path.read_text())
+            self.assertEqual(manifest["name"], pack_dir.name)
+            for specialist in manifest["specialists"]:
+                self.assertTrue(
+                    (skills_dir / specialist / "SKILL.md").exists(),
+                    f"{pack_dir.name} manifest references missing skill {specialist}",
+                )
+
+    def test_required_parity_docs_and_scripts_exist(self):
+        baseline = self.load_baseline()
+        for rel in baseline["requiredDocs"]:
+            self.assertTrue((ROOT / rel).exists(), f"missing parity doc {rel}")
+        for rel in baseline["scripts"]:
+            self.assertTrue((ROOT / rel).exists(), f"missing parity script {rel}")
+
+    def test_active_specialists_have_operational_contracts(self):
+        for agent_id in EXPECTED_SPECIALISTS:
+            text = (ROOT / f"plugins/codex-copilot/skills/{agent_id}/SKILL.md").read_text()
+            for section in REQUIRED_SPECIALIST_SECTIONS:
+                self.assertIn(section, text, f"{agent_id} missing {section}")
+
+    def test_live_docs_is_wired_into_core_surfaces(self):
+        checked = [
+            ROOT / "AGENTS.md",
+            ROOT / "templates/AGENTS.project.template.md",
+            ROOT / "plugins/codex-copilot/skills/specialist-agents/references/shared-behaviors.md",
+            ROOT / "plugins/codex-copilot/skills/ta/SKILL.md",
+            ROOT / "plugins/codex-copilot/skills/me/SKILL.md",
+            ROOT / "plugins/codex-copilot/skills/qa/SKILL.md",
+            ROOT / "docs/02-user-guides/03-live-docs.md",
+        ]
+        for path in checked:
+            self.assertIn("cc docs", path.read_text(), f"missing Live Docs guidance in {path}")
+
+    def test_codex_qa_gate_substitute_is_documented_and_scripted(self):
+        checked = [
+            ROOT / "AGENTS.md",
+            ROOT / "templates/AGENTS.project.template.md",
+            ROOT / "plugins/codex-copilot/skills/qa/SKILL.md",
+            ROOT / "docs/02-user-guides/04-quality-gates.md",
+        ]
+        for path in checked:
+            text = path.read_text()
+            self.assertIn("requiresQa", text, f"missing requiresQa convention in {path}")
+            self.assertIn("VERDICT:", text, f"missing verdict convention in {path}")
+            self.assertIn("ARTIFACT:", text, f"missing artifact convention in {path}")
+        script = (ROOT / "scripts/copilot-gate.sh").read_text()
+        self.assertIn("QA gate", script)
+        self.assertIn("VERDICT: APPROVED", script)
+        self.assertIn("design-fidelity-check", script)
+
+    def test_qa_gate_requires_artifact_for_passing_verdict(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            fake_tc = pathlib.Path(tmp) / "tc"
+            fake_tc.write_text(
+                textwrap.dedent(
+                    """\
+                    #!/usr/bin/env python3
+                    import json
+                    import os
+                    import sys
+
+                    args = sys.argv[1:]
+                    if args[:3] == ["task", "list", "--json"]:
+                        print(json.dumps([{"id": 1, "title": "Example", "metadata": {"requiresQa": True}}]))
+                    elif args[:4] == ["wp", "list", "--task", "1"] and args[4:] == ["--json"]:
+                        print(json.dumps([{"id": 7, "type": "test"}]))
+                    elif args[:3] == ["wp", "get", "7"] and args[3:] == ["--json"]:
+                        print(json.dumps({"content": os.environ["QA_CONTENT"]}))
+                    else:
+                        print(json.dumps({}))
+                    """
+                )
+            )
+            fake_tc.chmod(0o755)
+            env = os.environ.copy()
+            env["PATH"] = f"{tmp}{os.pathsep}{env['PATH']}"
+
+            env["QA_CONTENT"] = "Task: TASK-1 | WP: WP-7\nVERDICT: APPROVED\n"
+            bare = subprocess.run(
+                ["bash", "scripts/copilot-gate.sh"],
+                cwd=ROOT,
+                env=env,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertNotEqual(bare.returncode, 0)
+
+            env["QA_CONTENT"] = (
+                "Task: TASK-1 | WP: WP-7\n"
+                "ARTIFACT: test-run|pytest tests/test_example.py exit=0 \"1 passed\"\n"
+                "VERDICT: APPROVED\n"
+            )
+            evidenced = subprocess.run(
+                ["bash", "scripts/copilot-gate.sh"],
+                cwd=ROOT,
+                env=env,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(evidenced.returncode, 0, evidenced.stdout + evidenced.stderr)
+
+    def test_qa_gate_rejects_metadata_only_approval(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            fake_tc = pathlib.Path(tmp) / "tc"
+            fake_tc.write_text(
+                textwrap.dedent(
+                    """\
+                    #!/usr/bin/env python3
+                    import json
+                    import sys
+
+                    args = sys.argv[1:]
+                    if args[:3] == ["task", "list", "--json"]:
+                        print(json.dumps([{
+                            "id": 1,
+                            "title": "Metadata-only approval",
+                            "metadata": {
+                                "requiresQa": True,
+                                "qaStatus": "approved",
+                                "qaArtifact": "trust me"
+                            }
+                        }]))
+                    elif args[:4] == ["wp", "list", "--task", "1"]:
+                        print("[]")
+                    else:
+                        print(json.dumps({}))
+                    """
+                )
+            )
+            fake_tc.chmod(0o755)
+            env = os.environ.copy()
+            env["PATH"] = f"{tmp}{os.pathsep}{env['PATH']}"
+            result = subprocess.run(
+                ["bash", "scripts/copilot-gate.sh"],
+                cwd=ROOT,
+                env=env,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("TASK-1", result.stdout)
+
+    def test_orchestration_validator_has_stream_contract(self):
+        script = (ROOT / "scripts/orchestrate-validate.py").read_text()
+        for term in ["streamId", "streamDependencies", "files", "cycle detected", "file ownership overlap"]:
+            self.assertIn(term, script)
+        self.assertIn("ValidationReport", script)
+
+    def test_validation_result_contract_exists(self):
+        text = (ROOT / "scripts/lib/validation_result.py").read_text()
+        for term in ["CheckResult", "ValidationReport", "to_shell_json", "passed", "failed", "warned"]:
+            self.assertIn(term, text)
+
+    def test_shared_behaviors_are_discoverable(self):
+        shared = ROOT / "plugins/codex-copilot/skills/specialist-agents/references/shared-behaviors.md"
+        specialist = ROOT / "plugins/codex-copilot/skills/specialist-agents/SKILL.md"
+        self.assertTrue(shared.exists())
+        self.assertIn("shared-behaviors.md", specialist.read_text())
+
+    def test_no_stale_experience_chain_in_public_docs(self):
+        stale = "sd -> uxd -> uids -> ta -> me -> qa"
+        checked = [
+            ROOT / "README.md",
+            ROOT / "docs/02-user-guides/02-protocol.md",
+            ROOT / "docs/02-user-guides/01-daily-workflow.md",
+            ROOT / "plugins/codex-copilot/skills/protocol/SKILL.md",
+            ROOT / "plugins/codex-copilot/skills/protocol/references/flows.md",
+            ROOT / "plugins/codex-copilot/skills/launcher/references/workflows.md",
+        ]
+        for path in checked:
+            self.assertNotIn(stale, path.read_text(), f"stale chain in {path}")
+
+    def test_setup_script_refuses_destructive_replacement(self):
+        script = (ROOT / "scripts/setup-project.sh").read_text()
+        self.assertNotRegex(script, re.compile(r"\brm\s+-"))
+        self.assertNotIn("sed -i.bak", script)
+        self.assertIn("Refusing to replace", script)
+        self.assertIn("Refusing to overwrite", script)
+
+    def test_no_stale_cc_source_path(self):
+        for rel in ["AGENTS.md", "templates/AGENTS.project.template.md"]:
+            text = (ROOT / rel).read_text()
+            self.assertNotIn("/Volumes/Dev/Sites/COPILOT/claude-copilot", text)
+            self.assertNotIn("/Users/", text)
+            self.assertIn("Claude Copilot `tools/cc/`", text)
+
+    def test_public_docs_do_not_ship_local_absolute_paths(self):
+        checked_roots = [
+            ROOT / "README.md",
+            ROOT / "CHANGELOG.md",
+            ROOT / "CONTRIBUTING.md",
+            ROOT / "SECURITY.md",
+            ROOT / "AGENTS.md",
+            ROOT / "docs",
+            ROOT / "templates",
+        ]
+        paths = []
+        for item in checked_roots:
+            if item.is_dir():
+                paths.extend(item.rglob("*.md"))
+            else:
+                paths.append(item)
+
+        allowed = {ROOT / "docs/03-developer-guides/02-release-and-publishing.md"}
+        for path in paths:
+            if path in allowed:
+                continue
+            text = path.read_text()
+            self.assertNotIn("/Users/", text, f"local user path in {path}")
+            self.assertNotIn("/Volumes/", text, f"local volume path in {path}")
+
+    def test_capability_matrix_covers_design_led_surfaces(self):
+        text = (ROOT / "docs/05-reference/01-capability-matrix.md").read_text()
+        for term in [
+            "$protocol",
+            "$continue",
+            "$pause",
+            "$orchestrate",
+            "$knowledge-copilot",
+            "direct Codex skills",
+            "dormant capability packs",
+            "cc memory",
+            "cc memory check",
+            "cc usage",
+            "cc skill",
+            "tc",
+            "Mechanical Claude lifecycle hooks",
+            "Headless worker orchestration",
+        ]:
+            self.assertIn(term, text)
+        self.assertIn("not the design-led product protocol", text)
+
+    def test_getting_started_and_setup_docs_match_bootstrap_outputs(self):
+        getting_started = (ROOT / "docs/01-setup/03-getting-started.md").read_text()
+        setup = (ROOT / "docs/01-setup/02-setup-project.md").read_text()
+        for term in [
+            ".claude/cc/config.json",
+            ".claude/memory/entries/",
+            ".claude/skills/codex-copilot",
+            "plugins/codex-copilot",
+            "docs/40-initiatives/",
+            "scripts/copilot-gate.sh",
+        ]:
+            self.assertIn(term, getting_started)
+            self.assertIn(term, setup)
+        self.assertIn("git repository", getting_started)
+        self.assertIn("git repository", setup)
+
+    def test_force_guidance_matches_script_behavior(self):
+        setup_doc = (ROOT / "docs/01-setup/02-setup-project.md").read_text()
+        setup_skill = (ROOT / "plugins/codex-copilot/skills/setup-project/SKILL.md").read_text()
+        self.assertIn("does not override", setup_doc)
+        self.assertIn("compatibility-only", setup_skill)
+        self.assertNotIn("Do not use `--force` unless", setup_skill)
+
+    def test_numbered_documentation_and_initiative_contract_exist(self):
+        required = [
+            "docs/00-overview/00-overview.md",
+            "docs/01-setup/00-overview.md",
+            "docs/02-user-guides/00-overview.md",
+            "docs/03-developer-guides/00-overview.md",
+            "docs/04-architecture/00-overview.md",
+            "docs/05-reference/00-overview.md",
+            "docs/07-troubleshooting/00-overview.md",
+            "docs/09-appendix/01-ai-ecosystem-research-methodology.md",
+            "docs/40-initiatives/README.md",
+            "docs/40-initiatives/_template/README.md",
+        ]
+        for rel in required:
+            self.assertTrue((ROOT / rel).exists(), f"missing documentation contract file {rel}")
+
+        for rel in [
+            "AGENTS.md",
+            "templates/AGENTS.project.template.md",
+            "plugins/codex-copilot/skills/protocol/SKILL.md",
+            "plugins/codex-copilot/skills/task-copilot/SKILL.md",
+        ]:
+            text = (ROOT / rel).read_text()
+            self.assertIn("docs/40-initiatives/", text, f"missing initiative convention in {rel}")
+            self.assertIn("tc", text, f"missing task-state boundary in {rel}")
+
+    def test_docs_root_is_clean_and_legacy_paths_are_archived(self):
+        root_markdown = sorted(path.name for path in (ROOT / "docs").glob("*.md"))
+        self.assertEqual(root_markdown, ["README.md"])
+
+        archive = (ROOT / "docs/90-archive/redirects/README.md").read_text()
+        for former, target in {
+            "docs/getting-started.md": "01-setup/03-getting-started.md",
+            "docs/usage.md": "02-user-guides/01-daily-workflow.md",
+            "docs/architecture.md": "04-architecture/00-overview.md",
+            "docs/capabilities.md": "05-reference/01-capability-matrix.md",
+            "docs/parity.md": "05-reference/03-parity-contract.md",
+        }.items():
+            self.assertIn(former, archive)
+            self.assertIn(target, archive)
+
+    def test_local_markdown_links_resolve(self):
+        link_pattern = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
+        checked = [ROOT / "README.md", ROOT / "CONTRIBUTING.md", *sorted((ROOT / "docs").rglob("*.md"))]
+        failures = []
+        for path in checked:
+            for target in link_pattern.findall(path.read_text()):
+                if target.startswith(("http://", "https://", "mailto:", "#")):
+                    continue
+                clean = target.split("#", 1)[0]
+                if not clean:
+                    continue
+                resolved = (path.parent / clean).resolve()
+                if not resolved.exists():
+                    failures.append(f"{path.relative_to(ROOT)} -> {target}")
+        self.assertEqual(failures, [], "broken local Markdown links:\n" + "\n".join(failures))
+
+    def test_setup_scaffolds_initiatives_and_shared_qa_gate(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            target = pathlib.Path(tmp) / "project"
+            target.mkdir()
+            subprocess.run(["git", "init", "-q", str(target)], check=True)
+            result = subprocess.run(
+                [
+                    "bash",
+                    "scripts/setup-project.sh",
+                    "--project",
+                    str(target),
+                    "--name",
+                    "fixture-project",
+                    "--no-tc-init",
+                ],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertTrue((target / "docs/40-initiatives/README.md").exists())
+            self.assertTrue((target / "docs/40-initiatives/_template/phases/phase-1-plan.md").exists())
+            qa_gate = target / "scripts/copilot-gate.sh"
+            self.assertTrue(qa_gate.is_file())
+            self.assertFalse(qa_gate.is_symlink())
+            self.assertEqual(qa_gate.read_bytes(), (ROOT / "scripts/copilot-gate.sh").read_bytes())
+            self.assertTrue(os.access(qa_gate, os.X_OK))
+            plugin = target / "plugins/codex-copilot"
+            self.assertTrue(plugin.is_dir())
+            self.assertFalse(plugin.is_symlink())
+            skills = target / ".claude/skills/codex-copilot"
+            self.assertTrue(skills.is_symlink())
+            self.assertTrue(skills.resolve().samefile(plugin / "skills"))
+            metadata = json.loads((target / ".codex-copilot.json").read_text())
+            self.assertEqual(metadata["installType"], "copy")
+            relocated = pathlib.Path(tmp) / "unrelated" / "clone"
+            relocated.parent.mkdir()
+            shutil.copytree(target, relocated, symlinks=True)
+            relocated_skills = relocated / ".claude/skills/codex-copilot"
+            self.assertTrue(relocated_skills.is_symlink())
+            self.assertTrue(
+                relocated_skills.resolve().samefile(
+                    relocated / "plugins/codex-copilot/skills"
+                )
+            )
+
+    def test_setup_preserves_existing_initiative_documentation(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            target = pathlib.Path(tmp) / "project"
+            initiatives = target / "docs/40-initiatives"
+            initiatives.mkdir(parents=True)
+            custom_index = "# Project Initiatives\n\nExisting project-owned content.\n"
+            (initiatives / "README.md").write_text(custom_index)
+            subprocess.run(["git", "init", "-q", str(target)], check=True)
+            result = subprocess.run(
+                [
+                    "bash",
+                    "scripts/setup-project.sh",
+                    "--project",
+                    str(target),
+                    "--name",
+                    "fixture-project",
+                    "--no-tc-init",
+                ],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertEqual((initiatives / "README.md").read_text(), custom_index)
+            self.assertFalse((initiatives / "_template").exists())
+
+    def test_setup_refusal_is_atomic_and_force_does_not_clobber(self):
+        for force in (False, True):
+            with self.subTest(force=force), tempfile.TemporaryDirectory() as tmp:
+                target = pathlib.Path(tmp) / "project"
+                target.mkdir()
+                agents = target / "AGENTS.md"
+                agents.write_text("# Existing instructions\n")
+                config = target / ".claude/cc/config.json"
+                config.parent.mkdir(parents=True)
+                config.write_text('{"custom":"keep-me"}\n')
+                before = sorted(
+                    str(path.relative_to(target))
+                    for path in target.rglob("*")
+                )
+                command = [
+                    "bash",
+                    "scripts/setup-project.sh",
+                    "--project",
+                    str(target),
+                    "--no-tc-init",
+                ]
+                if force:
+                    command.append("--force")
+                result = subprocess.run(
+                    command,
+                    cwd=ROOT,
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                )
+                after = sorted(
+                    str(path.relative_to(target))
+                    for path in target.rglob("*")
+                )
+                self.assertNotEqual(result.returncode, 0)
+                self.assertEqual(before, after)
+                self.assertEqual(config.read_text(), '{"custom":"keep-me"}\n')
+                self.assertFalse((target / "plugins/codex-copilot").exists())
+
+
+if __name__ == "__main__":
+    unittest.main()

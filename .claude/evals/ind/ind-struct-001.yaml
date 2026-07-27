@@ -1,0 +1,8 @@
+id: ind-struct-001
+name: "Industrial design retains physical-product essentialism"
+priority: P0
+type: structural
+source: {type: file, path: "plugins/codex-copilot/skills/ind/SKILL.md"}
+assertions:
+  - {type: contains, value: "Dieter Rams", description: "Rams principles are explicit"}
+  - {type: contains, value: "repairability", description: "Repairability and lifecycle are considered"}
