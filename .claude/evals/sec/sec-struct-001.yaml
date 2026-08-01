@@ -1,0 +1,8 @@
+id: sec-struct-001
+name: "Security retains explicit threat modeling"
+priority: P0
+type: structural
+source: {type: file, path: "plugins/codex-copilot/skills/sec/SKILL.md"}
+assertions:
+  - {type: contains, value: "STRIDE-style", description: "Threat-model methodology is present"}
+  - {type: contains, value: "trust boundaries", description: "Trust boundaries are required"}

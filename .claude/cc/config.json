@@ -1,0 +1,7 @@
+{
+  "$schema": "cc-config-v1",
+  "version": 1,
+  "paths": {
+    "knowledge_repo": "@machine"
+  }
+}

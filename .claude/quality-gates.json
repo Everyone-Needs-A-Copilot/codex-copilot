@@ -1,0 +1,5 @@
+{
+  "eval": {
+    "pass_rate_threshold": 1.0
+  }
+}

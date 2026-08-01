@@ -1,0 +1,9 @@
+id: sd-struct-001
+name: "Service design retains its distinct lens"
+priority: P0
+type: structural
+source: {type: file, path: "plugins/codex-copilot/skills/sd/SKILL.md"}
+assertions:
+  - {type: contains, value: "service blueprinting", description: "Service blueprint methodology is present"}
+  - {type: contains, value: "jobs-to-be-done", description: "Jobs-to-be-done methodology is present"}
+  - {type: contains, value: "frontstage", description: "Frontstage/backstage boundary is considered"}
