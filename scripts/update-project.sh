@@ -21,6 +21,16 @@ declared version) against the framework source and repaired when they
 differ, including drift that carries bytes from an intermediate commit
 rather than a released version.
 
+Framework source resolution (when --framework-root is not given): the
+pinned mirror at ~/.copilot/mirrors/codex-foundation is used if it looks
+like a valid framework checkout (this matches cc's own
+paths.codex_copilot_root default, and is what every consumer's --project
+run should sync against -- never a live, possibly-ahead-of-release dev
+checkout). Only when no pinned mirror is present does this fall back to
+self-locating relative to this script (the framework repo's own copy),
+which is what makes running this script from within a codex-copilot dev
+checkout still work for local testing.
+
 A file is never touched if it is marked ownership: project, either via
 `owner: project` YAML frontmatter inside the file itself, or via a
 `copilot.lock.json` entry for that path with "ownership": "project". This
@@ -37,7 +47,10 @@ EOF
 }
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-FRAMEWORK_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+SELF_LOCATED_FRAMEWORK_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+DEFAULT_MIRROR_ROOT="${HOME}/.copilot/mirrors/codex-foundation"
+FRAMEWORK_ROOT="${SELF_LOCATED_FRAMEWORK_ROOT}"
+FRAMEWORK_ROOT_EXPLICIT=0
 
 PROJECT_PATH=""
 DRY_RUN=0
@@ -50,6 +63,7 @@ while [[ $# -gt 0 ]]; do
       ;;
     --framework-root)
       FRAMEWORK_ROOT="$(cd "${2:-}" && pwd)"
+      FRAMEWORK_ROOT_EXPLICIT=1
       shift 2
       ;;
     --dry-run)
@@ -80,6 +94,21 @@ if [[ ! -d "${PROJECT_PATH}" ]]; then
 fi
 PROJECT_PATH="$(cd "${PROJECT_PATH}" && pwd)"
 
+# Prefer the pinned mirror over a self-located dev checkout unless the
+# caller was explicit -- this is the whole fix for repos ending up with
+# plugin content newer than any release: an ad-hoc `update-project.sh
+# --project <path>` run from inside the framework repo must not silently
+# source from wherever it happens to be checked out.
+FRAMEWORK_ROOT_SOURCE="explicit --framework-root (${FRAMEWORK_ROOT})"
+if [[ "${FRAMEWORK_ROOT_EXPLICIT}" -eq 0 ]]; then
+  if [[ -d "${DEFAULT_MIRROR_ROOT}/plugins/codex-copilot" && -f "${DEFAULT_MIRROR_ROOT}/scripts/copilot-gate.sh" ]]; then
+    FRAMEWORK_ROOT="${DEFAULT_MIRROR_ROOT}"
+    FRAMEWORK_ROOT_SOURCE="pinned mirror (${DEFAULT_MIRROR_ROOT})"
+  else
+    FRAMEWORK_ROOT_SOURCE="self-located framework checkout (${SELF_LOCATED_FRAMEWORK_ROOT}; no pinned mirror found at ${DEFAULT_MIRROR_ROOT})"
+  fi
+fi
+
 FRAMEWORK_PLUGIN_PATH="${FRAMEWORK_ROOT}/plugins/codex-copilot"
 FRAMEWORK_QA_GATE_PATH="${FRAMEWORK_ROOT}/scripts/copilot-gate.sh"
 
@@ -108,18 +137,20 @@ if [[ -L "${PLUGIN_LINK}" ]]; then
   exit 0
 fi
 
-python3 - "${PROJECT_PATH}" "${FRAMEWORK_ROOT}" "${DRY_RUN}" <<'PY'
+python3 - "${PROJECT_PATH}" "${FRAMEWORK_ROOT}" "${DRY_RUN}" "${FRAMEWORK_ROOT_SOURCE}" <<'PY'
 from datetime import datetime, timezone
 from pathlib import Path
 import hashlib
 import json
 import re
+import stat
 import subprocess
 import sys
 
 project_root = Path(sys.argv[1]).resolve()
 framework_root = Path(sys.argv[2]).resolve()
 dry_run = sys.argv[3] == "1"
+framework_root_source = sys.argv[4]
 
 plugin_src = framework_root / "plugins" / "codex-copilot"
 gate_src = framework_root / "scripts" / "copilot-gate.sh"
@@ -129,6 +160,31 @@ FRONTMATTER_OWNER_RE = re.compile(r"^owner:\s*project\s*$", re.MULTILINE)
 
 def sha256_bytes(data: bytes) -> str:
     return "sha256:" + hashlib.sha256(data).hexdigest()
+
+
+# managed_outputs fingerprints -- byte-for-byte reimplementations of
+# claude-copilot's cc.core.ecosystem.project_locking.fingerprint_file_payload
+# / fingerprint_symlink. Duplicated here rather than imported: codex-copilot
+# is a standalone repo/product and must not take a runtime dependency on
+# another repo's private Python package just to write a lock record it
+# already knows the shape of. The two implementations are proven identical
+# (independently verified against cc's real functions) and MUST stay that
+# way, because cc's project_integration.py reader recomputes and compares
+# this fingerprint -- it never trusts the value recorded here.
+def _canonical_json(value) -> bytes:
+    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=True).encode("utf-8")
+
+
+def _fingerprint(value) -> str:
+    return "sha256:" + hashlib.sha256(_canonical_json(value)).hexdigest()
+
+
+def fingerprint_file_payload(payload: bytes, mode: int) -> str:
+    return _fingerprint(["file", mode, hashlib.sha256(payload).hexdigest()])
+
+
+def fingerprint_symlink(link_value: str) -> str:
+    return _fingerprint(["symlink", link_value])
 
 
 def relpaths(root: Path):
@@ -215,6 +271,14 @@ for relpath, prior in prior_files.items():
             target.unlink()
         retired.append(relpath)
 
+# managed_outputs (schema: {"path", "kind", "fingerprint"} exactly -- cc's
+# project_integration.py reader rejects any record missing "fingerprint" as
+# an "invalid managed-output record"). Populated below as each managed
+# output is actually resolved; a path is only ever recorded here once this
+# run has made (or confirmed) it match its expected content -- never for a
+# path this run left in an unknown/unexpected state.
+managed_outputs_entries: list[dict[str, str]] = []
+
 # Framework-managed skill bridge symlink: verify and repair, never left
 # broken. The target is relative to the PROJECT's own plugin copy (not the
 # framework source) so the link stays portable across machines/clones.
@@ -237,6 +301,15 @@ else:
         skills_link.symlink_to(skills_target_expected)
     symlink_status = "created"
 
+if symlink_status != "left alone (unexpected non-symlink at this path)":
+    managed_outputs_entries.append(
+        {
+            "path": ".claude/skills/codex-copilot",
+            "kind": "internal-symlink",
+            "fingerprint": fingerprint_symlink(skills_target_expected),
+        }
+    )
+
 # .codex-copilot.json: field-level merge only. projectName/pluginPath are
 # project-owned and are never overwritten; framework tracking fields are
 # refreshed so the install metadata reflects what was actually synced.
@@ -250,8 +323,10 @@ if codex_config_path.is_file():
     except (json.JSONDecodeError, OSError):
         cfg = {}
     install_type = cfg.get("installType", "copy")
+    codex_config_mode = stat.S_IMODE(codex_config_path.lstat().st_mode)
     if install_type == "link":
         config_status = "skipped (installType=link; plugin already synced via symlink)"
+        codex_config_bytes = codex_config_path.read_bytes()
     else:
         commit = "unknown"
         try:
@@ -266,9 +341,17 @@ if codex_config_path.is_file():
         cfg.setdefault("installType", "copy")
         cfg["updatedAt"] = datetime.now(timezone.utc).strftime("%Y-%m-%d")
         cfg["updatedBy"] = f"codex-copilot {framework_version} update-project.sh"
+        codex_config_bytes = (json.dumps(cfg, indent=2) + "\n").encode("utf-8")
         if not dry_run:
-            codex_config_path.write_text(json.dumps(cfg, indent=2) + "\n", encoding="utf-8")
+            codex_config_path.write_bytes(codex_config_bytes)
         config_status = "refreshed tracking fields (projectName/pluginPath preserved)"
+    managed_outputs_entries.append(
+        {
+            "path": ".codex-copilot.json",
+            "kind": "merged-json",
+            "fingerprint": fingerprint_file_payload(codex_config_bytes, codex_config_mode),
+        }
+    )
 else:
     config_status = "absent (project not fully set up; leaving as-is)"
 
@@ -277,10 +360,7 @@ new_codex_component = {
     "release_tag": f"v{framework_version}",
     "version": framework_version,
     "files": sorted(new_files_entries, key=lambda f: f["path"]),
-    "managed_outputs": [
-        {"path": ".claude/skills/codex-copilot", "kind": "internal-symlink"},
-        {"path": ".codex-copilot.json", "kind": "merged-json"},
-    ],
+    "managed_outputs": sorted(managed_outputs_entries, key=lambda o: (o["path"], o["kind"])),
 }
 lock_data["schema_version"] = lock_data.get("schema_version", "1.0")
 lock_data["components"] = other_components + [new_codex_component]
@@ -297,6 +377,7 @@ def section(title, items):
 print(f"{'[dry-run] ' if dry_run else ''}codex-copilot update-project report")
 print(f"Project: {project_root}")
 print(f"Framework root: {framework_root}")
+print(f"Framework root source: {framework_root_source}")
 print(f"Framework version: {framework_version}")
 print()
 section("Updated (framework-owned, content differed from source)", updated)

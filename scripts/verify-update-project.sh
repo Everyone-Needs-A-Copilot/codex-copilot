@@ -40,7 +40,7 @@ echo "=== Scenario 1: fresh install ==="
 "${SCRIPT_DIR}/setup-project.sh" --project "${PROJECT_DIR}" --name scratch-project >/dev/null
 
 if [[ ! -f "${PROJECT_DIR}/copilot.lock.json" ]]; then
-  UPDATE_OUTPUT_1="$("${SCRIPT_DIR}/update-project.sh" --project "${PROJECT_DIR}")"
+  UPDATE_OUTPUT_1="$("${SCRIPT_DIR}/update-project.sh" --project "${PROJECT_DIR}" --framework-root "${FRAMEWORK_ROOT}")"
   echo "${UPDATE_OUTPUT_1}"
   # The very first update run legitimately does bookkeeping (writes
   # copilot.lock.json, refreshes .codex-copilot.json tracking fields) even
@@ -61,7 +61,7 @@ SNAPSHOT_A="${SCRATCH_ROOT}/snapshot-a.txt"
 (cd "${PROJECT_DIR}" && find plugins/codex-copilot scripts/copilot-gate.sh -type f -exec shasum {} \; | sort) > "${SNAPSHOT_A}"
 
 echo "=== Scenario 2: idempotence (second run is a no-op) ==="
-UPDATE_OUTPUT_2="$("${SCRIPT_DIR}/update-project.sh" --project "${PROJECT_DIR}")"
+UPDATE_OUTPUT_2="$("${SCRIPT_DIR}/update-project.sh" --project "${PROJECT_DIR}" --framework-root "${FRAMEWORK_ROOT}")"
 echo "${UPDATE_OUTPUT_2}"
 SNAPSHOT_B="${SCRATCH_ROOT}/snapshot-b.txt"
 (cd "${PROJECT_DIR}" && find plugins/codex-copilot scripts/copilot-gate.sh -type f -exec shasum {} \; | sort) > "${SNAPSHOT_B}"
@@ -84,7 +84,7 @@ data["__scratch_drift_marker__"] = "bytes-from-an-intermediate-commit"
 open(path, "w").write(json.dumps(data))
 PY
 
-UPDATE_OUTPUT_3="$("${SCRIPT_DIR}/update-project.sh" --project "${PROJECT_DIR}")"
+UPDATE_OUTPUT_3="$("${SCRIPT_DIR}/update-project.sh" --project "${PROJECT_DIR}" --framework-root "${FRAMEWORK_ROOT}")"
 echo "${UPDATE_OUTPUT_3}"
 
 REPAIRED_1=$(diff -q "${PROJECT_DIR}/${SAMPLE_LOCKED_FILE}" "${FRAMEWORK_ROOT}/${SAMPLE_LOCKED_FILE}" >/dev/null 2>&1 && echo yes || echo no)
@@ -110,7 +110,7 @@ path.write_text(frontmatter + rest + "\nPROJECT-OWNED CUSTOMIZATION (must surviv
 PY
 PROJECT_OWNED_CONTENT="$(cat "${PROJECT_DIR}/${SAMPLE_LOCKED_FILE}")"
 
-UPDATE_OUTPUT_4="$("${SCRIPT_DIR}/update-project.sh" --project "${PROJECT_DIR}")"
+UPDATE_OUTPUT_4="$("${SCRIPT_DIR}/update-project.sh" --project "${PROJECT_DIR}" --framework-root "${FRAMEWORK_ROOT}")"
 echo "${UPDATE_OUTPUT_4}"
 
 AFTER_CONTENT="$(cat "${PROJECT_DIR}/${SAMPLE_LOCKED_FILE}")"
