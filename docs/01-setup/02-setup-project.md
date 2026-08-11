@@ -76,15 +76,25 @@ To skip these files for a lightweight install:
 
 ## Existing Project Wiring
 
-The installer does not override existing `AGENTS.md`, plugin links, or skill links. If a project already has Codex Copilot wiring, review it manually and update only the specific fields that need to change.
+The installer does not override an existing `AGENTS.md`. If a project already has Codex Copilot wiring (a plugin link, skill link, or QA-gate link already present), running the installer again delegates to `scripts/update-project.sh` and repairs those paths in place -- content-compared against the framework source (sha256, not the declared version), never a wholesale replace -- instead of refusing.
 
-`--force` is accepted for compatibility with older scripts, but it does not authorize destructive replacement.
+`--force` is accepted for compatibility with older scripts, but it changes nothing: there is no longer a refusal for it to bypass.
 
 ```bash
 ./scripts/setup-project.sh \
   --project /absolute/path/to/project \
   --force
 ```
+
+## Updating an Existing Install
+
+To refresh an existing install directly, without first-install scaffolding, run the updater on its own:
+
+```bash
+./scripts/update-project.sh --project /absolute/path/to/project
+```
+
+It only ever touches the 62 framework-owned paths (61 files under `plugins/codex-copilot/` plus `scripts/copilot-gate.sh`). A file is skipped -- never overwritten -- if it is marked `ownership: project`, either via `owner: project` YAML frontmatter in the file itself or a `copilot.lock.json` entry for that path with `"ownership": "project"`. `AGENTS.md`, `SOUL.md`, `docs/40-initiatives/`, and `.agents/plugins/marketplace.json` are never touched by the updater; `.codex-copilot.json` only has its framework-tracking fields merged in (`projectName`/`pluginPath` are preserved). Running it twice in a row makes no further changes on the second run. Add `--dry-run` to preview without writing.
 
 ## Result
 
@@ -119,5 +129,6 @@ Read AGENTS.md and use $protocol to route this task through the right codex-copi
 - The installer prefers `$HOME/.local/bin/cc` because bare `cc` may resolve to the system C compiler.
 - If a project already has a hand-written `AGENTS.md`, review it manually before changing it.
 - Existing `SOUL.md` and architecture-principles files are preserved.
-- Existing `docs/40-initiatives/` and QA-gate paths are preserved; setup refuses to replace them.
+- Existing `docs/40-initiatives/` is preserved as-is once it exists (only scaffolded the first time).
+- An existing QA-gate path (`scripts/copilot-gate.sh`) is repaired in place by `update-project.sh`, not silently replaced and not refused.
 - Optional packs can be activated later with `scripts/activate-pack.py`.
