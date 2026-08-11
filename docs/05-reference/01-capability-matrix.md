@@ -22,8 +22,8 @@ Authoritative sources:
 | `/extensions` | `$extensions` | Implemented as inspection workflow | Explains project/global/base resolution; does not perform automatic prompt assembly. |
 | `/orchestrate` | `$orchestrate` | Explicit-delegation substitute | Plans streams and validates boundaries; does not auto-spawn headless workers without user-approved delegation. |
 | `/setup`, `/setup-copilot` | `$setup-copilot` | Implemented as verification workflow | Provides safe setup/repair guidance; does not remove existing resources. |
-| `/setup-project` | `$setup-project` plus `scripts/setup-project.sh` | Implemented | Installer refuses replacement of existing project wiring. |
-| `/update-project` | `$update-project` | Implemented as workflow skill | Inspects drift and suggests safe updates; destructive replacement requires explicit current approval. |
+| `/setup-project` | `$setup-project` plus `scripts/setup-project.sh` | Implemented | Re-running over an existing install repairs it in place (delegates to `scripts/update-project.sh`) instead of refusing; `AGENTS.md` is never overwritten. |
+| `/update-project` | `$update-project` plus `scripts/update-project.sh` | Implemented | Content-compares (sha256) the 62 framework-owned plugin paths against source and repairs drift in place; skips any path marked `ownership: project`; idempotent. |
 | `/update-copilot` | `$update-copilot` | Implemented as workflow skill | Checks git/tooling safely; no reset, clean, force-push, or deletion without explicit approval. |
 | `/knowledge-copilot` | `$knowledge-copilot` | Implemented as workflow skill | Guides creation/linking/status; does not delete or replace existing knowledge. |
 | `/config` | `$config` | Implemented as workflow skill | Reads `cc` config and env hydration state. |

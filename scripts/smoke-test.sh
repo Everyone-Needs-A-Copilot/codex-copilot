@@ -8,6 +8,7 @@ python3 scripts/check-upstream-parity.py
 python3 scripts/check-upstream-parity.py --content
 python3 scripts/generate-routing.py --check
 bash scripts/run-agent-evals.sh
+bash scripts/verify-update-project.sh
 python3 scripts/orchestrate-validate.py --json <<'JSON' >/dev/null
 {
   "streams": [

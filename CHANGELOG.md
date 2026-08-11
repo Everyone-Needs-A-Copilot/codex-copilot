@@ -7,6 +7,19 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Added
+
+- `scripts/update-project.sh`: updates an existing codex-copilot install in place, comparing the 62 framework-owned plugin paths by content (sha256) rather than declared version, so drift that doesn't match any released version is repaired too; a path marked `ownership: project` (via `owner: project` frontmatter or a `copilot.lock.json` entry) is never touched; idempotent; writes/refreshes `copilot.lock.json` and merges tracking fields into `.codex-copilot.json`
+- `scripts/verify-update-project.sh`: disposable-scratch-repo verification (fresh install, idempotence, stale-content repair, project-owned survival, setup-project.sh re-run), wired into `scripts/smoke-test.sh`
+
+### Changed
+
+- `scripts/setup-project.sh` no longer hard-refuses when the plugin/skill/QA-gate paths already exist; it delegates to `scripts/update-project.sh` to repair them in place and exits 0. `AGENTS.md`, `marketplace.json`, and install metadata are still never regenerated once present, but that is now a per-file skip rather than a whole-run abort.
+
+### Fixed
+
+- consumer repos frozen at an old plugin copy (labelled `0.6.1` or otherwise) had no in-place repair path; `update-project.sh` closes that gap
+
 ## [0.6.1] - 2026-07-27
 
 ### Security

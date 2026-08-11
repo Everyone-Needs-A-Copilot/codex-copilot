@@ -19,6 +19,12 @@ Options:
   --force                 Compatibility-only; existing project wiring is still preserved
   --no-tc-init            Skip tc init
   --help                  Show this help
+
+Safe to re-run: if the project already has a codex-copilot install, this
+delegates to update-project.sh to repair the plugin/skill/QA-gate paths in
+place (content-compared, ownership: project files preserved) instead of
+refusing. AGENTS.md, marketplace.json, and install metadata are always
+left untouched once they exist.
 EOF
 }
 
@@ -186,38 +192,39 @@ SKILLS_LINK_DIR="$(dirname "${SKILLS_LINK}")"
 PROJECT_PLUGIN_SKILLS_PATH="${PLUGIN_LINK}/skills"
 RELATIVE_SKILLS_TARGET="$(relative_path "${SKILLS_LINK_DIR}" "${PROJECT_PLUGIN_SKILLS_PATH}")"
 
-if [[ -L "${PLUGIN_LINK}" || -e "${PLUGIN_LINK}" ]]; then
-  echo "Refusing to replace existing plugin link/path: ${PLUGIN_LINK}" >&2
-  echo "Remove or update it manually after reviewing the target." >&2
-  exit 1
+# An existing plugin/skill/gate path means this project was already set up.
+# Repair it in place via update-project.sh instead of refusing -- a second
+# run over an already-provisioned repo must repair, not exit non-zero.
+EXISTING_INSTALL=0
+if [[ -L "${PLUGIN_LINK}" || -e "${PLUGIN_LINK}" || -L "${SKILLS_LINK}" || -e "${SKILLS_LINK}" || -L "${QA_GATE_LINK}" || -e "${QA_GATE_LINK}" ]]; then
+  EXISTING_INSTALL=1
 fi
 
-if [[ -L "${SKILLS_LINK}" || -e "${SKILLS_LINK}" ]]; then
-  echo "Refusing to replace existing skill link/path: ${SKILLS_LINK}" >&2
-  echo "Remove or update it manually after reviewing the target." >&2
-  exit 1
-fi
-
-if [[ -L "${QA_GATE_LINK}" || -e "${QA_GATE_LINK}" ]]; then
-  echo "Refusing to replace existing QA gate link/path: ${QA_GATE_LINK}" >&2
-  echo "Remove or update it manually after reviewing the target." >&2
-  exit 1
-fi
-
+# AGENTS.md, marketplace.json, and install metadata are project-owned once
+# generated (AGENTS.md carries hand-authored project rules); they are never
+# regenerated on top of an existing copy, but that is a per-file skip, not a
+# reason to abort the whole run.
+SKIP_AGENTS_RENDER=0
 if [[ -e "${AGENTS_PATH}" ]]; then
-  echo "Refusing to overwrite existing AGENTS.md: ${AGENTS_PATH}" >&2
-  echo "Review and update it manually or move it aside first." >&2
-  exit 1
+  echo "AGENTS.md already exists; leaving it untouched (project-owned): ${AGENTS_PATH}"
+  SKIP_AGENTS_RENDER=1
 fi
 
+SKIP_MARKETPLACE_WRITE=0
 if [[ -e "${MARKETPLACE_PATH}" ]]; then
-  echo "Refusing to overwrite existing marketplace: ${MARKETPLACE_PATH}" >&2
-  exit 1
+  echo "marketplace.json already exists; leaving it untouched: ${MARKETPLACE_PATH}"
+  SKIP_MARKETPLACE_WRITE=1
 fi
 
+SKIP_METADATA_WRITE=0
 if [[ -e "${INSTALL_METADATA_PATH}" ]]; then
-  echo "Refusing to overwrite existing install metadata: ${INSTALL_METADATA_PATH}" >&2
-  exit 1
+  echo ".codex-copilot.json already exists; leaving it untouched (refreshed by update-project.sh): ${INSTALL_METADATA_PATH}"
+  SKIP_METADATA_WRITE=1
+fi
+
+if [[ "${EXISTING_INSTALL}" -eq 1 ]]; then
+  echo "Existing codex-copilot install detected at ${PROJECT_PATH}; delegating to update-project.sh to repair it in place."
+  "${SCRIPT_DIR}/update-project.sh" --project "${PROJECT_PATH}" --framework-root "${FRAMEWORK_ROOT}"
 fi
 
 # Mutation starts only after every collision and input check has passed.
@@ -236,10 +243,12 @@ if [[ "${INITIATIVES_EXISTED}" -eq 0 ]]; then
   mkdir -p "${INITIATIVES_PATH}/_template/retrospectives"
 fi
 
-cp -R "${FRAMEWORK_PLUGIN_PATH}" "${PLUGIN_LINK}"
-ln -s "${RELATIVE_SKILLS_TARGET}" "${SKILLS_LINK}"
-cp "${FRAMEWORK_QA_GATE_PATH}" "${QA_GATE_LINK}"
-chmod +x "${QA_GATE_LINK}"
+if [[ "${EXISTING_INSTALL}" -eq 0 ]]; then
+  cp -R "${FRAMEWORK_PLUGIN_PATH}" "${PLUGIN_LINK}"
+  ln -s "${RELATIVE_SKILLS_TARGET}" "${SKILLS_LINK}"
+  cp "${FRAMEWORK_QA_GATE_PATH}" "${QA_GATE_LINK}"
+  chmod +x "${QA_GATE_LINK}"
+fi
 
 MEMORY_GITIGNORE="${PROJECT_PATH}/.claude/memory/.gitignore"
 if [[ ! -f "${MEMORY_GITIGNORE}" ]]; then
@@ -265,7 +274,8 @@ if [[ ! -f "${CC_CONFIG_PATH}" ]]; then
 EOF
 fi
 
-cat > "${MARKETPLACE_PATH}" <<'EOF'
+if [[ "${SKIP_MARKETPLACE_WRITE}" -eq 0 ]]; then
+  cat > "${MARKETPLACE_PATH}" <<'EOF'
 {
   "name": "codex-copilot-project",
   "interface": {
@@ -287,14 +297,17 @@ cat > "${MARKETPLACE_PATH}" <<'EOF'
   ]
 }
 EOF
+fi
 
-cat > "${INSTALL_METADATA_PATH}" <<EOF
+if [[ "${SKIP_METADATA_WRITE}" -eq 0 ]]; then
+  cat > "${INSTALL_METADATA_PATH}" <<EOF
 {
   "installType": "copy",
   "pluginPath": "./plugins/codex-copilot",
   "projectName": "${PROJECT_NAME}"
 }
 EOF
+fi
 
 render_project_template() {
   local source_path="$1"
@@ -328,7 +341,8 @@ export PROJECT_NAME
 export PROJECT_DESCRIPTION
 export TECH_STACK
 
-python3 - "${TEMPLATE_PATH}" "${AGENTS_PATH}" <<'PY'
+if [[ "${SKIP_AGENTS_RENDER}" -eq 0 ]]; then
+  python3 - "${TEMPLATE_PATH}" "${AGENTS_PATH}" <<'PY'
 from pathlib import Path
 import os
 import sys
@@ -342,6 +356,7 @@ content = content.replace("{{TECH_STACK}}", os.environ["TECH_STACK"])
 content = content.replace("{{PROJECT_RULES}}", os.environ["PROJECT_RULES"])
 dst.write_text(content)
 PY
+fi
 
 if [[ "${DO_DECISION_INSTRUMENTS}" -eq 1 ]]; then
   render_project_template "${SOUL_TEMPLATE_PATH}" "${PROJECT_PATH}/SOUL.md"
@@ -364,7 +379,11 @@ if [[ "${DO_TC_INIT}" -eq 1 ]]; then
   fi
 fi
 
-echo "Configured project: ${PROJECT_PATH}"
+if [[ "${EXISTING_INSTALL}" -eq 1 ]]; then
+  echo "Repaired existing project: ${PROJECT_PATH}"
+else
+  echo "Configured project: ${PROJECT_PATH}"
+fi
 echo "Framework root: ${FRAMEWORK_ROOT}"
 echo "Project plugin: ${PLUGIN_LINK}"
 echo "Plugin source: ${FRAMEWORK_PLUGIN_PATH}"
