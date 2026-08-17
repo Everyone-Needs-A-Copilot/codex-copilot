@@ -393,3 +393,12 @@ echo "QA gate: ${QA_GATE_LINK}"
 echo "Initiatives: ${INITIATIVES_PATH}"
 echo "cc config: ${CC_CONFIG_PATH}"
 echo "AGENTS.md: ${AGENTS_PATH}"
+
+# Print the paths, then actually check them. Listing what was wired is a record
+# of intent; a project can carry all of the above as dangling links or a
+# non-executable gate and read exactly the same in this output. The distinction
+# matters because an unwired project does not fail -- it silently behaves like
+# plain Codex while the instruction layer keeps describing specialists that
+# cannot be reached.
+echo
+"${SCRIPT_DIR}/enforcement-status.sh" --project "${PROJECT_PATH}" || true
