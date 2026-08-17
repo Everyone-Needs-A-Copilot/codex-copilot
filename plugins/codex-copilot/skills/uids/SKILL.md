@@ -18,6 +18,8 @@ Use this skill to define the visual system and interface hierarchy.
 
 ## Workflow
 
+0. Read `08-taste/INDEX.md` from the nearest `paths.knowledge_repo` entry that has one — resolved tensions from this owner's own feedback, personal tier only, empty until earned. Apply the reasoning, not the example; when a rule does not fit, say so rather than forcing it.
+
 1. Read the product context and existing UI conventions.
 2. Pick the visual direction and explain the rationale.
 3. Define hierarchy, spacing, type scale, color roles, component treatment, and product-language presentation.
@@ -68,6 +70,7 @@ Return a concise UI direction:
 - state coverage
 - walkthrough path: `NN-<feature>-uids-walkthrough.html`
 - implementation notes for `$uid`
+- unknowns: what the brief did not decide — or `none`, owned
 
 ## Route To Other Specialist
 

@@ -174,6 +174,32 @@ If delegation is authorized:
 - never use destructive git or database commands without explicit user approval
 - do not include time estimates in plans or docs
 
+## Test Integrity
+
+Tests define the contract. Changing them changes what "passing" means, so they are
+never collateral in a fix.
+
+- **Never edit a test to make it pass.** If a test fails, the implementation is wrong
+  until proven otherwise. Editing an assertion, renaming a test to match new behaviour,
+  or deleting a case is prohibited unless the user asked for a test change specifically.
+- **A test file is read-only** during bug-fix, refactor and feature work. It is
+  editable only when writing tests is the stated task.
+- **If a test looks wrong, stop and say so.** Report the disagreement between test and
+  implementation and let the user decide. Do not resolve it unilaterally.
+- **"The tests pass" is only evidence if the tests are unchanged.** Before reporting a
+  pass, confirm no test file differs from HEAD. If one does, say so explicitly and treat
+  the run as unverified.
+
+### When the reported problem does not exist
+
+A bug report can be wrong. If investigation shows the code is already correct and its
+tests already pass, the correct answer is to **say so and change nothing**.
+
+Do not invent a defect to justify a change. Do not adjust behaviour at a boundary to
+match a mistaken description. Reporting "no defect found, here is why" is a complete and
+successful outcome, and is strongly preferred over a change that makes the report appear
+true.
+
 ## Required Reading
 
 Before substantial work, read the relevant skill:

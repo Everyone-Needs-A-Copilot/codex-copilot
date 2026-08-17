@@ -18,6 +18,8 @@ Use this skill to turn product intent into clear interactions.
 
 ## Workflow
 
+0. Read `08-taste/INDEX.md` from the nearest `paths.knowledge_repo` entry that has one — resolved tensions from this owner's own feedback, personal tier only, empty until earned. Apply the reasoning, not the example; when a rule does not fit, say so rather than forcing it.
+
 1. Identify the primary task and the user's decision points.
 2. Map the screen or surface sequence.
 3. Define interaction states, validation behavior, and product language for each state.
@@ -69,6 +71,7 @@ Return a concise UX specification:
 - accessibility notes
 - walkthrough path: `NN-<feature>-uxd-walkthrough.html`
 - unresolved questions
+- unknowns: what the brief did not decide — or `none`, owned
 
 ## Route To Other Specialist
 
