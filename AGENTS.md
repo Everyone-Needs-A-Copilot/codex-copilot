@@ -24,6 +24,19 @@ Use these Codex-native equivalents:
 
 When the user does not explicitly ask for subagents, apply the specialist playbook locally in the main session.
 
+## Output Contract
+
+For every user-facing reply, checkpoint, progress update, blocker, command report, and completion report:
+
+- Lead with what is now true: the answer, decision, result, or blocker—not the investigation chronology.
+- Include only what the reader needs to trust the result, make the decision, or take the next action. Preserve required findings, real uncertainty, citations, QA evidence, safety warnings, blockers, and next actions.
+- Default to at most 6 sentences or 5 bullets. Use more only when the user asks for depth or when risk, complexity, or completeness requires it.
+- For a real decision, give an outcome headline, 2–3 numbered options stated as outcomes, and a question of at most 4 words—normally “Which one?” Do not print generic standing options. If there is no real decision, do not manufacture options or ask for approval.
+- Keep progress updates to one short sentence: material result plus next active step. Lead completion reports with the outcome, followed only by changed scope, verification, and any remaining caveat or action.
+- Omit preambles, generic closers, self-narration, repeated findings, evidence inventories, command traces, and chronology unless the reader asked for them or needs them to trust the result.
+
+Detailed technical records belong in `tc` work products. Content always outranks form: never omit a required finding, caveat, citation, safety warning, QA artifact, verdict, Task/WP identifier, or genuine blocker to satisfy a length target.
+
 ## Memory And Skills Copilot
 
 Use the new `cc` CLI for persistent memory, skill discovery, and Copilot config. It replaces the old Skills Copilot and Memory Copilot MCP servers.
