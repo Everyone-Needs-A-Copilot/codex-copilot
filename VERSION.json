@@ -6,14 +6,14 @@
   "status": "stable",
   "mirrors": {
     "project": "claude-copilot",
-    "frameworkVersion": "5.14.13",
+    "frameworkVersion": "5.14.14",
     "baselineManifest": "parity/claude-baseline.json",
     "capturedDate": "2026-08-18",
-    "adoptionNote": "Adopts Claude Copilot 5.14.13 capability intent through Codex-native scripts, tc state, skills, and deterministic evals; Claude runtime lifecycle hooks remain explicitly deferred."
+    "adoptionNote": "Adopts Claude Copilot 5.14.14 capability intent through Codex-native scripts, tc state, skills, and deterministic evals; Claude runtime lifecycle hooks remain explicitly deferred."
   },
   "components": {
     "cc": {
-      "requiredVersion": "2.12.11",
+      "requiredVersion": "2.12.12",
       "source": "Claude Copilot tools/cc",
       "provides": ["cc memory", "cc memory check", "cc memory export", "cc skill", "cc config", "cc env", "cc docs", "cc usage", "cc eval"]
     },
