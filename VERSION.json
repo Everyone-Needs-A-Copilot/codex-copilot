@@ -1,19 +1,19 @@
 {
   "name": "codex-copilot",
-  "version": "0.6.1",
-  "releaseDate": "2026-07-11",
-  "codename": "verified-parity",
+  "version": "0.6.5",
+  "releaseDate": "2026-08-18",
+  "codename": "cse-alignment",
   "status": "stable",
   "mirrors": {
     "project": "claude-copilot",
-    "frameworkVersion": "5.13.0",
+    "frameworkVersion": "5.14.12",
     "baselineManifest": "parity/claude-baseline.json",
-    "capturedDate": "2026-07-11",
-    "adoptionNote": "Adopts Claude Copilot 5.13.0 capability intent through Codex-native scripts, tc state, skills, and deterministic evals; Claude runtime lifecycle hooks remain explicitly deferred."
+    "capturedDate": "2026-08-18",
+    "adoptionNote": "Adopts Claude Copilot 5.14.12 capability intent through Codex-native scripts, tc state, skills, and deterministic evals; Claude runtime lifecycle hooks remain explicitly deferred."
   },
   "components": {
     "cc": {
-      "requiredVersion": "1.7.0",
+      "requiredVersion": "2.12.11",
       "source": "Claude Copilot tools/cc",
       "provides": ["cc memory", "cc memory check", "cc memory export", "cc skill", "cc config", "cc env", "cc docs", "cc usage", "cc eval"]
     },
