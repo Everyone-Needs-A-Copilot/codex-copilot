@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/bin/bash \"$PLUGIN_ROOT/hooks/user-prompt-protocol.sh\"",
+            "command": "/bin/bash -c 'root=\"${PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT:-}}\"; [ -n \"$root\" ] && [ -f \"$root/hooks/$1\" ] || exit 0; exec /bin/bash \"$root/hooks/$1\"' _ user-prompt-protocol.sh",
             "timeout": 3,
             "additionalContextLimit": 100
           }
@@ -19,7 +19,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/bin/bash \"$PLUGIN_ROOT/hooks/debug-circuit-breaker.sh\"",
+            "command": "/bin/bash -c 'root=\"${PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT:-}}\"; [ -n \"$root\" ] && [ -f \"$root/hooks/$1\" ] || exit 0; exec /bin/bash \"$root/hooks/$1\"' _ debug-circuit-breaker.sh",
             "timeout": 3,
             "additionalContextLimit": 150
           }
@@ -32,7 +32,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/bin/bash \"$PLUGIN_ROOT/hooks/debug-circuit-breaker.sh\"",
+            "command": "/bin/bash -c 'root=\"${PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT:-}}\"; [ -n \"$root\" ] && [ -f \"$root/hooks/$1\" ] || exit 0; exec /bin/bash \"$root/hooks/$1\"' _ debug-circuit-breaker.sh",
             "timeout": 3,
             "additionalContextLimit": 150
           }
@@ -44,7 +44,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/bin/bash \"$PLUGIN_ROOT/hooks/subagent-return-contract.sh\"",
+            "command": "/bin/bash -c 'root=\"${PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT:-}}\"; [ -n \"$root\" ] && [ -f \"$root/hooks/$1\" ] || exit 0; exec /bin/bash \"$root/hooks/$1\"' _ subagent-return-contract.sh",
             "timeout": 3,
             "additionalContextLimit": 100
           }
