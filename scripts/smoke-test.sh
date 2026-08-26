@@ -3,6 +3,7 @@
 set -euo pipefail
 
 python3 tests/test_mirror_parity.py
+bash scripts/verify-codex-hooks.sh
 bash scripts/check-versions.sh
 python3 scripts/check-upstream-parity.py
 python3 scripts/check-upstream-parity.py --content

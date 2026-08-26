@@ -4,10 +4,10 @@ Codex Copilot mirrors Claude Copilot capability intent, not Claude-only syntax.
 
 The current baseline is recorded in `parity/claude-baseline.json`:
 
-- Claude Copilot framework: `5.13.0`
-- `cc`: `1.7.0`
+- Claude Copilot framework: `5.14.16`
+- `cc`: `2.12.14`
 - `tc`: `1.3.0`
-- Codex Copilot parity release: `0.6.0`
+- Codex Copilot parity release: `0.6.5`
 
 ## Implemented
 
@@ -23,18 +23,23 @@ The current baseline is recorded in `parity/claude-baseline.json`:
 - `cc memory export`, layered knowledge repositories, and `cc config add/remove`
 - `tc wp render`, `tc worker`, and per-task `--max-budget-usd` metadata
 
-## Substituted
+## Native Ports And Substitutes
 
-Claude lifecycle hooks are substituted with explicit Codex mechanisms:
+Selected Claude lifecycle-hook intent is now implemented with Codex-native plugin hooks:
+
+- conditional `UserPromptSubmit` routing reads only `.prompt`
+- `PostToolUse` tracks failed shell command shapes and warns on the second failure
+- `PreToolUse` denies one third repeat of a twice-failed command shape and fails open
+- `SubagentStart` injects the three-sentence return contract
+
+QA closure remains substituted with explicit durable Codex mechanisms:
 
 - preflight and routing instructions
 - `tc` task metadata
 - QA work products with `ARTIFACT:` markers and verdicts
 - inspection scripts and tests
 
-Here, "Claude lifecycle hooks" means Claude Code runtime events such as
-SessionStart, PreToolUse, and SubagentStop. It does not mean the design-led
-product creation protocol; the Codex protocol remains design-led.
+Claude Code hook registration in `~/.claude/settings.json` and Claude payload/output schemas are not consumed by Codex. The Codex plugin uses Codex's own hook discovery and contracts. This does not mean the design-led product creation protocol; the Codex protocol remains design-led.
 
 Claude named-agent syntax is substituted with direct skill names and `agent-catalog.json`.
 
@@ -42,7 +47,7 @@ Headless worker orchestration is substituted with explicit user-approved `spawn_
 
 ## Deferred
 
-Automatic runtime hook enforcement remains platform-dependent. Codex Copilot should not describe hook enforcement as implemented until Codex provides a matching lifecycle surface.
+Hook behaviors without a tested Codex-native equivalent remain platform-dependent and must not be described as implemented.
 
 Claude's hook-backed `/careful` and `/freeze` safety primitives are therefore
 deferred rather than imitated. Codex host safety policy and explicit project

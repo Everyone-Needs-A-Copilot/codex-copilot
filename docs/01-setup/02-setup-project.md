@@ -94,7 +94,7 @@ To refresh an existing install directly, without first-install scaffolding, run 
 ./scripts/update-project.sh --project /absolute/path/to/project
 ```
 
-It only ever touches the 62 framework-owned paths (61 files under `plugins/codex-copilot/` plus `scripts/copilot-gate.sh`). A file is skipped -- never overwritten -- if it is marked `ownership: project`, either via `owner: project` YAML frontmatter in the file itself or a `copilot.lock.json` entry for that path with `"ownership": "project"`. `AGENTS.md`, `SOUL.md`, `docs/40-initiatives/`, and `.agents/plugins/marketplace.json` are never touched by the updater; `.codex-copilot.json` only has its framework-tracking fields merged in (`projectName`/`pluginPath` are preserved). Running it twice in a row makes no further changes on the second run. Add `--dry-run` to preview without writing.
+It discovers every framework-owned file under `plugins/codex-copilot/` plus `scripts/copilot-gate.sh`, so newly shipped hook assets are included automatically. A file is skipped -- never overwritten -- if it is marked `ownership: project`, either via `owner: project` YAML frontmatter in the file itself or a `copilot.lock.json` entry for that path with `"ownership": "project"`. `AGENTS.md`, `SOUL.md`, `docs/40-initiatives/`, and `.agents/plugins/marketplace.json` are never touched by the updater; `.codex-copilot.json` only has its framework-tracking fields merged in (`projectName`/`pluginPath` are preserved). Running it twice in a row makes no further changes on the second run. Add `--dry-run` to preview without writing.
 
 ## Result
 

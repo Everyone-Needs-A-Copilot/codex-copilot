@@ -1,0 +1,55 @@
+{
+  "description": "Codex-native routing, debugging, and subagent context controls.",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/bin/bash \"$PLUGIN_ROOT/hooks/user-prompt-protocol.sh\"",
+            "timeout": 3,
+            "additionalContextLimit": 100
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "^Bash$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/bin/bash \"$PLUGIN_ROOT/hooks/debug-circuit-breaker.sh\"",
+            "timeout": 3,
+            "additionalContextLimit": 150
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "^Bash$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/bin/bash \"$PLUGIN_ROOT/hooks/debug-circuit-breaker.sh\"",
+            "timeout": 3,
+            "additionalContextLimit": 150
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/bin/bash \"$PLUGIN_ROOT/hooks/subagent-return-contract.sh\"",
+            "timeout": 3,
+            "additionalContextLimit": 100
+          }
+        ]
+      }
+    ]
+  }
+}

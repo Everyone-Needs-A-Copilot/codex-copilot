@@ -2,12 +2,13 @@
 
 Codex Copilot is a Codex-native operating layer for developers who want specialist reasoning, durable task context, and evidence-bound verification before work is called complete.
 
-It mirrors Claude Copilot's capability intent through real Codex primitives: `AGENTS.md`, skills, plugins, `tc`, `cc`, scripts, tests, and explicitly approved `spawn_agent` delegation. It does not pretend Codex has Claude-only slash commands, named-agent syntax, or lifecycle hooks.
+It mirrors Claude Copilot's capability intent through real Codex primitives: `AGENTS.md`, skills, plugin-bundled lifecycle hooks, `tc`, `cc`, scripts, tests, and explicitly approved `spawn_agent` delegation. It does not pretend Claude hook registration, slash commands, or named-agent syntax work unchanged in Codex.
 
 ## What You Get
 
 - `$protocol` routing for defects, technical work, product experience, security, and infrastructure
 - specialist skills for design, architecture, engineering, QA, security, documentation, and operations
+- native hooks for conditional routing, failed-command circuit breaking, and concise subagent returns
 - `tc` PRDs, tasks, streams, handoffs, and work products
 - `cc` memory, skill discovery, configuration, and Live Docs
 - artifact-bound QA through `scripts/copilot-gate.sh`
@@ -38,6 +39,8 @@ scripts/smoke-test.sh
 ```
 
 The installer refuses to replace existing `AGENTS.md`, plugin links, skill links, or QA-gate wiring. New projects receive decision instruments, `docs/40-initiatives/`, and an executable link to the shared QA gate.
+
+Start a new Codex session after installing or updating the plugin. Review and trust newly introduced hook definitions with `/hooks`; Codex skips non-managed hooks until their current hash is trusted.
 
 ### 3. Start In Codex
 
@@ -71,7 +74,7 @@ Formal multi-phase initiatives live in `docs/40-initiatives/NN-slug/`. Their bri
 
 ## Honest Boundaries
 
-- Claude runtime hooks become explicit `tc` metadata, scripts, work products, and tests.
+- Selected Claude hook intent is ported to Codex-native plugin hooks; QA closure remains explicit `tc` metadata, work products, and tests.
 - A bare `VERDICT: APPROVED` does not pass the QA gate; passing verdicts require an `ARTIFACT:` marker.
 - The framework is degraded without the shared `cc` and `tc` CLIs.
 - Parallel work is user-approved and scope-validated; there are no hidden background workers.

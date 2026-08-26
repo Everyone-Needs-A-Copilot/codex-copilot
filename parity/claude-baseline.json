@@ -4,7 +4,7 @@
     "frameworkVersion": "5.14.16",
     "capturedDate": "2026-08-18",
     "codexParityVersion": "0.6.5",
-    "notes": "Codex Copilot mirrors Claude Copilot capability intent with Codex-native substitutes where Claude runtime hooks or named-agent syntax are unavailable. Claude 5.11-5.14 CLI, reconciliation, eval, and immutable plugin packaging capabilities are adopted; hook-only safety enforcement remains deferred."
+    "notes": "Codex Copilot mirrors Claude Copilot capability intent with Codex-native hooks and substitutes where harness contracts differ. Claude 5.11-5.14 CLI, reconciliation, eval, and immutable plugin packaging capabilities are adopted; conditional routing, debug circuit breaking, and subagent context now use native Codex hooks."
   },
   "components": {
     "cc": {
@@ -90,8 +90,9 @@
   },
   "runtimeSubstitutes": {
     "claudeHooks": {
-      "status": "substituted",
+      "status": "partial-native-port",
       "codexMechanisms": [
+        "plugin-bundled Codex lifecycle hooks",
         "scripts/copilot-gate.sh",
         "tc QA metadata",
         "artifact-bound specialist output contracts",
@@ -115,8 +116,13 @@
       ]
     },
     "hookSafetyPrimitives": {
-      "status": "deferred",
-      "reason": "Codex Copilot has no PreToolUse lifecycle hook; destructive-action policy remains explicit in AGENTS.md and host instructions rather than being described as mechanically enforced."
+      "status": "implemented-partial",
+      "codexMechanisms": [
+        "PreToolUse command-shape denial",
+        "PostToolUse command-shape failure tracking",
+        "COPILOT_DEBUG_BLOCK=off fail-open escape hatch"
+      ],
+      "boundary": "Only the ported debug circuit breaker is mechanically enforced; other Claude hook behavior remains deferred until implemented on a tested Codex lifecycle event."
     }
   },
   "requiredDocs": [

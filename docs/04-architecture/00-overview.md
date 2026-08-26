@@ -14,6 +14,7 @@ Port the `claude-copilot` framework into Codex-native constructs without faking 
 | `.claude/skills/` | `cc` skill discovery bridge to plugin-delivered Codex skills |
 | Memory Copilot / Skills Copilot MCP servers | `cc` CLI |
 | Task Copilot via `tc` | unchanged |
+| selected Claude hook intent | Codex-native plugin hooks using Codex payload/output contracts |
 | knowledge/extensions | dormant capability packs plus project-local plugin activation |
 | orchestration worktrees | user-approved `spawn_agent` delegation plus stream validation and explicit git worktree handling |
 
@@ -46,6 +47,7 @@ The plugin bundle gives Codex a native entry point:
 - `.codex-plugin/plugin.json`
 - marketplace registration
 - bundled skills
+- bundled routing, debugging, and subagent-context hooks
 
 ### 5. Project Overlays Through Packs
 
@@ -70,12 +72,9 @@ Projects can define two local decision instruments:
 
 Codex Copilot requires specialists to verify installed third-party package APIs through `cc docs` before planning or coding against them. This mirrors Claude Copilot's Live Docs feature while keeping the tool dependency explicit.
 
-### 8. Explicit QA Gate Substitute
+### 8. Native Hooks Plus An Explicit QA Gate
 
-Codex Copilot cannot install Claude runtime lifecycle hooks such as SessionStart,
-PreToolUse, or SubagentStop. Instead, QA-required tasks use `tc` metadata,
-implementation and test work products, `ARTIFACT:` markers, verdict tokens, and
-`scripts/copilot-gate.sh`.
+Codex exposes lifecycle events and plugin hook discovery, but Claude Code hook files and `~/.claude/settings.json` registration do not carry over. Codex Copilot therefore ships its own adapters for conditional prompt routing, per-command-shape debug warnings and denial, and subagent return context. QA-required tasks still use `tc` metadata, implementation and test work products, `ARTIFACT:` markers, verdict tokens, and `scripts/copilot-gate.sh` because those durable artifacts remain the authoritative closure contract.
 
 This boundary does not change the design-led product protocol.
 
@@ -100,7 +99,8 @@ Claude's `kc`, `cco`, `cw`, `cs`, and `cpa` specialists are useful but not alway
 - direct software specialist skill names
 - design-led project decision-instrument scaffolding
 - design-fidelity QA expectations
-- Claude 5.13.0 parity manifest with upstream freshness detection
+- Claude 5.14.16 parity manifest with upstream freshness detection
+- Codex-native plugin hooks for conditional routing, debug circuit breaking, and subagent return context
 - Live Docs guidance
 - QA gate inspection script
 - optional business/creative specialist pack
@@ -108,7 +108,7 @@ Claude's `kc`, `cco`, `cw`, `cs`, and `cpa` specialists are useful but not alway
 
 ### Deliberately deferred
 
-- automatic runtime hook enforcement, unless Codex provides a matching lifecycle surface
+- Claude hook behaviors that do not yet have a tested Codex-native equivalent
 
 ### Non-goals
 
@@ -127,7 +127,7 @@ flowchart LR
     C --> P[Codex Copilot plugin and skills]
     P --> TC[tc task state and work products]
     P --> CC[cc memory, config, skills, Live Docs]
-    P --> S[Explicit scripts and tests]
+    P --> S[Codex-native hooks, explicit scripts, and tests]
     P --> I[docs/40-initiatives]
     I -. links durable initiative context .-> TC
     C -. user-approved delegation only .-> SA[spawn_agent]
@@ -142,4 +142,5 @@ flowchart LR
 | memory, config, skill discovery, and Live Docs | `cc` |
 | initiative briefs, phases, decisions, and retrospectives | `docs/40-initiatives/` in the consuming project |
 | domain-specific optional skills | dormant packs activated by a project |
-| runtime lifecycle hooks | host platform; not implemented by this project |
+| Codex-native routing/debug/subagent hooks | Codex Copilot plugin |
+| Claude hook registration and payloads | Claude Code; never consumed by Codex |

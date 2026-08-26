@@ -41,9 +41,9 @@ For every user-facing reply, checkpoint, progress update, blocker, command repor
 
 Detailed technical records belong in `tc` work products. Content always outranks form: never omit a required finding, caveat, citation, safety warning, QA artifact, verdict, Task/WP identifier, or genuine blocker to satisfy a length target.
 
-## Memory And Skills Copilot
+## `cc` CLI
 
-Use the new `cc` CLI for persistent memory, skill discovery, and Copilot config. It replaces the old Skills Copilot and Memory Copilot MCP servers.
+Use the `cc` CLI for persistent memory, skill discovery, Live Docs, onboarding, and Copilot config. The retired `copilot-memory`, `skills-copilot`, and `task-copilot` MCP servers and their `initiative_*`, `memory_*`, and `skill_*` tool calls do not exist.
 
 - Preferred command: `$HOME/.local/bin/cc`
 - Fallback if needed: `cc`, after confirming it resolves to the Claude Copilot CLI and not the system C compiler
@@ -59,6 +59,7 @@ eval "$($HOME/.local/bin/cc env)"
 ```
 
 Use `cc memory ...` for durable project/global memory and `cc skill ...` to list, search, inspect, and retrieve reusable skills.
+Use `tc` PRDs/tasks for live initiative execution state; use `cc memory` for durable decisions and lessons.
 
 ## Live Docs
 
@@ -100,9 +101,7 @@ Formal multi-phase initiatives live in `docs/40-initiatives/NN-slug/`.
 
 ### QA Gate Convention
 
-Codex Copilot cannot rely on Claude runtime lifecycle hooks such as SessionStart,
-PreToolUse, or SubagentStop, so implementation work uses explicit `tc` state.
-This does not change the design-led product creation protocol.
+Codex Copilot ships Codex-native routing, debug-circuit-breaker, and subagent-context hooks. These are separate implementations from Claude Code hooks and do not replace explicit `tc` QA state or the design-led product creation protocol.
 
 - implementation tasks that need verification should carry `metadata.requiresQa=true`
 - `$me` stores an implementation work product and routes to `$qa`
@@ -125,6 +124,22 @@ Passing QA verdicts must be evidence-bound. Valid artifact markers include
 - Use `$do -> $me -> $qa` for infrastructure, CI, deployment, and environment changes that require implementation.
 - Use `spawn_agent` only when the user explicitly asks for delegation or parallel subagents.
 - Keep plans free of time estimates.
+
+### Delegating to Subagents
+
+- Do not end a subagent prompt with an enumerated reporting checklist.
+- The standing return contract is at most three sentences: outcome, root cause if known, and anything anomalous or requiring a decision. Put full evidence in a file and return its path.
+- Surface every safety-relevant anomaly in those three sentences; never bury it only in the evidence file.
+- Request more depth only when the decision genuinely depends on it.
+
+## Debugging Discipline
+
+When an explanation conflicts with a measurement, follow the measurement and narrow the investigation.
+
+1. Confirm a mechanism exists in the relevant environment, plan, or account before naming it as the cause.
+2. State what every diagnostic exercised, including the selected key, config, binary, branch, interpreter, and working directory when relevant.
+3. Count failures through one shared dependency as one observation unless that dependency is varied.
+4. After two hypotheses are falsified, stop hypothesizing. Read the code that enforces the behavior and cite `file:line`.
 
 ## Decision Instruments
 

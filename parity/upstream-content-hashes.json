@@ -9,7 +9,7 @@
     ".claude/agents/ind.md": "a48006f72d703d6feac25f25f12fae03990bba7a09f228a5135a3501466b03fb",
     ".claude/agents/kc.md": "eec52000ce911cbbdd45a2528ba9375141d92f0b6cbb6cbde0b81840d3574f54",
     ".claude/agents/me.md": "01ccac98e863bb1fc4e15c30fbb64bbe5a3f63b91f927c0462350ea95019ffe9",
-    ".claude/agents/qa.md": "597edea5859ffaf87483aad7040d38234e0a69790ab0afd4629c702db30c8395",
+    ".claude/agents/qa.md": "80b74e7a439b011cbeb6fe0f84554fa644d34c449f413d3fa00790c106e6b7c1",
     ".claude/agents/sd.md": "ffdf91c3f5e0814cb789d43f6f535d5266289a9c7ca879746eca11bdf67821e1",
     ".claude/agents/sec.md": "cfc1df0f10a3d87892c149a2609429ca58a286769d9fedbed98603f99e22e130",
     ".claude/agents/ta.md": "2fb9ec732fa7441f58152643c0ab8256ecc7878327540cb96b1eefb4f1d20b9b",
@@ -68,11 +68,11 @@
     ".claude/skills/security/stride-dread/SKILL.md": "8fba1b8bbc7fbdd15c6ba57be629108128c31c571a53bef8b0090a8a9517efcd",
     ".claude/skills/security/threat-modeling/SKILL.md": "7770da01b5bff24b820fd30f85766437ee3ee440b90881e0f6c1c4d292df4f3d",
     ".claude/skills/security/web-security/SKILL.md": "6e39affec1c70142af2dc0e729af5a82dd0f4569317bf613e27132e971f10586",
-    ".claude/skills/testing/jest-patterns/SKILL.md": "a6c942e2df6b678a31b214fd1000697a59e0e812886b6778f19848e463816a80",
-    ".claude/skills/testing/pytest-patterns/SKILL.md": "565c21b017ec32be7b7b6076bcb900a79e8118327e6dc7212c1b1f8443352b00"
+    ".claude/skills/testing/jest-patterns/SKILL.md": "c6ca37963cb1180a9ea2db5514e3a2e2e66a4f5cd461b46205da754ddd982baa",
+    ".claude/skills/testing/pytest-patterns/SKILL.md": "85e10117406ae80d7ee77f25d1028cd6d6ab94f41f24d07164808752ee94e693"
   },
-  "generated_at": "2026-08-18T17:54:06.721318Z",
-  "upstream_commit": "7c9fedf1d0408576d0b50adb55ee3affd387bac0",
+  "generated_at": "2026-08-26T12:55:50.853108Z",
+  "upstream_commit": "a28779dc9b6906459e903f8cb9c71aa9e9d9f2be",
   "versions": {
     "agents": "5.6.0",
     "commands": "5.3.2",

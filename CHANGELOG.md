@@ -9,12 +9,15 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Added
 
-- `scripts/update-project.sh`: updates an existing codex-copilot install in place, comparing the 62 framework-owned plugin paths by content (sha256) rather than declared version, so drift that doesn't match any released version is repaired too; a path marked `ownership: project` (via `owner: project` frontmatter or a `copilot.lock.json` entry) is never touched; idempotent; writes/refreshes `copilot.lock.json` and merges tracking fields into `.codex-copilot.json`
+- Codex-native plugin hooks for conditional protocol routing, a per-session/per-command-shape debug circuit breaker, and the three-sentence subagent return contract
+- `scripts/update-project.sh`: updates an existing codex-copilot install in place, discovering and comparing every framework-owned plugin path by content (sha256) rather than declared version, so new hook assets and drift that does not match any released version are repaired too; a path marked `ownership: project` (via `owner: project` frontmatter or a `copilot.lock.json` entry) is never touched; idempotent; writes/refreshes `copilot.lock.json` and merges tracking fields into `.codex-copilot.json`
 - `scripts/verify-update-project.sh`: disposable-scratch-repo verification (fresh install, idempotence, stale-content repair, project-owned survival, setup-project.sh re-run), wired into `scripts/smoke-test.sh`
 
 ### Changed
 
 - `scripts/setup-project.sh` no longer hard-refuses when the plugin/skill/QA-gate paths already exist; it delegates to `scripts/update-project.sh` to repair them in place and exits 0. `AGENTS.md`, `marketplace.json`, and install metadata are still never regenerated once present, but that is now a per-file skip rather than a whole-run abort.
+- Updated the native-runtime boundary: Claude Code hook registration is still non-portable, while current Codex lifecycle hooks are used where their tested contracts match the intended behavior.
+- Added the debugging-discipline and concise subagent-return rules to framework and generated project instructions.
 
 ### Fixed
 

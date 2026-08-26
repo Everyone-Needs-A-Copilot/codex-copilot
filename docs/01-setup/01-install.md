@@ -43,6 +43,7 @@ These verify:
 - test suite behavior
 - stream validation behavior
 - artifact-bound QA gate behavior
+- Codex-native hook payload/output behavior
 
 ## Using The Framework Repo Directly
 
@@ -80,11 +81,14 @@ The setup script copies the small project plugin and creates only an internal re
 - `.claude/memory/entries/`
 - `.claude/skills/codex-copilot`
 - `plugins/codex-copilot`
+- plugin-bundled lifecycle hooks under `plugins/codex-copilot/hooks/`
 - `scripts/copilot-gate.sh` as a project-local executable copy
 - `docs/40-initiatives/` with its index and initiative template
 - `SOUL.md` unless skipped
 - `docs/01-architecture/12-architecture-guiding-principles.md` unless skipped
 - `.copilot/tasks.db` when `tc init` succeeds
+
+After installation or any hook change, start a new Codex session and use `/hooks` to review and trust the current definitions. Non-managed plugin hooks are skipped until their exact hash is trusted.
 
 ## Safe Update Behavior
 

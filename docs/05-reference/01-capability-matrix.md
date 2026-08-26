@@ -23,7 +23,7 @@ Authoritative sources:
 | `/orchestrate` | `$orchestrate` | Explicit-delegation substitute | Plans streams and validates boundaries; does not auto-spawn headless workers without user-approved delegation. |
 | `/setup`, `/setup-copilot` | `$setup-copilot` | Implemented as verification workflow | Provides safe setup/repair guidance; does not remove existing resources. |
 | `/setup-project` | `$setup-project` plus `scripts/setup-project.sh` | Implemented | Re-running over an existing install repairs it in place (delegates to `scripts/update-project.sh`) instead of refusing; `AGENTS.md` is never overwritten. |
-| `/update-project` | `$update-project` plus `scripts/update-project.sh` | Implemented | Content-compares (sha256) the 62 framework-owned plugin paths against source and repairs drift in place; skips any path marked `ownership: project`; idempotent. |
+| `/update-project` | `$update-project` plus `scripts/update-project.sh` | Implemented | Discovers and content-compares (sha256) every framework-owned plugin path against source, including new hook assets; skips any path marked `ownership: project`; idempotent. |
 | `/update-copilot` | `$update-copilot` | Implemented as workflow skill | Checks git/tooling safely; no reset, clean, force-push, or deletion without explicit approval. |
 | `/knowledge-copilot` | `$knowledge-copilot` | Implemented as workflow skill | Guides creation/linking/status; does not delete or replace existing knowledge. |
 | `/config` | `$config` | Implemented as workflow skill | Reads `cc` config and env hydration state. |
@@ -35,7 +35,7 @@ Authoritative sources:
 | Live Docs | `cc docs` CLI guidance in specialists | Implemented dependency | Requires compatible `cc`; falls back to local package files or official docs when unavailable. |
 | Claude quota observability | `cc usage` CLI | Optional utility | Reports Claude session quota, not Codex/OpenAI usage; useful for Claude Copilot tooling but not a Codex protocol gate. |
 | domain agents and extensions | dormant capability packs | Implemented convention | Packs stay inactive until a project exposes selected skills through its own local plugin. |
-| Mechanical Claude lifecycle hooks | `tc` metadata, artifact-bound QA work products, `scripts/copilot-gate.sh`, instructions, and tests | Codex-native substitute | This refers to Claude runtime hooks such as SessionStart/PreToolUse/SubagentStop, not the design-led product protocol. Codex has no equivalent runtime hook surface in this project. |
+| Mechanical Claude lifecycle hooks | Codex-native plugin hooks plus `tc` metadata, artifact-bound QA work products, `scripts/copilot-gate.sh`, instructions, and tests | Partial native port | Conditional routing, command-shape debug blocking, and subagent context use Codex hooks. Claude registration/payloads are not reused, and QA closure remains an explicit durable gate. This is not the design-led product protocol. |
 | Headless worker orchestration | Explicit `spawn_agent` delegation plus stream validation | Limited substitute | Codex delegation is user-approved and scoped; no autonomous background worker loop. |
 | Claude 16-agent roster | 11 active software/product skills plus optional `business-creative` pack | Codex-native substitute | `kc`, `cco`, `cw`, `cs`, and `cpa` are activatable rather than globally loaded. |
 | Worktree stream validation | `scripts/orchestrate-validate.py` | Implemented utility | Validates stream metadata, dependencies, cycles, and file ownership before parallel work. |

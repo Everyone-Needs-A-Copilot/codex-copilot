@@ -24,7 +24,7 @@ python3 tests/test_mirror_parity.py
 
 ### Parity Rules
 
-- Do not describe Claude runtime hooks as implemented in Codex.
+- Describe hook behavior as implemented only when a Codex-native hook and a failable verification artifact support the claim; never cite Claude registration as Codex enforcement.
 - Do not confuse Claude lifecycle hooks with the design-led product protocol.
 - Do not add optional specialists globally unless the product decision changes.
 - Do not update the catalog without updating tests.

@@ -22,7 +22,7 @@ Most specialist work happens in the main Codex session. Delegation is available 
 
 ## Honest Boundaries
 
-Codex Copilot does not recreate Claude slash commands, named-agent syntax, or lifecycle hooks one-for-one. It translates their useful intent into Codex skills, `AGENTS.md`, `tc` metadata, scripts, work products, and tests.
+Codex Copilot does not recreate Claude slash commands, named-agent syntax, hook registration, or hook payloads one-for-one. It translates their useful intent into Codex skills, `AGENTS.md`, Codex-native plugin hooks, `tc` metadata, scripts, work products, and tests.
 
 The framework owns no memory or task engine. It reuses the shared `cc` and `tc` CLIs and is degraded when they are unavailable.
 

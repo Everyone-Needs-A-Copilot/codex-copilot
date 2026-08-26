@@ -9,6 +9,7 @@ Codex Copilot adds a specialist operating layer to a project. After setup, the t
 - `AGENTS.md` with project-specific Codex instructions
 - local plugin registration under `.agents/plugins/`
 - a portable copy of the `plugins/codex-copilot` project plugin
+- plugin hooks for conditional routing, debug circuit breaking, and subagent return context
 - a `cc` config file at `.claude/cc/config.json`
 - project memory entries under `.claude/memory/entries/`
 - a skill discovery bridge under `.claude/skills/codex-copilot`
@@ -54,6 +55,8 @@ Use a git repository as the target project when you want `cc skill list --scope 
 The installer is intentionally conservative. It refuses to overwrite existing `AGENTS.md`, plugin paths, or skill links.
 
 ## Step 2: Open The Project In Codex
+
+Start a new session, then use `/hooks` to review and trust any newly introduced plugin hooks. Codex skips non-managed hook definitions until their current hash is trusted.
 
 Start with:
 

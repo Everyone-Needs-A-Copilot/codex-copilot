@@ -14,10 +14,9 @@ Options:
   --dry-run               Report what would change without writing anything
   --help                  Show this help
 
-Refreshes an EXISTING codex-copilot install in place. The framework-owned
-files under plugins/codex-copilot/ (61 files) plus scripts/copilot-gate.sh
-(1 file) -- 62 locked paths total -- are compared BY CONTENT (sha256, not by
-declared version) against the framework source and repaired when they
+Refreshes an EXISTING codex-copilot install in place. Every framework-owned
+file under plugins/codex-copilot/ plus scripts/copilot-gate.sh is compared BY
+CONTENT (sha256, not by declared version) against the framework source and repaired when it
 differ, including drift that carries bytes from an intermediate commit
 rather than a released version.
 
@@ -38,7 +37,7 @@ mirrors the owner: project convention Claude Copilot projects already use
 to protect hand-authored content, applied to the codex plugin tree.
 
 Idempotent: running this twice in a row makes no further changes on the
-second run. Never destructive outside the 62 locked paths -- AGENTS.md,
+second run. Never destructive outside the discovered locked paths -- AGENTS.md,
 SOUL.md, docs/40-initiatives/, marketplace.json, and install metadata are
 untouched (or, for install metadata, only field-merged, never replaced).
 

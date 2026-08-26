@@ -158,14 +158,13 @@ Each conclusion states: **the claim → what it's derived from → how to falsif
 | Repo | Changes? | Why (traced) |
 |------|----------|--------------|
 | **claude-copilot** | **Primary** | Owns `cc`, `tc`, hooks, `quality-gates.json`. All three measurement moves (§4.3) land here. |
-| **codex-copilot** | **Inherit + hand-port** | Shares `cc`/`tc` → budget cap inherited free. No runtime hooks → trace + eval-gate need a Codex-side equivalent via `copilot-gate.sh`/parity. |
+| **codex-copilot** | **Inherit + native port** | Shares `cc`/`tc`; Codex lifecycle hooks now support selected native ports, while durable QA still uses `copilot-gate.sh`/parity. |
 | **cli-copilot** | **No** | Zero coupling to memory/task and not the agent dispatcher. |
 | **knowledge-copilot** | **No code** | Only a CONSOLIDATE *ritual* + docs; sync engine forbidden. |
 
 - **Eval-cases caveat:** machinery is framework-level (`claude-copilot`); golden-set *cases*
   live beside each agent — for this repo, beside the re-authored `SKILL.md` agents under `plugins/`.
-- **Falsify by:** finding `cli-copilot` spawns `claude -p` (pulls it into scope), or that this
-  repo gains runtime hooks (removes the hand-port).
+- **Falsify by:** finding `cli-copilot` spawns `claude -p` (pulls it into scope), or that a required Claude behavior has no matching Codex hook or explicit substitute.
 
 ### 4.3 Measurement architecture (Tier 2 design / Tier 3 priority)
 
@@ -177,8 +176,7 @@ Priority order (highest leverage-to-effort first); full detail + sources in
    CoT-before-verdict, **judged by a different model than under test**), via `promptfoo`,
    wired into the gate. *Answers "did a framework change degrade behaviour."*
 3. **Trace** — `PostToolUse`/`Stop`-equivalent hook appends one JSONL line per tool call /
-   handoff. **In this repo there is no runtime-hook layer**, so the trace must be emitted from
-   the `copilot-gate.sh` / `tc`-metadata path — the most Codex-specific piece of work.
+   handoff. Current Codex lifecycle hooks make a native trace possible, but this research did not implement or validate one.
 - **Deferred (Tier 3, overkill at solo scale):** Langfuse self-hosted, Braintrust/LangSmith,
   annotation queues, OTEL, online production monitoring.
 
@@ -225,10 +223,7 @@ This repo is **inherit + hand-port**, not a primary build site:
 - **Inherited for free:** any `cc`/`tc` change (e.g. a per-task budget field + `--max-budget-usd`)
   arrives via the shared binaries this repo already pins — no Codex code needed beyond bumping
   the pin and a parity-snapshot refresh.
-- **Requires hand-port:** the **trace emitter and the eval gate**, because this repo has **no
-  runtime hooks**. They must be expressed through `scripts/copilot-gate.sh` + `tc` task
-  metadata, then captured in `parity/claude-baseline.json` and `tests/test_mirror_parity.py`.
-  This is the single most Codex-specific piece of any future build.
+- **Requires native port:** the **trace emitter and the eval gate** must use Codex hook payloads where appropriate, with `scripts/copilot-gate.sh` + `tc` task metadata remaining authoritative for durable QA evidence.
 - **Golden-set cases** for this repo's agents live beside the `SKILL.md` definitions under
   `plugins/`, not in `claude-copilot`.
 - **Parity risk to flag:** the manual parity checklist has no automated detector for a *new*

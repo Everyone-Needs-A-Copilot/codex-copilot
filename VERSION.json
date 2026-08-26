@@ -9,7 +9,7 @@
     "frameworkVersion": "5.14.16",
     "baselineManifest": "parity/claude-baseline.json",
     "capturedDate": "2026-08-18",
-    "adoptionNote": "Adopts Claude Copilot 5.14.16 capability intent through Codex-native scripts, tc state, skills, and deterministic evals; Claude runtime lifecycle hooks remain explicitly deferred."
+    "adoptionNote": "Adopts Claude Copilot 5.14.16 capability intent through Codex-native hooks, scripts, tc state, skills, and deterministic evals; Claude hook registration and payloads remain harness-specific."
   },
   "components": {
     "cc": {

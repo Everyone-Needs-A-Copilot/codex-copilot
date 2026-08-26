@@ -1,6 +1,6 @@
 # Quality Gates
 
-Claude Copilot uses runtime hooks to block implementation closure until QA passes. Codex Copilot substitutes that with explicit task state, work products, and tests.
+Codex Copilot uses native hooks for routing and debug circuit breaking, but QA closure remains an explicit durable contract: task state, work products, tests, and `scripts/copilot-gate.sh`.
 
 ## Task Metadata
 
@@ -73,4 +73,4 @@ check; it only provides a convenient index for humans and other tooling.
 
 ## Boundary
 
-This is not a hidden runtime hook. It is an explicit Codex-native gate that agents, scripts, and tests can inspect.
+This gate is not implied by the routing/debug hooks. It is an explicit Codex-native contract that agents, scripts, and tests can inspect.

@@ -52,13 +52,13 @@ The cargo-culter who reproduces another platform's syntax for the feeling of par
 | It IS | It IS NOT |
 |-------|-----------|
 | A Codex-native instruction/skill/script layer that runs *inside* Codex | A standalone app, hosted service, MCP server, or model/LLM provider |
-| A mirror of Claude Copilot's capability *intent*, expressed in Codex primitives | A one-for-one reimplementation of Claude slash commands, named-agent syntax, or lifecycle hooks |
+| A mirror of Claude Copilot's capability *intent*, expressed in Codex primitives | A verbatim copy of Claude slash commands, named-agent syntax, hook payloads, or hook registration |
 | A consumer of the shared `cc`/`tc` CLIs | Its own memory engine, task engine, or database |
 | An evidence-bound QA discipline (artifact marker + verdict token) | A trust-the-verdict rubber stamp where a bare `APPROVED` passes |
 | A leaf foundational layer that tracks `claude-copilot` upstream | The Claude Copilot framework itself, or a fork that vendors `cc`/`tc` |
 
 **Key boundary — read this twice:**
-Codex Copilot mirrors Claude Copilot, but only its **intent**. A capability is allowed in *only* if it can be expressed honestly in a real Codex primitive — `AGENTS.md`, a Codex skill, `tc`/`cc` state, a script, or a test. If a capability requires a Claude runtime feature Codex does not provide (SessionStart / PreToolUse / SubagentStop hooks, slash-command syntax, named-agent syntax), it is **substituted with an explicit, inspectable mechanism — or refused. It is never faked.** "Claude lifecycle hooks" here means runtime events only; it does *not* mean the design-led `$protocol`, which stays design-led.
+Codex Copilot mirrors Claude Copilot, but only its **intent**. A capability is allowed in *only* if it can be expressed honestly in a real Codex primitive — `AGENTS.md`, a Codex skill, a Codex lifecycle hook, `tc`/`cc` state, a script, or a test. Claude Code hook registration and payloads are never assumed to work in Codex; behavior is ported onto Codex's own hook schema when that surface can enforce the same intent, otherwise it is substituted or refused. Slash-command and named-agent syntax remain harness-specific and are never faked.
 
 ---
 
@@ -66,7 +66,7 @@ Codex Copilot mirrors Claude Copilot, but only its **intent**. A capability is a
 
 ### Principle 1: Native Over Imitation
 **Meaning:** Every capability is expressed through a real Codex primitive. Borrowed *ideas* are welcome; borrowed *syntax that only works on Claude* is not.
-**Rejection:** We reject reimplementing Claude slash commands, Claude named-agent syntax, and Claude lifecycle hooks one-for-one. They become Codex skills, `tc` metadata, scripts, work products, and tests instead.
+**Rejection:** We reject copying Claude slash commands, named-agent syntax, hook registration, or hook payloads and calling that native. They become Codex skills, Codex-native hooks, `tc` metadata, scripts, work products, and tests as appropriate.
 **Test:** "Can this be expressed in a real Codex primitive — or does it pretend a Claude runtime feature exists?" If it pretends, reject.
 
 ### Principle 2: Evidence Or It Didn't Pass
@@ -101,10 +101,10 @@ Priority order: **Native Over Imitation > Evidence Or It Didn't Pass > Durable O
 ## 4. Anti-Patterns
 
 ### The Claude Cosplay
-**Drift:** To *feel* at parity, someone reimplements Claude slash-command syntax, named-agent syntax, or runtime hook enforcement so the framework "looks like the real thing."
+**Drift:** To *feel* at parity, someone copies Claude slash-command syntax, named-agent syntax, or hook files without adapting them to Codex's real runtime contracts.
 **Why it kills us:** The fake breaks inside Codex, and the moment one feature is a bluff, the whole framework's "done" stops being trustworthy. Honesty is the product.
-**Early warning:** "Let's add hook support," "describe the gate as a runtime hook," "match Claude's `/command` syntax exactly," "say we're at full parity."
-**Line in the sand:** Never describe hook enforcement (or any Claude runtime feature) as implemented until Codex provides a matching lifecycle surface. Always substitute with an explicit, inspectable mechanism — never fake.
+**Early warning:** "The event names match, so the script is portable," "reuse `~/.claude/settings.json`," "match Claude's `/command` syntax exactly," "say we're at full parity."
+**Line in the sand:** Describe enforcement as implemented only when a tested Codex-native lifecycle surface actually performs it. Never treat Claude hook registration or payloads as Codex configuration.
 
 ### The Rubber Stamp
 **Drift:** Under time pressure, QA records `VERDICT: APPROVED` without an artifact because "the change is obviously fine."
@@ -170,7 +170,8 @@ If yes → reject, or redesign until it doesn't.
 | `$protocol` design-led routing into specialist flows | **IN** | 2, 4 | Mirrors `/protocol` intent via a native skill; discipline before speed. |
 | Dormant capability packs, opt-in per project | **IN** | 3, 5 | Keeps domain specialists local, not global; honors The Global Pack line. |
 | Reuse shared `cc`/`tc` CLIs (not vendored) | **IN** | 3, 5 | Leaf layer borrows the engine instead of rebuilding it. |
-| Reimplement Claude lifecycle hooks one-for-one | **OUT** | 1 | Can't be done honestly in Codex; becomes scripts/`tc` metadata/tests instead. |
+| Port routing and debug controls to Codex plugin hooks | **IN** | 1, 2 | Codex exposes real lifecycle events and plugin hook discovery; the implementation uses Codex payload/output contracts. |
+| Copy Claude hook files and `settings.json` registration unchanged | **OUT** | 1 | The harness contract differs even where event names overlap. |
 | Build an in-repo memory/task engine or database | **OUT** | 3 | Owned by `cc`/`tc`; duplicating it violates Borrow, Don't Rebuild. |
 | Hidden background / headless worker orchestration | **OUT** | 5 | The Hidden Worker; parallel work must be user-approved and scope-validated. |
 | Make `cco`/`cw`/`cs`/`cpa`/`kc` global specialists | **OUT** | 3, 5 | The Global Pack; they stay dormant until `activate-pack.py`. |
@@ -185,7 +186,7 @@ If yes → reject, or redesign until it doesn't.
 **Non-negotiables:**
 
 - [ ] Release fitness is green: version, manifest, parity, and smoke checks pass (`scripts/smoke-test.sh`, `VERSION.json`, `parity/claude-baseline.json`).
-- [ ] No capability is described or shipped as a Claude runtime feature; hooks are never claimed as "implemented" while platform-deferred.
+- [ ] Every hook-backed capability names and tests its actual harness contract; Claude registration is never presented as Codex enforcement.
 - [ ] Every QA-required task passes `copilot-gate.sh`: approved metadata with `qaArtifact` and a `test` work product carrying a valid `ARTIFACT:` marker + `VERDICT:` token.
 - [ ] Live planning/work state lives in `tc`/`cc`; formal initiative knowledge lives in `docs/40-initiatives/` and links to that state.
 - [ ] `setup-project.sh` refuses to overwrite existing `AGENTS.md`, plugin links, or skill links (never clobbers user work).
@@ -198,7 +199,7 @@ If a reader can't tell, from the docs alone, exactly which Claude features are *
 
 | Failure | Symptom |
 |---------|---------|
-| Dishonest parity | Docs imply full Claude parity or describe hook enforcement as implemented. |
+| Dishonest parity | Docs imply full Claude parity or claim a Claude hook automatically constrains Codex. |
 | Hollow verdict | A QA-required task closes on a bare `VERDICT: APPROVED` with no artifact. |
 | Leaked engine scope | Memory/task/db logic creeps into this repo instead of living in `cc`/`tc`. |
 | Silent automation | Parallel work runs without explicit user approval and scope validation. |
@@ -214,8 +215,8 @@ Direct, plain, technical, and honest. Lowercase command names (`$protocol`, `cc 
 
 | We Say | We Don't Say |
 |--------|--------------|
-| "Codex Copilot does not recreate Claude lifecycle hooks one-for-one." | "Full Claude Copilot parity, now on Codex!" |
-| "Claude runtime hooks become explicit task metadata, scripts, work products, and tests." | "Seamless hooks support out of the box." |
+| "Codex Copilot ports selected controls onto Codex-native hooks." | "Claude hooks automatically work in Codex." |
+| "QA remains an explicit `tc`/script gate even though routing and debug controls use hooks." | "Seamless full hook parity." |
 | "A bare `VERDICT: APPROVED` does not pass `copilot-gate.sh`." | "QA passed." |
 | "The framework is *degraded* without `cc`/`tc`." | "Works standalone, no dependencies." |
 | "That honesty is intentional." | "Everything just works." |
@@ -243,7 +244,7 @@ Direct, plain, technical, and honest. Lowercase command names (`$protocol`, `cc 
 
 | Signal | What it means |
 |--------|---------------|
-| A doc starts describing hook enforcement as "implemented" | Honesty drift → The Claude Cosplay. |
+| A doc claims a Claude-registered hook constrains Codex | Honesty drift → The Claude Cosplay. |
 | QA-required tasks closing without `ARTIFACT:` markers | Gate rot → The Rubber Stamp. |
 | Live task or QA state duplicated in project markdown | Durable-context rot → The Markdown Memory. |
 | `packs/` specialists showing up in the default global roster | Scope creep → The Global Pack. |
@@ -285,6 +286,7 @@ When updated, add the rationale to the changelog below.
 
 | Date | Version | Change & rationale |
 |------|---------|--------------------|
+| 2026-08-26 | v1.3 | Updated the native-runtime boundary after Codex added stable lifecycle hooks. Selected routing, debug, and subagent controls may now use tested Codex plugin hooks; Claude registration and payloads remain non-portable, and evidence-bound QA stays explicit. |
 | 2026-07-11 | v1.2 | Closed the metadata-only QA bypass discovered by executable audit. Metadata remains an index, while the task-bound test work product is the sole passing evidence source. |
 | 2026-07-11 | v1.1 | Ratified `docs/40-initiatives/` as the durable home for multi-phase goals, phase designs, decisions, validation evidence, and retrospectives. Clarified that The Markdown Memory rejects duplicate live task boards, not formal initiative knowledge linked to authoritative `tc`/`cc` state. |
 | 2026-06-28 | v1.0 | **Ratified** on Discord read-back. Re-centered the essence on the shared design-led purpose (a specialist-driven framework for creating solutions, native to Codex), with native-over-imitation as the top principle/boundary rather than the whole identity. Confirmed the priority order, set the five anti-pattern lines in the sand, added the durability recovery question, ratified the founding decisions. |
