@@ -11,8 +11,28 @@ Options:
   --project PATH          Target project directory (must already be set up
                            by setup-project.sh)
   --framework-root PATH   Override detected codex-copilot framework root
+  --org-plugin PATH       Install/refresh an additional organization-owned
+                           plugin from PATH, alongside the base plugin
+                           (opt-in; never replaces the base plugin)
+  --no-org-plugin         Do not install, refresh, or auto-detect an
+                           organization plugin this run
   --dry-run               Report what would change without writing anything
   --help                  Show this help
+
+Organization plugin resolution (when neither --org-plugin nor
+--no-org-plugin is given): a previously recorded orgPluginSourcePath in the
+project's .codex-copilot.json is used first, so a plain re-run keeps an
+already-installed organization plugin updated without repeating the flag.
+Failing that, a sibling repo next to the framework root --
+<framework-root-parent>/codex-copilot-internal/plugins/codex-copilot-internal
+-- is auto-detected and used only when it exists. If none of that resolves
+anything, no organization plugin is touched: a project with no flag, no
+recorded key, and no sibling repo present is refreshed identically to how
+this script behaved before organization-plugin support existed. The
+organization plugin installs to plugins/<name>, where <name> comes from its
+own .codex-plugin/plugin.json manifest, and is synced with the same
+content-hash comparison and ownership: project preservation as the base
+plugin.
 
 Refreshes an EXISTING codex-copilot install in place. Every framework-owned
 file under plugins/codex-copilot/ plus scripts/copilot-gate.sh is compared BY
@@ -53,6 +73,8 @@ FRAMEWORK_ROOT_EXPLICIT=0
 
 PROJECT_PATH=""
 DRY_RUN=0
+ORG_PLUGIN_ARG=""
+NO_ORG_PLUGIN=0
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -64,6 +86,14 @@ while [[ $# -gt 0 ]]; do
       FRAMEWORK_ROOT="$(cd "${2:-}" && pwd)"
       FRAMEWORK_ROOT_EXPLICIT=1
       shift 2
+      ;;
+    --org-plugin)
+      ORG_PLUGIN_ARG="${2:-}"
+      shift 2
+      ;;
+    --no-org-plugin)
+      NO_ORG_PLUGIN=1
+      shift
       ;;
     --dry-run)
       DRY_RUN=1
@@ -84,6 +114,11 @@ done
 if [[ -z "${PROJECT_PATH}" ]]; then
   echo "--project is required" >&2
   usage >&2
+  exit 1
+fi
+
+if [[ -n "${ORG_PLUGIN_ARG}" && "${NO_ORG_PLUGIN}" -eq 1 ]]; then
+  echo "--org-plugin and --no-org-plugin are mutually exclusive" >&2
   exit 1
 fi
 
@@ -130,13 +165,20 @@ if [[ ! -e "${PLUGIN_LINK}" && ! -f "${CODEX_CONFIG_PATH}" ]]; then
   exit 1
 fi
 
+# shellcheck source=lib/resolve-org-plugin.sh
+source "${SCRIPT_DIR}/lib/resolve-org-plugin.sh"
+codex_resolve_org_plugin_source
+
 if [[ -L "${PLUGIN_LINK}" ]]; then
   echo "plugins/codex-copilot is a symlink (linked install) at: ${PLUGIN_LINK}"
   echo "Linked installs already share the framework source directly; nothing to sync in place."
+  if [[ -n "${ORG_PLUGIN_SOURCE}" ]]; then
+    echo "Note: organization plugin sync is not yet supported alongside a linked base install; skipping (${ORG_PLUGIN_SOURCE_DESC})."
+  fi
   exit 0
 fi
 
-python3 - "${PROJECT_PATH}" "${FRAMEWORK_ROOT}" "${DRY_RUN}" "${FRAMEWORK_ROOT_SOURCE}" <<'PY'
+python3 - "${PROJECT_PATH}" "${FRAMEWORK_ROOT}" "${DRY_RUN}" "${FRAMEWORK_ROOT_SOURCE}" "${ORG_PLUGIN_SOURCE}" "${ORG_PLUGIN_SOURCE_DESC}" <<'PY'
 from datetime import datetime, timezone
 from pathlib import Path
 import hashlib
@@ -150,9 +192,22 @@ project_root = Path(sys.argv[1]).resolve()
 framework_root = Path(sys.argv[2]).resolve()
 dry_run = sys.argv[3] == "1"
 framework_root_source = sys.argv[4]
+org_plugin_source_arg = sys.argv[5]
+org_plugin_source_desc = sys.argv[6]
 
 plugin_src = framework_root / "plugins" / "codex-copilot"
 gate_src = framework_root / "scripts" / "copilot-gate.sh"
+
+org_plugin_source = Path(org_plugin_source_arg).resolve() if org_plugin_source_arg else None
+org_plugin_name = None
+org_plugin_manifest: dict = {}
+if org_plugin_source is not None:
+    org_manifest_path = org_plugin_source / ".codex-plugin" / "plugin.json"
+    if not org_manifest_path.is_file():
+        print(f"ERROR: org plugin source missing manifest: {org_manifest_path}", file=sys.stderr)
+        sys.exit(1)
+    org_plugin_manifest = json.loads(org_manifest_path.read_text(encoding="utf-8"))
+    org_plugin_name = org_plugin_manifest.get("name") or org_plugin_source.name
 
 FRONTMATTER_OWNER_RE = re.compile(r"^owner:\s*project\s*$", re.MULTILINE)
 
@@ -186,10 +241,10 @@ def fingerprint_symlink(link_value: str) -> str:
     return _fingerprint(["symlink", link_value])
 
 
-def relpaths(root: Path):
+def relpaths_under(root: Path, base: Path):
     for path in sorted(root.rglob("*")):
         if path.is_file():
-            yield path.relative_to(framework_root).as_posix()
+            yield path.relative_to(base).as_posix()
 
 
 def has_project_owner_frontmatter(path: Path) -> bool:
@@ -204,8 +259,12 @@ def has_project_owner_frontmatter(path: Path) -> bool:
     return bool(FRONTMATTER_OWNER_RE.search(frontmatter))
 
 
-canonical = list(relpaths(plugin_src))
+canonical = list(relpaths_under(plugin_src, framework_root))
 canonical.append(gate_src.relative_to(framework_root).as_posix())
+
+org_canonical = list(relpaths_under(org_plugin_source, org_plugin_source)) if org_plugin_source is not None else []
+
+ORG_LOCK_COMPONENT = "codex-org"
 
 lock_path = project_root / "copilot.lock.json"
 lock_data: dict = {"schema_version": "1.0", "components": []}
@@ -216,59 +275,91 @@ if lock_path.is_file():
         lock_data = {"schema_version": "1.0", "components": []}
 
 components = lock_data.get("components", [])
-other_components = [c for c in components if c.get("component") != "codex"]
 codex_component = next((c for c in components if c.get("component") == "codex"), None)
 prior_files = {f.get("path"): f for f in (codex_component or {}).get("files", [])}
+prior_org_component = next((c for c in components if c.get("component") == ORG_LOCK_COMPONENT), None)
+prior_org_files = {f.get("path"): f for f in (prior_org_component or {}).get("files", [])}
+other_components = [c for c in components if c.get("component") not in ("codex", ORG_LOCK_COMPONENT)]
 
-added, updated, unchanged, preserved, retired, orphaned_project = [], [], [], [], [], []
-new_files_entries = []
 
-for relpath in canonical:
-    target = project_root / relpath
-    source = framework_root / relpath
-    source_bytes = source.read_bytes()
-    source_sum = sha256_bytes(source_bytes)
+# Shared sync engine: compares every canonical file BY CONTENT (sha256, not
+# declared version) between source_root and dest_root, repairs drift,
+# installs anything missing, retires anything that left the roster, and
+# never touches a path whose effective ownership is "project". Used for
+# both the base plugin (source_root=framework_root, dest_root=project_root)
+# and an organization plugin (source_root/dest_root scoped to that plugin's
+# own tree) so there is exactly one sync implementation, not two.
+def sync_tree(source_root: Path, dest_root: Path, canonical_paths: list, prior: dict, dry_run: bool) -> dict:
+    added, updated, unchanged, preserved, retired, orphaned_project = [], [], [], [], [], []
+    new_entries = []
 
-    prior = prior_files.get(relpath)
-    prior_ownership = prior.get("ownership") if prior else "framework"
+    for relpath in canonical_paths:
+        target = dest_root / relpath
+        source = source_root / relpath
+        source_bytes = source.read_bytes()
+        source_sum = sha256_bytes(source_bytes)
 
-    if not target.exists():
-        if not dry_run:
-            target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_bytes(source_bytes)
-        added.append(relpath)
-        new_files_entries.append({"path": relpath, "ownership": "framework", "checksum": source_sum})
-        continue
+        prior_entry = prior.get(relpath)
+        prior_ownership = prior_entry.get("ownership") if prior_entry else "framework"
 
-    effective_ownership = "project" if (has_project_owner_frontmatter(target) or prior_ownership == "project") else "framework"
+        if not target.exists():
+            if not dry_run:
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes(source_bytes)
+            added.append(relpath)
+            new_entries.append({"path": relpath, "ownership": "framework", "checksum": source_sum})
+            continue
 
-    if effective_ownership == "project":
-        preserved.append(relpath)
-        new_files_entries.append({"path": relpath, "ownership": "project", "checksum": sha256_bytes(target.read_bytes())})
-        continue
+        effective_ownership = "project" if (has_project_owner_frontmatter(target) or prior_ownership == "project") else "framework"
 
-    target_sum = sha256_bytes(target.read_bytes())
-    if target_sum == source_sum:
-        unchanged.append(relpath)
-    else:
-        if not dry_run:
-            target.write_bytes(source_bytes)
-        updated.append(relpath)
-    new_files_entries.append({"path": relpath, "ownership": "framework", "checksum": source_sum})
+        if effective_ownership == "project":
+            preserved.append(relpath)
+            new_entries.append({"path": relpath, "ownership": "project", "checksum": sha256_bytes(target.read_bytes())})
+            continue
 
-canonical_set = set(canonical)
-for relpath, prior in prior_files.items():
-    if relpath in canonical_set:
-        continue
-    target = project_root / relpath
-    if prior.get("ownership") == "project":
+        target_sum = sha256_bytes(target.read_bytes())
+        if target_sum == source_sum:
+            unchanged.append(relpath)
+        else:
+            if not dry_run:
+                target.write_bytes(source_bytes)
+            updated.append(relpath)
+        new_entries.append({"path": relpath, "ownership": "framework", "checksum": source_sum})
+
+    canonical_set = set(canonical_paths)
+    for relpath, prior_entry in prior.items():
+        if relpath in canonical_set:
+            continue
+        target = dest_root / relpath
+        if prior_entry.get("ownership") == "project":
+            if target.exists():
+                orphaned_project.append(relpath)
+            continue
         if target.exists():
-            orphaned_project.append(relpath)
-        continue
-    if target.exists():
-        if not dry_run:
-            target.unlink()
-        retired.append(relpath)
+            if not dry_run:
+                target.unlink()
+            retired.append(relpath)
+
+    return {
+        "added": added, "updated": updated, "unchanged": unchanged,
+        "preserved": preserved, "retired": retired, "orphaned_project": orphaned_project,
+        "new_files_entries": new_entries,
+    }
+
+
+base_sync = sync_tree(framework_root, project_root, canonical, prior_files, dry_run)
+added = base_sync["added"]
+updated = base_sync["updated"]
+unchanged = base_sync["unchanged"]
+preserved = base_sync["preserved"]
+retired = base_sync["retired"]
+orphaned_project = base_sync["orphaned_project"]
+new_files_entries = base_sync["new_files_entries"]
+
+org_sync = None
+org_dest_root = project_root / "plugins" / (org_plugin_name or "")
+if org_plugin_source is not None:
+    org_sync = sync_tree(org_plugin_source, org_dest_root, org_canonical, prior_org_files, dry_run)
 
 # managed_outputs (schema: {"path", "kind", "fingerprint"} exactly -- cc's
 # project_integration.py reader rejects any record missing "fingerprint" as
@@ -309,8 +400,47 @@ if symlink_status != "left alone (unexpected non-symlink at this path)":
         }
     )
 
+# Organization plugin skill bridge symlink -- same treatment as the base
+# plugin's, scoped to the org plugin's own name and skills/ directory (when
+# it has one). Skipped entirely when no org plugin resolved this run, which
+# leaves any previously-installed bridge untouched on disk.
+org_managed_outputs_entries: list = []
+org_symlink_status = None
+if org_plugin_source is not None:
+    org_skills_source = org_plugin_source / "skills"
+    if org_skills_source.is_dir():
+        org_skills_link = project_root / ".claude" / "skills" / org_plugin_name
+        org_project_plugin_skills = org_dest_root / "skills"
+        org_skills_target_expected = __import__("os").path.relpath(org_project_plugin_skills, org_skills_link.parent)
+        if org_skills_link.is_symlink():
+            current = __import__("os").readlink(org_skills_link)
+            org_symlink_status = "unchanged"
+            if current != org_skills_target_expected:
+                if not dry_run:
+                    org_skills_link.unlink()
+                    org_skills_link.symlink_to(org_skills_target_expected)
+                org_symlink_status = "repaired"
+        elif org_skills_link.exists():
+            org_symlink_status = "left alone (unexpected non-symlink at this path)"
+        else:
+            if not dry_run:
+                org_skills_link.parent.mkdir(parents=True, exist_ok=True)
+                org_skills_link.symlink_to(org_skills_target_expected)
+            org_symlink_status = "created"
+        if org_symlink_status != "left alone (unexpected non-symlink at this path)":
+            org_managed_outputs_entries.append(
+                {
+                    "path": f".claude/skills/{org_plugin_name}",
+                    "kind": "internal-symlink",
+                    "fingerprint": fingerprint_symlink(org_skills_target_expected),
+                }
+            )
+    else:
+        org_symlink_status = "skipped (org plugin has no skills/ directory)"
+
 # .codex-copilot.json: field-level merge only. projectName/pluginPath are
-# project-owned and are never overwritten; framework tracking fields are
+# project-owned and are never overwritten; framework tracking fields (and,
+# when an org plugin resolved this run, orgPlugin* tracking fields) are
 # refreshed so the install metadata reflects what was actually synced.
 codex_config_path = project_root / ".codex-copilot.json"
 plugin_manifest = json.loads((plugin_src / ".codex-plugin" / "plugin.json").read_text(encoding="utf-8"))
@@ -323,27 +453,42 @@ if codex_config_path.is_file():
         cfg = {}
     install_type = cfg.get("installType", "copy")
     codex_config_mode = stat.S_IMODE(codex_config_path.lstat().st_mode)
-    if install_type == "link":
+
+    if org_plugin_source is not None:
+        cfg["orgPluginName"] = org_plugin_name
+        cfg["orgPluginPath"] = f"./plugins/{org_plugin_name}"
+        cfg["orgPluginSourcePath"] = str(org_plugin_source)
+        cfg["orgPluginInstallType"] = "copy"
+        cfg["orgPluginVersion"] = org_plugin_manifest.get("version", "unknown")
+
+    if install_type == "link" and org_plugin_source is None:
         config_status = "skipped (installType=link; plugin already synced via symlink)"
         codex_config_bytes = codex_config_path.read_bytes()
     else:
-        commit = "unknown"
-        try:
-            commit = subprocess.run(
-                ["git", "-C", str(framework_root), "rev-parse", "--short", "HEAD"],
-                capture_output=True, text=True, check=True,
-            ).stdout.strip()
-        except (subprocess.CalledProcessError, OSError):
-            pass
-        cfg["frameworkVersion"] = framework_version
-        cfg["frameworkCommit"] = commit
-        cfg.setdefault("installType", "copy")
-        cfg["updatedAt"] = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-        cfg["updatedBy"] = f"codex-copilot {framework_version} update-project.sh"
+        status_bits = []
+        if install_type != "link":
+            commit = "unknown"
+            try:
+                commit = subprocess.run(
+                    ["git", "-C", str(framework_root), "rev-parse", "--short", "HEAD"],
+                    capture_output=True, text=True, check=True,
+                ).stdout.strip()
+            except (subprocess.CalledProcessError, OSError):
+                pass
+            cfg["frameworkVersion"] = framework_version
+            cfg["frameworkCommit"] = commit
+            cfg.setdefault("installType", "copy")
+            cfg["updatedAt"] = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+            cfg["updatedBy"] = f"codex-copilot {framework_version} update-project.sh"
+            status_bits.append("refreshed tracking fields (projectName/pluginPath preserved)")
+        else:
+            status_bits.append("base plugin fields skipped (installType=link)")
+        if org_plugin_source is not None:
+            status_bits.append(f"org plugin fields refreshed ({org_plugin_name})")
         codex_config_bytes = (json.dumps(cfg, indent=2) + "\n").encode("utf-8")
         if not dry_run:
             codex_config_path.write_bytes(codex_config_bytes)
-        config_status = "refreshed tracking fields (projectName/pluginPath preserved)"
+        config_status = "; ".join(status_bits)
     managed_outputs_entries.append(
         {
             "path": ".codex-copilot.json",
@@ -361,8 +506,25 @@ new_codex_component = {
     "files": sorted(new_files_entries, key=lambda f: f["path"]),
     "managed_outputs": sorted(managed_outputs_entries, key=lambda o: (o["path"], o["kind"])),
 }
+
+components_out = list(other_components) + [new_codex_component]
+if org_sync is not None:
+    new_org_component = {
+        "component": ORG_LOCK_COMPONENT,
+        "plugin_name": org_plugin_name,
+        "version": org_plugin_manifest.get("version", "unknown"),
+        "files": sorted(org_sync["new_files_entries"], key=lambda f: f["path"]),
+        "managed_outputs": sorted(org_managed_outputs_entries, key=lambda o: (o["path"], o["kind"])),
+    }
+    components_out.append(new_org_component)
+elif prior_org_component is not None:
+    # No org plugin resolved this run (suppressed, or nothing to resolve) --
+    # leave a previously-tracked org component exactly as it was rather than
+    # dropping it from the lock file.
+    components_out.append(prior_org_component)
+
 lock_data["schema_version"] = lock_data.get("schema_version", "1.0")
-lock_data["components"] = other_components + [new_codex_component]
+lock_data["components"] = components_out
 if not dry_run:
     lock_path.write_text(json.dumps(lock_data, indent=2) + "\n", encoding="utf-8")
 
@@ -389,7 +551,26 @@ print(f"Skill symlink (.claude/skills/codex-copilot): {symlink_status}")
 print(f".codex-copilot.json: {config_status}")
 print(f"copilot.lock.json: {'would be written' if dry_run else 'written'} ({len(new_files_entries)} codex file entries tracked)")
 print()
-changed = bool(updated or added or retired or symlink_status not in ("unchanged",))
+print(f"Org plugin: {org_plugin_source_desc}")
+org_changed = False
+if org_sync is not None:
+    print(f"Org plugin name: {org_plugin_name}")
+    print(f"Org plugin version: {org_plugin_manifest.get('version', 'unknown')}")
+    section("Org plugin -- Updated (content differed from source)", org_sync["updated"])
+    section("Org plugin -- Added (missing files installed)", org_sync["added"])
+    print(f"Org plugin -- Unchanged (already matched source): {len(org_sync['unchanged'])}")
+    section("Org plugin -- Preserved (ownership: project -- left untouched)", org_sync["preserved"])
+    section("Org plugin -- Retired (removed; no longer part of the org plugin roster)", org_sync["retired"])
+    section("Org plugin -- Orphaned project files", org_sync["orphaned_project"])
+    print(f"Org plugin skill symlink (.claude/skills/{org_plugin_name}): {org_symlink_status}")
+    org_changed = bool(
+        org_sync["updated"]
+        or org_sync["added"]
+        or org_sync["retired"]
+        or org_symlink_status not in (None, "unchanged", "skipped (org plugin has no skills/ directory)")
+    )
+print()
+changed = bool(updated or added or retired or symlink_status not in ("unchanged",)) or org_changed
 if dry_run:
     print("Result: changes previewed (dry-run, nothing written)" if changed else "Result: no changes needed (dry-run)")
 else:

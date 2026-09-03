@@ -16,7 +16,8 @@ The bootstrap script:
 8. scaffolds `docs/40-initiatives/` with an index and reusable initiative structure
 9. writes design-led decision instruments: `SOUL.md` and `docs/01-architecture/12-architecture-guiding-principles.md`
 10. writes `.codex-copilot.json` with install metadata
-11. optionally runs `tc init --json`
+11. optionally installs an organization-owned plugin into `plugins/<org-plugin-name>` (opt-in; see [Organization Plugin](#organization-plugin) below)
+12. optionally runs `tc init --json`
 
 This keeps the project setup portable. Control Tower can refresh the framework-owned copy later without depending on a machine-specific checkout path.
 
@@ -96,6 +97,25 @@ To refresh an existing install directly, without first-install scaffolding, run 
 
 It discovers every framework-owned file under `plugins/codex-copilot/` plus `scripts/copilot-gate.sh`, so newly shipped hook assets are included automatically. A file is skipped -- never overwritten -- if it is marked `ownership: project`, either via `owner: project` YAML frontmatter in the file itself or a `copilot.lock.json` entry for that path with `"ownership": "project"`. `AGENTS.md`, `SOUL.md`, `docs/40-initiatives/`, and `.agents/plugins/marketplace.json` are never touched by the updater; `.codex-copilot.json` only has its framework-tracking fields merged in (`projectName`/`pluginPath` are preserved). Running it twice in a row makes no further changes on the second run. Add `--dry-run` to preview without writing.
 
+## Organization Plugin
+
+Both `setup-project.sh` and `update-project.sh` can install a second, organization-owned plugin alongside the base `plugins/codex-copilot` plugin -- never replacing it. This is opt-in and off by default; a project set up with no flags, no prior install, and no organization repo checked out next to the framework behaves identically to a plain base install.
+
+Resolution order, highest precedence first:
+
+1. `--org-plugin /absolute/path/to/plugin` -- an explicit path to a plugin directory containing `.codex-plugin/plugin.json`. An invalid path here is a hard error.
+2. `orgPluginSourcePath` recorded in the project's `.codex-copilot.json` -- once an organization plugin has been installed, a later plain `update-project.sh --project ...` run (no flag) keeps it updated from the same source automatically.
+3. Auto-detection: a sibling repo next to the framework root at `<framework-root-parent>/codex-copilot-internal/plugins/codex-copilot-internal`, used only when it exists.
+4. `--no-org-plugin` suppresses all of the above for that run without uninstalling anything already present.
+
+The organization plugin installs to `plugins/<name>`, where `<name>` comes from its own `.codex-plugin/plugin.json` manifest. It is synced with the same content-hash comparison, `ownership: project` preservation, and skill-bridge symlinking (`.claude/skills/<name>` -> `plugins/<name>/skills`, when the plugin has a `skills/` directory) as the base plugin, and is tracked as its own `codex-org` component in `copilot.lock.json` and its own `orgPlugin*` fields in `.codex-copilot.json`.
+
+```bash
+./scripts/update-project.sh \
+  --project /absolute/path/to/project \
+  --org-plugin /absolute/path/to/codex-copilot-internal/plugins/codex-copilot-internal
+```
+
 ## Result
 
 The target repo will contain:
@@ -112,6 +132,7 @@ The target repo will contain:
 - `docs/40-initiatives/_template/`
 - `docs/01-architecture/12-architecture-guiding-principles.md`
 - `plugins/codex-copilot` -> portable project-local plugin copy
+- optionally, when an organization plugin resolved: `plugins/<org-plugin-name>` and `.claude/skills/<org-plugin-name>` -> relative symlink to `plugins/<org-plugin-name>/skills`
 
 ## First prompt in Codex
 

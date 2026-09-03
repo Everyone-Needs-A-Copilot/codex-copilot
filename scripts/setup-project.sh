@@ -16,6 +16,11 @@ Options:
   --rules-file PATH       Append project-specific rules from file into AGENTS.md
   --no-decision-instruments
                           Skip SOUL.md and architecture-principles scaffolding
+  --org-plugin PATH       Install an additional organization-owned plugin
+                           from PATH, alongside the base plugin (opt-in;
+                           never replaces the base plugin)
+  --no-org-plugin         Do not install or auto-detect an organization
+                           plugin
   --force                 Compatibility-only; existing project wiring is still preserved
   --no-tc-init            Skip tc init
   --help                  Show this help
@@ -25,6 +30,16 @@ delegates to update-project.sh to repair the plugin/skill/QA-gate paths in
 place (content-compared, ownership: project files preserved) instead of
 refusing. AGENTS.md, marketplace.json, and install metadata are always
 left untouched once they exist.
+
+Organization plugin: opt-in and off by default. Without --org-plugin or
+--no-org-plugin, a previously recorded orgPluginSourcePath in an existing
+project's .codex-copilot.json is honored first, then a sibling repo next
+to the framework root (<framework-root-parent>/codex-copilot-internal/
+plugins/codex-copilot-internal) is auto-detected and used only when it
+exists. A project with none of those present is set up identically to how
+this script behaved before organization-plugin support existed. See
+scripts/update-project.sh --help for the full resolution order and how a
+later plain run keeps an installed organization plugin updated.
 EOF
 }
 
@@ -44,6 +59,8 @@ RULES_FILE=""
 FORCE=0
 DO_TC_INIT=1
 DO_DECISION_INSTRUMENTS=1
+ORG_PLUGIN_ARG=""
+NO_ORG_PLUGIN=0
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -75,6 +92,14 @@ while [[ $# -gt 0 ]]; do
       DO_DECISION_INSTRUMENTS=0
       shift
       ;;
+    --org-plugin)
+      ORG_PLUGIN_ARG="${2:-}"
+      shift 2
+      ;;
+    --no-org-plugin)
+      NO_ORG_PLUGIN=1
+      shift
+      ;;
     --force)
       FORCE=1
       shift
@@ -94,6 +119,11 @@ while [[ $# -gt 0 ]]; do
       ;;
   esac
 done
+
+if [[ -n "${ORG_PLUGIN_ARG}" && "${NO_ORG_PLUGIN}" -eq 1 ]]; then
+  echo "--org-plugin and --no-org-plugin are mutually exclusive" >&2
+  exit 1
+fi
 
 if [[ -z "${PROJECT_PATH}" ]]; then
   echo "--project is required" >&2
@@ -161,6 +191,26 @@ MARKETPLACE_PATH="${PROJECT_PATH}/.agents/plugins/marketplace.json"
 INSTALL_METADATA_PATH="${PROJECT_PATH}/.codex-copilot.json"
 AGENTS_PATH="${PROJECT_PATH}/AGENTS.md"
 
+CODEX_CONFIG_PATH="${INSTALL_METADATA_PATH}"
+# shellcheck source=lib/resolve-org-plugin.sh
+source "${SCRIPT_DIR}/lib/resolve-org-plugin.sh"
+codex_resolve_org_plugin_source
+echo "Org plugin: ${ORG_PLUGIN_SOURCE_DESC}"
+
+ORG_PLUGIN_NAME=""
+ORG_PLUGIN_VERSION=""
+if [[ -n "${ORG_PLUGIN_SOURCE}" ]]; then
+  read -r ORG_PLUGIN_NAME ORG_PLUGIN_VERSION <<<"$(python3 -c "
+import json, sys
+data = json.load(open(sys.argv[1]))
+print(data.get('name') or '', data.get('version') or 'unknown')
+" "${ORG_PLUGIN_SOURCE}/.codex-plugin/plugin.json")"
+  if [[ -z "${ORG_PLUGIN_NAME}" ]]; then
+    ORG_PLUGIN_NAME="$(basename "${ORG_PLUGIN_SOURCE}")"
+  fi
+fi
+ORG_PLUGIN_LINK="${PROJECT_PATH}/plugins/${ORG_PLUGIN_NAME}"
+
 if [[ ! -d "${FRAMEWORK_PLUGIN_PATH}" ]]; then
   echo "Missing framework plugin directory: ${FRAMEWORK_PLUGIN_PATH}" >&2
   exit 1
@@ -224,7 +274,13 @@ fi
 
 if [[ "${EXISTING_INSTALL}" -eq 1 ]]; then
   echo "Existing codex-copilot install detected at ${PROJECT_PATH}; delegating to update-project.sh to repair it in place."
-  "${SCRIPT_DIR}/update-project.sh" --project "${PROJECT_PATH}" --framework-root "${FRAMEWORK_ROOT}"
+  ORG_DELEGATE_ARGS=()
+  if [[ -n "${ORG_PLUGIN_ARG}" ]]; then
+    ORG_DELEGATE_ARGS+=(--org-plugin "${ORG_PLUGIN_ARG}")
+  elif [[ "${NO_ORG_PLUGIN}" -eq 1 ]]; then
+    ORG_DELEGATE_ARGS+=(--no-org-plugin)
+  fi
+  "${SCRIPT_DIR}/update-project.sh" --project "${PROJECT_PATH}" --framework-root "${FRAMEWORK_ROOT}" "${ORG_DELEGATE_ARGS[@]+"${ORG_DELEGATE_ARGS[@]}"}"
 fi
 
 # Mutation starts only after every collision and input check has passed.
@@ -248,6 +304,17 @@ if [[ "${EXISTING_INSTALL}" -eq 0 ]]; then
   ln -s "${RELATIVE_SKILLS_TARGET}" "${SKILLS_LINK}"
   cp "${FRAMEWORK_QA_GATE_PATH}" "${QA_GATE_LINK}"
   chmod +x "${QA_GATE_LINK}"
+
+  if [[ -n "${ORG_PLUGIN_SOURCE}" ]]; then
+    cp -R "${ORG_PLUGIN_SOURCE}" "${ORG_PLUGIN_LINK}"
+    if [[ -d "${ORG_PLUGIN_SOURCE}/skills" ]]; then
+      ORG_SKILLS_LINK="${PROJECT_PATH}/.claude/skills/${ORG_PLUGIN_NAME}"
+      ORG_SKILLS_LINK_DIR="$(dirname "${ORG_SKILLS_LINK}")"
+      ORG_PROJECT_PLUGIN_SKILLS_PATH="${ORG_PLUGIN_LINK}/skills"
+      ORG_RELATIVE_SKILLS_TARGET="$(relative_path "${ORG_SKILLS_LINK_DIR}" "${ORG_PROJECT_PLUGIN_SKILLS_PATH}")"
+      ln -s "${ORG_RELATIVE_SKILLS_TARGET}" "${ORG_SKILLS_LINK}"
+    fi
+  fi
 fi
 
 MEMORY_GITIGNORE="${PROJECT_PATH}/.claude/memory/.gitignore"
@@ -275,38 +342,84 @@ EOF
 fi
 
 if [[ "${SKIP_MARKETPLACE_WRITE}" -eq 0 ]]; then
-  cat > "${MARKETPLACE_PATH}" <<'EOF'
-{
-  "name": "codex-copilot-project",
-  "interface": {
-    "displayName": "Codex Copilot Project"
-  },
-  "plugins": [
+  # A resolved org plugin gets its own marketplace entry alongside the base
+  # plugin's, using its manifest name/path -- never hardcoded. When no org
+  # plugin resolved this run, this produces exactly the base-only file this
+  # script has always written.
+  python3 - "${MARKETPLACE_PATH}" "${ORG_PLUGIN_NAME}" <<'PY'
+import json
+import sys
+
+path, org_name = sys.argv[1], sys.argv[2]
+
+plugins = [
     {
-      "name": "codex-copilot",
-      "source": {
-        "source": "local",
-        "path": "./plugins/codex-copilot"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_INSTALL"
-      },
-      "category": "Productivity"
+        "name": "codex-copilot",
+        "source": {
+            "source": "local",
+            "path": "./plugins/codex-copilot",
+        },
+        "policy": {
+            "installation": "AVAILABLE",
+            "authentication": "ON_INSTALL",
+        },
+        "category": "Productivity",
     }
-  ]
+]
+if org_name:
+    plugins.append(
+        {
+            "name": org_name,
+            "source": {
+                "source": "local",
+                "path": f"./plugins/{org_name}",
+            },
+            "policy": {
+                "installation": "AVAILABLE",
+                "authentication": "ON_INSTALL",
+            },
+            "category": "Productivity",
+        }
+    )
+
+data = {
+    "name": "codex-copilot-project",
+    "interface": {"displayName": "Codex Copilot Project"},
+    "plugins": plugins,
 }
-EOF
+
+with open(path, "w", encoding="utf-8") as f:
+    json.dump(data, f, indent=2)
+    f.write("\n")
+PY
 fi
 
 if [[ "${SKIP_METADATA_WRITE}" -eq 0 ]]; then
-  cat > "${INSTALL_METADATA_PATH}" <<EOF
-{
-  "installType": "copy",
-  "pluginPath": "./plugins/codex-copilot",
-  "projectName": "${PROJECT_NAME}"
+  # orgPlugin* keys are only added when an org plugin actually resolved this
+  # run -- absent them, this produces exactly the base-only metadata this
+  # script has always written.
+  python3 - "${INSTALL_METADATA_PATH}" "${PROJECT_NAME}" "${ORG_PLUGIN_NAME}" "${ORG_PLUGIN_SOURCE}" "${ORG_PLUGIN_VERSION}" <<'PY'
+import json
+import sys
+
+path, project_name, org_name, org_source, org_version = sys.argv[1:6]
+
+data = {
+    "installType": "copy",
+    "pluginPath": "./plugins/codex-copilot",
+    "projectName": project_name,
 }
-EOF
+if org_name:
+    data["orgPluginName"] = org_name
+    data["orgPluginPath"] = f"./plugins/{org_name}"
+    data["orgPluginSourcePath"] = org_source
+    data["orgPluginInstallType"] = "copy"
+    data["orgPluginVersion"] = org_version
+
+with open(path, "w", encoding="utf-8") as f:
+    json.dump(data, f, indent=2)
+    f.write("\n")
+PY
 fi
 
 render_project_template() {
@@ -393,6 +506,10 @@ echo "QA gate: ${QA_GATE_LINK}"
 echo "Initiatives: ${INITIATIVES_PATH}"
 echo "cc config: ${CC_CONFIG_PATH}"
 echo "AGENTS.md: ${AGENTS_PATH}"
+if [[ -n "${ORG_PLUGIN_NAME}" ]]; then
+  echo "Org plugin: ${ORG_PLUGIN_NAME} (${ORG_PLUGIN_SOURCE_DESC})"
+  echo "Org plugin path: ${ORG_PLUGIN_LINK}"
+fi
 
 # Print the paths, then actually check them. Listing what was wired is a record
 # of intent; a project can carry all of the above as dangling links or a

@@ -38,7 +38,7 @@ Formal multi-phase initiative knowledge lives in `docs/40-initiatives/NN-slug/`.
 
 ### 3. Use `cc` For Memory And Skill Discovery
 
-Memory and reusable skill discovery now live behind the Claude Copilot `cc` CLI. Codex Copilot projects link the shared plugin skills into `.claude/skills/codex-copilot` so `cc skill ...` can discover them, and keep durable memory entries under `.claude/memory/entries/`.
+Memory and reusable skill discovery now live behind the Claude Copilot `cc` CLI. Codex Copilot projects link the shared plugin skills into `.claude/skills/codex-copilot` so `cc skill ...` can discover them, and keep durable memory entries under `.claude/memory/entries/`. An opt-in organization plugin (see [Setup Project](../01-setup/02-setup-project.md#organization-plugin)) gets the same bridge at `.claude/skills/<org-plugin-name>`, alongside the base plugin's rather than instead of it.
 
 ### 4. Installable as a Codex Plugin
 
