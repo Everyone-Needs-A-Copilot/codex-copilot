@@ -238,6 +238,28 @@ print(os.path.relpath(target, source))
 PY
 }
 
+# `cp -R` preserves permissions modulo the running umask, which does not
+# guarantee the destination lands with the executable bit the source
+# actually has. Called right after every fresh `cp -R` of a plugin tree so
+# mode correctness never depends on umask. Shares desired_mode() with
+# update-project.sh's sync_tree() via scripts/lib/plugin_mode.py rather
+# than reimplementing the rule here.
+normalize_plugin_modes() {
+  python3 - "${SCRIPT_DIR}" "$1" "$2" <<'PY'
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(sys.argv[1]) / "lib"))
+from plugin_mode import normalize_tree_modes
+
+source_root = Path(sys.argv[2]).resolve()
+dest_root = Path(sys.argv[3]).resolve()
+changed = normalize_tree_modes(source_root, dest_root)
+for relpath in changed:
+    print(f"  mode corrected: {relpath}")
+PY
+}
+
 SKILLS_LINK_DIR="$(dirname "${SKILLS_LINK}")"
 PROJECT_PLUGIN_SKILLS_PATH="${PLUGIN_LINK}/skills"
 RELATIVE_SKILLS_TARGET="$(relative_path "${SKILLS_LINK_DIR}" "${PROJECT_PLUGIN_SKILLS_PATH}")"
@@ -301,12 +323,14 @@ fi
 
 if [[ "${EXISTING_INSTALL}" -eq 0 ]]; then
   cp -R "${FRAMEWORK_PLUGIN_PATH}" "${PLUGIN_LINK}"
+  normalize_plugin_modes "${FRAMEWORK_PLUGIN_PATH}" "${PLUGIN_LINK}"
   ln -s "${RELATIVE_SKILLS_TARGET}" "${SKILLS_LINK}"
   cp "${FRAMEWORK_QA_GATE_PATH}" "${QA_GATE_LINK}"
   chmod +x "${QA_GATE_LINK}"
 
   if [[ -n "${ORG_PLUGIN_SOURCE}" ]]; then
     cp -R "${ORG_PLUGIN_SOURCE}" "${ORG_PLUGIN_LINK}"
+    normalize_plugin_modes "${ORG_PLUGIN_SOURCE}" "${ORG_PLUGIN_LINK}"
     if [[ -d "${ORG_PLUGIN_SOURCE}/skills" ]]; then
       ORG_SKILLS_LINK="${PROJECT_PATH}/.claude/skills/${ORG_PLUGIN_NAME}"
       ORG_SKILLS_LINK_DIR="$(dirname "${ORG_SKILLS_LINK}")"

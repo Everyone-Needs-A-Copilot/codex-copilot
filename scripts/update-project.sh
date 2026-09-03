@@ -178,7 +178,7 @@ if [[ -L "${PLUGIN_LINK}" ]]; then
   exit 0
 fi
 
-python3 - "${PROJECT_PATH}" "${FRAMEWORK_ROOT}" "${DRY_RUN}" "${FRAMEWORK_ROOT_SOURCE}" "${ORG_PLUGIN_SOURCE}" "${ORG_PLUGIN_SOURCE_DESC}" <<'PY'
+python3 - "${PROJECT_PATH}" "${FRAMEWORK_ROOT}" "${DRY_RUN}" "${FRAMEWORK_ROOT_SOURCE}" "${ORG_PLUGIN_SOURCE}" "${ORG_PLUGIN_SOURCE_DESC}" "${SCRIPT_DIR}" <<'PY'
 from datetime import datetime, timezone
 from pathlib import Path
 import hashlib
@@ -194,6 +194,10 @@ dry_run = sys.argv[3] == "1"
 framework_root_source = sys.argv[4]
 org_plugin_source_arg = sys.argv[5]
 org_plugin_source_desc = sys.argv[6]
+script_dir = Path(sys.argv[7]).resolve()
+
+sys.path.insert(0, str(script_dir / "lib"))
+from plugin_mode import desired_mode  # noqa: E402 -- shared with setup-project.sh, not forked
 
 plugin_src = framework_root / "plugins" / "codex-copilot"
 gate_src = framework_root / "scripts" / "copilot-gate.sh"
@@ -282,15 +286,33 @@ prior_org_files = {f.get("path"): f for f in (prior_org_component or {}).get("fi
 other_components = [c for c in components if c.get("component") not in ("codex", ORG_LOCK_COMPONENT)]
 
 
+# desired_mode() is imported from scripts/lib/plugin_mode.py above, shared
+# with setup-project.sh's post-copy mode normalization rather than
+# reimplemented here.
+
+
 # Shared sync engine: compares every canonical file BY CONTENT (sha256, not
-# declared version) between source_root and dest_root, repairs drift,
-# installs anything missing, retires anything that left the roster, and
-# never touches a path whose effective ownership is "project". Used for
-# both the base plugin (source_root=framework_root, dest_root=project_root)
-# and an organization plugin (source_root/dest_root scoped to that plugin's
-# own tree) so there is exactly one sync implementation, not two.
+# declared version) AND BY EXECUTABLE BIT between source_root and dest_root,
+# repairs either kind of drift, installs anything missing (with the correct
+# mode from the start), retires anything that left the roster, and never
+# touches a path whose effective ownership is "project" -- content or mode.
+# Used for both the base plugin (source_root=framework_root,
+# dest_root=project_root) and an organization plugin (source_root/dest_root
+# scoped to that plugin's own tree) so there is exactly one sync
+# implementation, not two.
+#
+# A mode-only mismatch (content identical, executable bit differs) is
+# tracked and reported separately from "updated" rather than folded into
+# it: content drift means the file says something different and is worth
+# scrutinizing (it may carry unreviewed bytes); a mode-only mismatch is
+# almost always a mechanical artifact of how the tree was moved (a git
+# checkout with core.fileMode off, a zip/tar that drops exec bits) and
+# should read as "the copy was mechanically repaired," not "the file
+# changed." Both still count toward "changes were made" for the run's
+# overall result -- neither is silently absorbed into "unchanged".
 def sync_tree(source_root: Path, dest_root: Path, canonical_paths: list, prior: dict, dry_run: bool) -> dict:
     added, updated, unchanged, preserved, retired, orphaned_project = [], [], [], [], [], []
+    mode_repaired = []
     new_entries = []
 
     for relpath in canonical_paths:
@@ -298,6 +320,7 @@ def sync_tree(source_root: Path, dest_root: Path, canonical_paths: list, prior: 
         source = source_root / relpath
         source_bytes = source.read_bytes()
         source_sum = sha256_bytes(source_bytes)
+        target_mode = desired_mode(source)
 
         prior_entry = prior.get(relpath)
         prior_ownership = prior_entry.get("ownership") if prior_entry else "framework"
@@ -306,6 +329,7 @@ def sync_tree(source_root: Path, dest_root: Path, canonical_paths: list, prior: 
             if not dry_run:
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_bytes(source_bytes)
+                target.chmod(target_mode)
             added.append(relpath)
             new_entries.append({"path": relpath, "ownership": "framework", "checksum": source_sum})
             continue
@@ -318,12 +342,20 @@ def sync_tree(source_root: Path, dest_root: Path, canonical_paths: list, prior: 
             continue
 
         target_sum = sha256_bytes(target.read_bytes())
-        if target_sum == source_sum:
-            unchanged.append(relpath)
-        else:
+        content_changed = target_sum != source_sum
+        mode_changed = stat.S_IMODE(target.lstat().st_mode) != target_mode
+
+        if content_changed:
             if not dry_run:
                 target.write_bytes(source_bytes)
+                target.chmod(target_mode)
             updated.append(relpath)
+        elif mode_changed:
+            if not dry_run:
+                target.chmod(target_mode)
+            mode_repaired.append(relpath)
+        else:
+            unchanged.append(relpath)
         new_entries.append({"path": relpath, "ownership": "framework", "checksum": source_sum})
 
     canonical_set = set(canonical_paths)
@@ -343,6 +375,7 @@ def sync_tree(source_root: Path, dest_root: Path, canonical_paths: list, prior: 
     return {
         "added": added, "updated": updated, "unchanged": unchanged,
         "preserved": preserved, "retired": retired, "orphaned_project": orphaned_project,
+        "mode_repaired": mode_repaired,
         "new_files_entries": new_entries,
     }
 
@@ -354,6 +387,7 @@ unchanged = base_sync["unchanged"]
 preserved = base_sync["preserved"]
 retired = base_sync["retired"]
 orphaned_project = base_sync["orphaned_project"]
+mode_repaired = base_sync["mode_repaired"]
 new_files_entries = base_sync["new_files_entries"]
 
 org_sync = None
@@ -543,7 +577,8 @@ print(f"Framework version: {framework_version}")
 print()
 section("Updated (framework-owned, content differed from source)", updated)
 section("Added (missing framework files installed)", added)
-print(f"Unchanged (already matched source): {len(unchanged)}")
+section("Mode repaired (content matched, executable bit corrected)", mode_repaired)
+print(f"Unchanged (already matched source, content and mode): {len(unchanged)}")
 section("Preserved (ownership: project -- left untouched)", preserved)
 section("Retired (removed; no longer part of the framework roster)", retired)
 section("Orphaned project files (path left the roster, ownership: project -- left in place, review manually)", orphaned_project)
@@ -558,7 +593,8 @@ if org_sync is not None:
     print(f"Org plugin version: {org_plugin_manifest.get('version', 'unknown')}")
     section("Org plugin -- Updated (content differed from source)", org_sync["updated"])
     section("Org plugin -- Added (missing files installed)", org_sync["added"])
-    print(f"Org plugin -- Unchanged (already matched source): {len(org_sync['unchanged'])}")
+    section("Org plugin -- Mode repaired (content matched, executable bit corrected)", org_sync["mode_repaired"])
+    print(f"Org plugin -- Unchanged (already matched source, content and mode): {len(org_sync['unchanged'])}")
     section("Org plugin -- Preserved (ownership: project -- left untouched)", org_sync["preserved"])
     section("Org plugin -- Retired (removed; no longer part of the org plugin roster)", org_sync["retired"])
     section("Org plugin -- Orphaned project files", org_sync["orphaned_project"])
@@ -567,10 +603,11 @@ if org_sync is not None:
         org_sync["updated"]
         or org_sync["added"]
         or org_sync["retired"]
+        or org_sync["mode_repaired"]
         or org_symlink_status not in (None, "unchanged", "skipped (org plugin has no skills/ directory)")
     )
 print()
-changed = bool(updated or added or retired or symlink_status not in ("unchanged",)) or org_changed
+changed = bool(updated or added or retired or mode_repaired or symlink_status not in ("unchanged",)) or org_changed
 if dry_run:
     print("Result: changes previewed (dry-run, nothing written)" if changed else "Result: no changes needed (dry-run)")
 else:

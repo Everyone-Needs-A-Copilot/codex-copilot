@@ -16,8 +16,11 @@
 #      updated from the orgPluginSourcePath recorded in .codex-copilot.json,
 #      including repairing hand-edited drift
 #   9. org plugin: --no-org-plugin suppresses sync without uninstalling it
+#  10. mode preservation: a hand-flipped executable bit is detected and
+#      repaired on the next run, and the run reports it rather than saying
+#      "no changes needed"
 #
-# Scenarios 6-9 use a synthetic fixture plugin under the scratch root --
+# Scenarios 6-10 use a synthetic fixture plugin under the scratch root --
 # never the real codex-copilot-internal sibling repo -- so this script
 # stays meaningful and portable on a machine with no organization repo
 # checked out.
@@ -173,7 +176,7 @@ fi
 
 echo "=== Scenario 7: explicit --org-plugin installs alongside the base plugin ==="
 ORG_FIXTURE_SOURCE="${SCRATCH_ROOT}/org-plugin-fixture"
-mkdir -p "${ORG_FIXTURE_SOURCE}/.codex-plugin" "${ORG_FIXTURE_SOURCE}/skills/demo-skill"
+mkdir -p "${ORG_FIXTURE_SOURCE}/.codex-plugin" "${ORG_FIXTURE_SOURCE}/skills/demo-skill/scripts"
 cat > "${ORG_FIXTURE_SOURCE}/.codex-plugin/plugin.json" <<'JSON'
 {
   "name": "scratch-org-plugin",
@@ -190,6 +193,16 @@ name: demo-skill
 
 Synthetic fixture skill content, version 1.
 MD
+# A source file with the executable bit set, to prove mode -- not just
+# content -- is propagated. `git`'s own working tree only tracks the
+# owner-exec bit, so 0755 (not some other combination) is the meaningful
+# fixture value here.
+cat > "${ORG_FIXTURE_SOURCE}/skills/demo-skill/scripts/demo-script.sh" <<'SH'
+#!/usr/bin/env bash
+echo "synthetic fixture executable, version 1"
+SH
+chmod 755 "${ORG_FIXTURE_SOURCE}/skills/demo-skill/scripts/demo-script.sh"
+chmod 644 "${ORG_FIXTURE_SOURCE}/skills/demo-skill/SKILL.md"
 
 ORG_PROJECT_DIR="${SCRATCH_ROOT}/org-project"
 mkdir -p "${ORG_PROJECT_DIR}"
@@ -202,7 +215,10 @@ git -C "${ORG_PROJECT_DIR}" init -q
 
 ORG_PLUGIN_INSTALLED_MANIFEST="${ORG_PROJECT_DIR}/plugins/scratch-org-plugin/.codex-plugin/plugin.json"
 ORG_PLUGIN_INSTALLED_SKILL="${ORG_PROJECT_DIR}/plugins/scratch-org-plugin/skills/demo-skill/SKILL.md"
+ORG_PLUGIN_INSTALLED_SCRIPT="${ORG_PROJECT_DIR}/plugins/scratch-org-plugin/skills/demo-skill/scripts/demo-script.sh"
 ORG_SKILLS_BRIDGE="${ORG_PROJECT_DIR}/.claude/skills/scratch-org-plugin"
+
+mode_of() { stat -f '%Lp' "$1" 2>/dev/null || stat -c '%a' "$1"; }
 
 if [[ -f "${ORG_PLUGIN_INSTALLED_MANIFEST}" ]] \
   && diff -q "${ORG_PLUGIN_INSTALLED_SKILL}" "${ORG_FIXTURE_SOURCE}/skills/demo-skill/SKILL.md" >/dev/null 2>&1 \
@@ -218,6 +234,12 @@ assert cfg.get('pluginPath') == './plugins/codex-copilot', cfg
   pass "explicit --org-plugin: fixture plugin installed to plugins/scratch-org-plugin alongside plugins/codex-copilot, skill bridge linked, .codex-copilot.json records orgPluginSourcePath"
 else
   fail "explicit --org-plugin: install did not land as expected (see files under ${ORG_PROJECT_DIR})"
+fi
+
+if [[ "$(mode_of "${ORG_PLUGIN_INSTALLED_SCRIPT}")" == "755" ]] && [[ "$(mode_of "${ORG_PLUGIN_INSTALLED_SKILL}")" == "644" ]]; then
+  pass "explicit --org-plugin, fresh install: 755 source installs as 755, 644 source installs as 644 (setup-project.sh's cp -R + mode normalization)"
+else
+  fail "explicit --org-plugin, fresh install: mode not propagated correctly (script=$(mode_of "${ORG_PLUGIN_INSTALLED_SCRIPT}") skill=$(mode_of "${ORG_PLUGIN_INSTALLED_SKILL}"), want 755/644)"
 fi
 
 echo "=== Scenario 8: a later plain update-project.sh run keeps the org plugin updated from the recorded config key ==="
@@ -250,6 +272,31 @@ if echo "${UPDATE_OUTPUT_9}" | grep -q "Org plugin: suppressed via --no-org-plug
   pass "--no-org-plugin: sync suppressed this run, previously-installed org plugin files left in place"
 else
   fail "--no-org-plugin: either sync was not suppressed or the previously-installed org plugin was disturbed"
+fi
+
+echo "=== Scenario 10: a hand-flipped executable bit is detected, repaired, and reported (not silently 'unchanged') ==="
+chmod 644 "${ORG_PLUGIN_INSTALLED_SCRIPT}"
+if [[ "$(mode_of "${ORG_PLUGIN_INSTALLED_SCRIPT}")" != "755" ]]; then
+  UPDATE_OUTPUT_10="$("${SCRIPT_DIR}/update-project.sh" --project "${ORG_PROJECT_DIR}" --framework-root "${FRAMEWORK_ROOT}")"
+  echo "${UPDATE_OUTPUT_10}"
+
+  if [[ "$(mode_of "${ORG_PLUGIN_INSTALLED_SCRIPT}")" == "755" ]] \
+    && echo "${UPDATE_OUTPUT_10}" | grep -q "Org plugin -- Mode repaired (content matched, executable bit corrected): 1" \
+    && echo "${UPDATE_OUTPUT_10}" | grep -q "  - skills/demo-skill/scripts/demo-script.sh" \
+    && echo "${UPDATE_OUTPUT_10}" | grep -q "Result: changes applied"; then
+    pass "mode drift: hand-flipped 644 was detected, chmod'd back to 755, and reported as a mode repair (content untouched, run does not claim 'no changes needed')"
+  else
+    fail "mode drift: executable bit was not repaired and/or not reported (mode=$(mode_of "${ORG_PLUGIN_INSTALLED_SCRIPT}"))"
+  fi
+else
+  fail "mode drift fixture: chmod 644 did not actually flip the bit -- test setup is broken"
+fi
+
+UPDATE_OUTPUT_10B="$("${SCRIPT_DIR}/update-project.sh" --project "${ORG_PROJECT_DIR}" --framework-root "${FRAMEWORK_ROOT}")"
+if echo "${UPDATE_OUTPUT_10B}" | grep -q "Result: no changes needed"; then
+  pass "mode drift idempotence: a second plain re-run after the repair reports no changes needed"
+else
+  fail "mode drift idempotence: a second plain re-run after the repair still reported changes"
 fi
 
 echo
