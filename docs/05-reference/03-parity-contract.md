@@ -7,7 +7,7 @@ The current baseline is recorded in `parity/claude-baseline.json`:
 - Claude Copilot framework: `5.14.16`
 - `cc`: `2.12.14`
 - `tc`: `1.3.0`
-- Codex Copilot parity release: `0.6.5`
+- Codex Copilot parity release: `0.7.0`
 
 ## Implemented
 

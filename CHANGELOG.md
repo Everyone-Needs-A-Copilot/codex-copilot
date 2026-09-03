@@ -7,6 +7,8 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-09-03
+
 ### Added
 
 - `scripts/setup-project.sh` and `scripts/update-project.sh`: opt-in installation of a second, organization-owned plugin alongside the base plugin, resolved in order from an explicit `--org-plugin PATH`, a recorded `orgPluginSourcePath` in `.codex-copilot.json` (so a later plain `update-project.sh` run keeps it updated without the flag), or an auto-detected sibling of the framework root -- searched BY MANIFEST (`plugins/*/.codex-plugin/plugin.json`, excluding a match literally named `codex-copilot`) under known sibling directory names (`codex-copilot-internal`, the dev-adjacent-clone convention, and `codex-organization`, the pinned-mirror tier-id convention from `~/.config/copilot/copilot.layers.yml`); `--no-org-plugin` suppresses all three without uninstalling anything already present. Installs to `plugins/<name>` using the name from the plugin's own `.codex-plugin/plugin.json`, reusing the same content-hash-and-mode sync, `ownership: project` preservation, and skill-bridge symlinking as the base plugin; tracked as its own `codex-org` component in `copilot.lock.json`. A project with no flag, no recorded key, and no sibling repo is unaffected -- see `scripts/lib/resolve-org-plugin.sh`.

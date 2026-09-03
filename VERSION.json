@@ -1,8 +1,8 @@
 {
   "name": "codex-copilot",
-  "version": "0.6.5",
-  "releaseDate": "2026-08-18",
-  "codename": "cse-alignment",
+  "version": "0.7.0",
+  "releaseDate": "2026-09-03",
+  "codename": "org-plugin-bridge",
   "status": "stable",
   "mirrors": {
     "project": "claude-copilot",
