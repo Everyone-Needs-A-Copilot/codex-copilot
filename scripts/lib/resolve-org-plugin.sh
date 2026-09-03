@@ -8,10 +8,27 @@
 #   2. orgPluginSourcePath recorded in the project's .codex-copilot.json
 #      (so a later plain run keeps an already-installed org plugin updated
 #      without the flag being re-passed)
-#   3. Auto-detected sibling repo next to the framework root:
-#        <dirname FRAMEWORK_ROOT>/codex-copilot-internal/plugins/codex-copilot-internal
-#      -- used only when it actually exists; a third-party clone with no
-#      sibling repo resolves nothing here.
+#   3. Auto-detected sibling: FRAMEWORK_ROOT's parent directory is searched
+#      for a small list of KNOWN sibling directory names (below), and each
+#      one found is searched for an org plugin BY MANIFEST --
+#      plugins/*/.codex-plugin/plugin.json -- never by hardcoding the org
+#      repo's own directory name a second time. This matters because the
+#      same org repo is checked out under different directory names in
+#      different consumption paths:
+#        - a dev-adjacent clone:   <parent>/codex-copilot-internal
+#        - a pinned-mirror tier:   <parent>/codex-organization
+#          (~/.copilot/mirrors/codex-foundation's sibling tier directory is
+#          named after the TIER ID in copilot.layers.yml, "codex-
+#          organization" -- NOT the repo name "codex-copilot-internal".
+#          Matching only the repo name, as this resolution originally did,
+#          can never fire in that real consumer path.)
+#      A manifest named literally "codex-copilot" is never a valid match
+#      (an org-adjacent repo vendors its own copy of the base plugin for
+#      its own project setup -- e.g. codex-copilot-internal's own
+#      plugins/codex-copilot/ -- and installing that as "the org plugin"
+#      would collide with the base plugin's own install path). More than
+#      one remaining candidate under a given sibling is ambiguous and is
+#      skipped with a warning, never guessed.
 #   4. --no-org-plugin suppresses all of the above and is checked first,
 #      short-circuiting the rest of the resolution.
 #
@@ -38,6 +55,46 @@
 # to stderr, resolution continues/stops with ORG_PLUGIN_SOURCE=""): the
 # machine state changed since the last run and should not abort an
 # otherwise-routine update.
+
+# Known sibling directory-name conventions to search for an org plugin,
+# relative to FRAMEWORK_ROOT's parent. See the module-level comment above
+# for why there are two.
+_org_plugin_candidate_roots() {
+  local parent="$1"
+  printf '%s\n' \
+    "${parent}/codex-copilot-internal" \
+    "${parent}/codex-organization"
+}
+
+# Finds an org plugin under a candidate root BY MANIFEST
+# (plugins/*/.codex-plugin/plugin.json), never by directory name. Prints
+# the resolved plugin directory on stdout if exactly one valid candidate
+# is found; prints nothing if none are found; warns to stderr (and prints
+# nothing to stdout) if more than one remains -- ambiguous, never guessed.
+_org_plugin_from_manifests() {
+  local root="$1"
+  local -a matches=()
+  local manifest name
+  shopt -s nullglob
+  for manifest in "${root}"/plugins/*/.codex-plugin/plugin.json; do
+    name="$(python3 -c "
+import json, sys
+try:
+    print(json.load(open(sys.argv[1])).get('name') or '')
+except Exception:
+    print('')
+" "${manifest}" 2>/dev/null || true)"
+    if [[ -n "${name}" && "${name}" != "codex-copilot" ]]; then
+      matches+=("$(cd "$(dirname "${manifest}")/.." && pwd)")
+    fi
+  done
+  shopt -u nullglob
+  if [[ "${#matches[@]}" -eq 1 ]]; then
+    printf '%s\n' "${matches[0]}"
+  elif [[ "${#matches[@]}" -gt 1 ]]; then
+    echo "Warning: multiple candidate organization plugin manifests found under ${root}/plugins -- ambiguous, skipping auto-detect there: ${matches[*]}" >&2
+  fi
+}
 
 codex_resolve_org_plugin_source() {
   ORG_PLUGIN_SOURCE=""
@@ -86,12 +143,15 @@ print(cfg.get('orgPluginSourcePath') or '')
     fi
   fi
 
-  local sibling_parent sibling
+  local sibling_parent candidate found
   sibling_parent="$(cd "$(dirname "${FRAMEWORK_ROOT}")" && pwd)"
-  sibling="${sibling_parent}/codex-copilot-internal/plugins/codex-copilot-internal"
-  if [[ -f "${sibling}/.codex-plugin/plugin.json" ]]; then
-    ORG_PLUGIN_SOURCE="${sibling}"
-    ORG_PLUGIN_SOURCE_DESC="auto-detected sibling (${sibling})"
-    return 0
-  fi
+  while IFS= read -r candidate; do
+    [[ -d "${candidate}" ]] || continue
+    found="$(_org_plugin_from_manifests "${candidate}")"
+    if [[ -n "${found}" ]]; then
+      ORG_PLUGIN_SOURCE="${found}"
+      ORG_PLUGIN_SOURCE_DESC="auto-detected sibling (${found})"
+      return 0
+    fi
+  done < <(_org_plugin_candidate_roots "${sibling_parent}")
 }

@@ -19,8 +19,12 @@
 #  10. mode preservation: a hand-flipped executable bit is detected and
 #      repaired on the next run, and the run reports it rather than saying
 #      "no changes needed"
+#  11. auto-detect fires against a codex-organization-named sibling (the
+#      pinned-mirror tier layout), not just codex-copilot-internal
+#  12. a sibling whose only manifest is named "codex-copilot" is never
+#      mistaken for the org plugin (base-plugin-name collision guard)
 #
-# Scenarios 6-10 use a synthetic fixture plugin under the scratch root --
+# Scenarios 6-12 use a synthetic fixture plugin under the scratch root --
 # never the real codex-copilot-internal sibling repo -- so this script
 # stays meaningful and portable on a machine with no organization repo
 # checked out.
@@ -297,6 +301,67 @@ if echo "${UPDATE_OUTPUT_10B}" | grep -q "Result: no changes needed"; then
   pass "mode drift idempotence: a second plain re-run after the repair reports no changes needed"
 else
   fail "mode drift idempotence: a second plain re-run after the repair still reported changes"
+fi
+
+# Scenarios 11-12 build a synthetic ecosystem layout under the scratch root
+# to prove auto-detect works against the PINNED-MIRROR sibling naming
+# (<parent>/codex-organization, per ~/.config/copilot/copilot.layers.yml's
+# tier id), not just the dev-adjacent-clone naming
+# (<parent>/codex-copilot-internal) already covered by scenarios 6-10 --
+# and that a base-plugin-name collision is never mistaken for an org
+# plugin. A symlink stands in for the framework root itself (`cd` through a
+# symlink preserves the logical path in `pwd`, so dirname(FRAMEWORK_ROOT)
+# resolves to the fake ecosystem directory, not the real one) -- this repo
+# is never duplicated, only re-pointed-to.
+echo "=== Scenario 11: auto-detect fires against a codex-organization-named sibling (pinned-mirror tier layout), not just codex-copilot-internal ==="
+FAKE_ECOSYSTEM="${SCRATCH_ROOT}/fake-ecosystem"
+mkdir -p "${FAKE_ECOSYSTEM}"
+ln -s "${FRAMEWORK_ROOT}" "${FAKE_ECOSYSTEM}/codex-foundation"
+FAKE_FRAMEWORK_ROOT="${FAKE_ECOSYSTEM}/codex-foundation"
+
+mkdir -p "${FAKE_ECOSYSTEM}/codex-organization/plugins/scratch-org-plugin"
+cp -R "${ORG_FIXTURE_SOURCE}/." "${FAKE_ECOSYSTEM}/codex-organization/plugins/scratch-org-plugin/"
+
+TIER_PROJECT_DIR="${SCRATCH_ROOT}/tier-project"
+mkdir -p "${TIER_PROJECT_DIR}"
+git -C "${TIER_PROJECT_DIR}" init -q
+"${SCRIPT_DIR}/setup-project.sh" \
+  --project "${TIER_PROJECT_DIR}" \
+  --name tier-project \
+  --framework-root "${FAKE_FRAMEWORK_ROOT}" \
+  > "${SCRATCH_ROOT}/tier-project-setup.log" 2>&1
+
+TIER_INSTALLED_SCRIPT="${TIER_PROJECT_DIR}/plugins/scratch-org-plugin/skills/demo-skill/scripts/demo-script.sh"
+if grep -q "Org plugin: auto-detected sibling (${FAKE_ECOSYSTEM}/codex-organization/plugins/scratch-org-plugin)" "${SCRATCH_ROOT}/tier-project-setup.log" \
+  && [[ -f "${TIER_INSTALLED_SCRIPT}" ]] \
+  && [[ "$(mode_of "${TIER_INSTALLED_SCRIPT}")" == "755" ]]; then
+  pass "mirror-tier layout: no --org-plugin flag, no recorded config -- auto-detect found the org plugin under a codex-organization-named sibling by manifest, installed with mode 755 intact"
+else
+  fail "mirror-tier layout: auto-detect did not fire against a codex-organization-named sibling (see ${SCRATCH_ROOT}/tier-project-setup.log)"
+fi
+
+echo "=== Scenario 12: a sibling whose only manifest is named codex-copilot is never mistaken for the org plugin ==="
+COLLISION_ECOSYSTEM="${SCRATCH_ROOT}/collision-ecosystem"
+mkdir -p "${COLLISION_ECOSYSTEM}"
+ln -s "${FRAMEWORK_ROOT}" "${COLLISION_ECOSYSTEM}/codex-foundation"
+mkdir -p "${COLLISION_ECOSYSTEM}/codex-copilot-internal/plugins"
+cp -R "${FRAMEWORK_ROOT}/plugins/codex-copilot" "${COLLISION_ECOSYSTEM}/codex-copilot-internal/plugins/codex-copilot"
+
+COLLISION_PROJECT_DIR="${SCRATCH_ROOT}/collision-project"
+mkdir -p "${COLLISION_PROJECT_DIR}"
+git -C "${COLLISION_PROJECT_DIR}" init -q
+"${SCRIPT_DIR}/setup-project.sh" \
+  --project "${COLLISION_PROJECT_DIR}" \
+  --name collision-project \
+  --framework-root "${COLLISION_ECOSYSTEM}/codex-foundation" \
+  > "${SCRATCH_ROOT}/collision-project-setup.log" 2>&1
+
+COLLISION_PLUGIN_COUNT="$(find "${COLLISION_PROJECT_DIR}/plugins" -mindepth 1 -maxdepth 1 | wc -l | tr -d ' ')"
+if grep -q "Org plugin: none available" "${SCRATCH_ROOT}/collision-project-setup.log" \
+  && [[ "${COLLISION_PLUGIN_COUNT}" == "1" ]]; then
+  pass "base-plugin-name collision: a sibling whose only manifest is named codex-copilot resolves to no org plugin, never installed as one"
+else
+  fail "base-plugin-name collision: a codex-copilot-named manifest was mistakenly treated as the org plugin (see ${SCRATCH_ROOT}/collision-project-setup.log)"
 fi
 
 echo
