@@ -22,16 +22,20 @@ python3 tests/test_mirror_parity.py
 - Claude parity baseline version
 - required `cc` and `tc` component versions
 - capability pack manifests
-- artifact-bound QA gate conventions
+- packaged QA-gate conventions; use `tc task check-qa` for actual task/source-bound completion evidence
 
-`scripts/smoke-test.sh` runs parity tests, version checks, and a stream-validation sample.
+`scripts/smoke-test.sh` runs parity tests, native hook checks, version/content
+parity, generated-routing checks, agent evals, project-update scenarios and stream
+validation. Upstream-dependent checks need the intended Claude checkout; set
+`CLAUDE_COPILOT_ROOT` explicitly when several candidates are present. A standalone
+unit run may skip upstream-dependent cases, so report skips separately.
 
 ### Parity Rules
 
 - Describe hook behavior as implemented only when a Codex-native hook and a failable verification artifact support the claim; never cite Claude registration as Codex enforcement.
 - Do not confuse Claude lifecycle hooks with the design-led product protocol.
 - Do not add optional specialists globally unless the product decision changes.
-- Do not update the catalog without updating tests.
+- Inspect tests affected by catalog changes; edit tests only with the explicit authorization required by `AGENTS.md`.
 - Do not update the mirrored Claude version without updating the baseline manifest.
 
 ## Public Release Checklist

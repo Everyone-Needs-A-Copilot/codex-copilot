@@ -36,9 +36,12 @@ question; installing mechanisms is not evidence of improved outcomes.
 [Ownership decision](decisions/ADR-001-adopt-through-existing-owners.md) ·
 [Validation and limits](retrospectives/README.md).
 
-[Claude Code enablement handoff](claude-code-handoff.md) specifies the remaining
+[Claude Code enablement handoff](claude-code-handoff.md) preserves the original
 CLI provenance, native enforcement, workflow integration, evaluation and rollout
-work; its documentation record is PRD-9 / TASK-16 in codex-copilot's `tc` database.
+specification (PRD-9 / TASK-16). [Shared gap closure](../05-design-quality/phases/03-shared-gap-closure.md)
+records the subsequent cc 2.13.0 / tc 2.0.0 integration and native-session evidence.
+The Codex source merged into `main`; [release preparation](../../03-developer-guides/03-evidence-design-release.md)
+separates that outcome from foundation publication and consumer rollout.
 
 ## Optional external review
 
@@ -48,4 +51,5 @@ No provider adapter, review trigger, publication, global skill pack or third-par
 recorder was installed. Native prose was independently written from the research.
 
 unknowns: whether the adopted mechanisms improve held-out task outcomes enough to
-justify their cost; actual runtime trust/dispatch requires runtime-origin evidence.
+justify their cost; dispatch evidence for the tested native sessions does not
+establish activation in every consuming project.

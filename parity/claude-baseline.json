@@ -195,10 +195,10 @@
     "scripts/smoke-test.sh"
   ],
   "adoption": {
-    "evidence": "native ta/me/qa handoffs; task-bound artifact gate retained",
+    "evidence": "native ta/me/qa handoffs; tc 2 task/database/criterion/source-bound completion",
     "learning": "shared personal taste receipt workflow; no automatic promotion",
     "context": "shared cc selection receipts; optional explicit loading",
-    "runtime": "direct native hook diagnostics; runtime trust/dispatch remains unknown without evidence",
+    "runtime": "direct diagnostics plus recorded native Claude/Codex dispatch; per-project trust and activation still required",
     "evaluation": "shared frozen observation policy; benchmark runner and existing sealed authority retained"
   },
   "designQualityAdoption": {

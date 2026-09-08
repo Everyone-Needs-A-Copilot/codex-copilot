@@ -95,6 +95,13 @@ To refresh an existing install directly, without first-install scaffolding, run 
 ./scripts/update-project.sh --project /absolute/path/to/project
 ```
 
+Without `--framework-root`, the updater prefers `~/.copilot/mirrors/codex-foundation`
+when present, then falls back to its own framework checkout. To validate a specific
+reviewed candidate, pass `--framework-root /absolute/path/to/reviewed-clone` and
+inspect the reported source. A development checkout update does not change the
+production pin. See [release preparation](../03-developer-guides/03-evidence-design-release.md)
+for candidate bootstrap checks.
+
 It discovers every framework-owned file under `plugins/codex-copilot/` plus `scripts/copilot-gate.sh`, so newly shipped hook assets are included automatically. A file is skipped -- never overwritten -- if it is marked `ownership: project`, either via `owner: project` YAML frontmatter in the file itself or a `copilot.lock.json` entry for that path with `"ownership": "project"`. `AGENTS.md`, `SOUL.md`, `docs/40-initiatives/`, and `.agents/plugins/marketplace.json` are never touched by the updater; `.codex-copilot.json` only has its framework-tracking fields merged in (`projectName`/`pluginPath` are preserved). Running it twice in a row makes no further changes on the second run. Add `--dry-run` to preview without writing.
 
 ## Organization Plugin
@@ -105,7 +112,7 @@ Resolution order, highest precedence first:
 
 1. `--org-plugin /absolute/path/to/plugin` -- an explicit path to a plugin directory containing `.codex-plugin/plugin.json`. An invalid path here is a hard error.
 2. `orgPluginSourcePath` recorded in the project's `.codex-copilot.json` -- once an organization plugin has been installed, a later plain `update-project.sh --project ...` run (no flag) keeps it updated from the same source automatically.
-3. Auto-detection: a sibling repo next to the framework root at `<framework-root-parent>/codex-copilot-internal/plugins/codex-copilot-internal`, used only when it exists.
+3. Auto-detection: search the `codex-copilot-internal` and then `codex-organization` siblings next to the selected framework root, inspecting `plugins/*/.codex-plugin/plugin.json` by manifest. A manifest named `codex-copilot` is excluded; multiple candidates in one sibling produce a warning and are skipped.
 4. `--no-org-plugin` suppresses all of the above for that run without uninstalling anything already present.
 
 The organization plugin installs to `plugins/<name>`, where `<name>` comes from its own `.codex-plugin/plugin.json` manifest. It is synced with the same content-hash comparison, `ownership: project` preservation, and skill-bridge symlinking (`.claude/skills/<name>` -> `plugins/<name>/skills`, when the plugin has a `skills/` directory) as the base plugin, and is tracked as its own `codex-org` component in `copilot.lock.json` and its own `orgPlugin*` fields in `.codex-copilot.json`.

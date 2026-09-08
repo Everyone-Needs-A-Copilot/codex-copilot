@@ -13,7 +13,7 @@ Authoritative sources:
 | ------------------------- | ------------------------ | ------ | -------- |
 | `CLAUDE.md` project instructions | `AGENTS.md` project instructions | Implemented | Codex reads repo instructions rather than Claude-specific project instructions. |
 | software specialist agents | direct Codex skills such as `$sd`, `$uxd`, `$uid`, `$ta`, `$me`, and `$qa` | Implemented | Specialists run as skills in the main session unless delegation is explicitly requested. |
-| named-agent invocation | direct `$skill` names and `$launcher` | Codex-native substitute | Codex does not expose a custom named-agent registry. |
+| named-agent invocation | direct `$skill` names and `$launcher` | Codex-native substitute | This framework uses skills and session-supported agent types, not Claude named-agent syntax. |
 | `/protocol` | `$protocol` | Implemented | Skill-based workflow, not platform slash-command syntax. |
 | `/continue` | `$continue` | Implemented as workflow skill | Reads `tc` and `cc` context when available; no automatic checkpoint runtime. |
 | `/pause` | `$pause` | Implemented as workflow skill | Stores pause state through `tc`/`cc` when available; does not create Claude checkpoints. |
@@ -30,7 +30,7 @@ Authoritative sources:
 | `/reflect` | `$reflect` | Implemented as workflow skill | Stores lessons through `cc`/`tc` when available. |
 | `/skills-approve` | `$skills-approve` | Implemented as workflow skill | Reviews available skills; no hidden allow-list state. |
 | Memory Copilot MCP | `cc memory` and `cc memory check` CLI | Implemented dependency | Requires Claude Copilot `cc` CLI installed; drift checks find broken paths, command references, version conflicts, and stale entries. |
-| Skills Copilot MCP | `cc skill` plus Codex skills | Implemented dependency | `cc skill --scope project` requires running inside a git repo. |
+| Skills Copilot MCP | `cc skill` plus Codex skills | Implemented dependency | `cc skill list --scope project` requires running inside a git repo. |
 | Task Copilot | `tc` CLI | Implemented dependency | `tc init` creates `.copilot/tasks.db`; work products are stored through `tc`. |
 | Live Docs | `cc docs` CLI guidance in specialists | Implemented dependency | Requires compatible `cc`; falls back to local package files or official docs when unavailable. |
 | Claude quota observability | `cc usage` CLI | Optional utility | Reports Claude session quota, not Codex/OpenAI usage; useful for Claude Copilot tooling but not a Codex protocol gate. |
@@ -55,6 +55,7 @@ Both Claude and Codex native edit dispatch have been exercised. Hook trust and
 project activation remain explicit; neither a detector nor a report grants QA
 approval. See [the operating guide](../02-user-guides/design-quality.md).
 
-Context selection retains every required skill name with duplicate content emitted
-once. Learning requires selected evidence and owner approval; evaluation freezes
+Context selection is agent-driven: native playbooks instruct the agent to retrieve
+needed guidance, but there is no guaranteed automatic context injector. Selection
+retains every required skill name with duplicate content emitted once. Learning requires selected evidence and owner approval; evaluation freezes
 controls and checks complete real observations without inventing human review.

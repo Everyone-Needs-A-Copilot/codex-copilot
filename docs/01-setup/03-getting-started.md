@@ -104,11 +104,14 @@ Expected result:
 
 For implementation work that needs verification:
 
-1. mark the task metadata with `requiresQa`
-2. store an implementation work product
-3. route to `$qa`
-4. store a `test` work product with an evidence artifact and verdict
-5. run the gate when needed
+1. mark the task metadata with `requiresQa=true` and register its acceptance criteria and source scopes before implementation
+2. store an implementation work product and route to `$qa`
+3. capture the task's source identity before verification and compare it afterwards
+4. store a task-bound `test` work product covering every criterion with observed evidence and one verdict
+5. inspect the gate and complete through `tc`, which also checks unfinished dependencies
+
+Follow the executable example in [Quality Gates](../02-user-guides/04-quality-gates.md).
+An artifact marker and approval token alone are insufficient under tc 2.0.0.
 
 ```bash
 ./scripts/copilot-gate.sh

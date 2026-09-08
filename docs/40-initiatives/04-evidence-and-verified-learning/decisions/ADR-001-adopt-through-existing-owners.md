@@ -1,5 +1,9 @@
 # ADR-001: Adopt through existing owners
 
+Recorded for the initial 2026-09-07 adoption. Subsequent runtime-origin evidence
+is documented in [shared gap closure](../../05-design-quality/phases/03-shared-gap-closure.md);
+the unknowns below describe the decision at that time.
+
 ## Context
 
 The reviewed repositories provide useful mechanisms but also automatic publication,

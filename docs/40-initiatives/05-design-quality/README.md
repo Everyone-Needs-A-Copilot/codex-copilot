@@ -37,10 +37,12 @@ Guides are loaded on demand; they are not 21 new globally loaded agents.
 - [Shared gap closure](phases/03-shared-gap-closure.md): migration, verification and remaining owner actions.
 - [Lessons](retrospectives/01-initial-trial.md): what the first real artifact taught us.
 
-Live task and QA state is authoritative in PRD-11, TASK-18–25. TASK-22 retains
-owner outcome review; TASK-23 tracks fresh native-session dispatch evidence. This document is
-not a second task board. The implementation is local and unpublished; existing
-release candidates must be revalidated against the resulting source before release.
+Live task and QA state is authoritative in PRD-11. TASK-22 retains owner outcome
+review; TASK-23 / WP-49 records native-session dispatch evidence. The reviewed
+Codex source merged into `main` through PR #1 (TASK-26 / WP-59); shared tools are
+active in the validated development installation. [Release preparation](../../03-developer-guides/03-evidence-design-release.md)
+describes the separate foundation-release and consumer-rollout requirements under
+TASK-26/27. A source merge does not certify either boundary.
 
 ## Outcome standard
 

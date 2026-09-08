@@ -44,6 +44,25 @@ Use $doc to update onboarding docs.
 Use $do to update CI or deployment automation.
 ```
 
+## Load Relevant Guidance
+
+Specialists are instructed to retrieve the knowledge needed for the task; this
+is agent-driven selection, not guaranteed runtime injection. For additional
+context, the agent uses `cc skill select`, preserves required skills and stores
+one selection receipt per task. Reuse unchanged content instead of loading it
+again. Missing tools or skills must be reported explicitly.
+
+For product work, design specialists select focused `cc design` playbooks and
+carry a surface contract through implementation and QA. See [Design Quality](design-quality.md)
+for the 21-action catalog and examples. Describe the work in your prompt; you do
+not normally need to name each playbook yourself.
+
+Optional edit feedback runs only after project/runtime enablement and native hook
+trust. Approved personal rules are selected by project and specialist scope;
+reflection proposes new rules with evidence and owner approval. Neither feature
+silently mines history or promotes preferences. Existing projects need their
+normal update and activation workflow before receiving new capabilities.
+
 ## Use `tc` For Durable Work
 
 For substantial work, keep the durable record in `tc`:
@@ -102,31 +121,23 @@ If `cc docs` is unavailable, verify through local package files or official docs
 
 ## Use The QA Gate For Implementation
 
-Implementation work that needs verification should use the QA-gate convention:
+Implementation work that needs verification follows the [Quality Gates](04-quality-gates.md)
+contract:
 
-1. task metadata includes `requiresQa=true`
-2. `$me` stores a `code` work product
-3. `$qa` stores a `test` work product
-4. the QA work product includes an evidence artifact and a verdict token
-
-Verdict tokens:
-
-```text
-ARTIFACT: test-run|pytest tests/ exit=0 "47 passed"
-VERDICT: APPROVED
-VERDICT: APPROVED-WITH-MINOR-FIXES
-VERDICT: REJECTED
-```
-
-Passing verdicts require an `ARTIFACT:` marker. For product-facing work, use
-evidence such as `screenshot-check`, `a11y-check`, or `design-fidelity-check`
-when the meaningful risk is visual, interaction, or product-taste fidelity.
-
-Inspect the gate:
+1. Set `metadata.requiresQa=true` and register the task's acceptance criteria and source scopes before implementation.
+2. Store the implementation work product and route to `$qa`.
+3. Capture `tc task evidence-identity` before verification and compare another capture afterwards.
+4. Store observed results and artifacts for every registered criterion, the exact identity, a baseline and one supported verdict in a task-bound `test` work product.
+5. Inspect the gate, then complete through `tc`; unfinished dependencies also prevent completion.
 
 ```bash
-scripts/copilot-gate.sh
+tc task check-qa 123 --json
+scripts/copilot-gate.sh --task 123
 ```
+
+Use the actual task ID in place of `123`. An artifact marker and approval token
+alone are insufficient. Product-facing work also needs relevant rendered,
+interaction and accessibility evidence; a ready design report does not grant QA.
 
 ## Use Delegation Carefully
 

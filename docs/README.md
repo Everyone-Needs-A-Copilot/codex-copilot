@@ -15,6 +15,7 @@ Use this index to find the shortest path to the job you need to complete.
 - [Protocol](./02-user-guides/02-protocol.md)
 - [Live Docs](./02-user-guides/03-live-docs.md)
 - [Quality Gates](./02-user-guides/04-quality-gates.md)
+- [Design Quality And Activation](./02-user-guides/design-quality.md)
 - [Parallel Work And Worktrees](./02-user-guides/05-parallel-work.md)
 - [Capability Packs](./02-user-guides/06-capability-packs.md)
 

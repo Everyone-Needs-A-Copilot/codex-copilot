@@ -1,5 +1,9 @@
 # ADR 002 — Adopt task authority without breaking legacy inspection
 
+This records the initial tc 1.4 compatibility decision. [Shared gap closure](../phases/03-shared-gap-closure.md)
+supersedes its version baseline: current source requires tc 2.0.0 and registered
+task/source-bound acceptance evidence. The legacy inspection boundary remains.
+
 Claude's prior handoff landed as commit `483c695`, framework 5.15.0 / tc 1.4.0,
 while design integration was in progress. Its new shared completion predicate is
 the correct authority for design QA. Codex's installed gate still inspected WPs
@@ -9,7 +13,7 @@ itself, and its protected tests explicitly preserved that older CLI contract.
 uses its task-bound structured response when present. A rejected, malformed or
 failed authoritative response blocks; it never falls back to older WPs. When the
 capability is absent, the existing artifact-inspection behavior remains available
-with an explicit legacy notice. Current installations require tc 1.4.0; legacy
+with an explicit legacy notice. At that stage, installations required tc 1.4.0; legacy
 inspection is not described as current completion validation. No tests were changed.
 
 This differs deliberately from Claude's strict capability-unavailable exit path,

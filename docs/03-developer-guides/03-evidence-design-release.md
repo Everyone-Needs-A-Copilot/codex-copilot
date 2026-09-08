@@ -1,9 +1,11 @@
 # Evidence and design release preparation
 
-The next intended release is **0.8.0**. Source preparation and publication are
-tracked separately in Codex PRD-11 TASK-26 and TASK-27. The current source changes
-are unreleased until a new foundation-signed tag exists; a development commit,
-review branch or successful local installation does not replace that tag.
+The next intended release is **0.8.0**. The reviewed evidence/design source merged
+into `main` through [PR #1](https://github.com/Everyone-Needs-A-Copilot/codex-copilot/pull/1)
+on 2026-09-08 at `2ac1698cc645535daf296a23bc64091157514b68` (Codex TASK-26 / WP-59).
+Current version metadata remains **0.7.0**, with these changes under `Unreleased`.
+Source preparation and foundation publication remain tracked separately in Codex
+PRD-11 TASK-26 and TASK-27; a merged commit is not a foundation-signed release.
 
 ## What the candidate delivers
 
@@ -33,10 +35,22 @@ scripts/smoke-test.sh
 python3 -m unittest discover -s tests -v
 ```
 
-Use `scripts/setup-project.sh` with a disposable project, then inspect the installed
-plugin version, executable hook files, generated instructions, task database and
-QA-gate wiring. Re-run `scripts/update-project.sh` to verify idempotence and
-preservation of project-owned content. Keep reports in `tc` work products.
+From the reviewed clean clone, select that exact source for both bootstrap and
+update, and suppress unrelated organization-plugin discovery for the base check:
+
+```bash
+scripts/setup-project.sh --project /absolute/path/to/disposable-project \
+  --framework-root "$PWD" --no-org-plugin
+scripts/update-project.sh --project /absolute/path/to/disposable-project \
+  --framework-root "$PWD" --no-org-plugin
+```
+
+Inspect the installed plugin version, executable hook files, generated instructions,
+task database and QA-gate wiring. Verify update idempotence and preservation of
+project-owned content. Without `--framework-root`, the updater prefers the machine's
+pinned foundation mirror, which may be older than the reviewed development source.
+That default is production-source selection, not candidate validation. Keep reports
+in `tc` work products and run separate organization-plugin checks when applicable.
 
 Version, plugin, agent catalog, capability pack and parity manifests must agree.
 The existing test pins the release version explicitly; any release-related test

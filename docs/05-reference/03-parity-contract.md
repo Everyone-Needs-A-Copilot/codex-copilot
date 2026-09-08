@@ -4,10 +4,14 @@ Codex Copilot mirrors Claude Copilot capability intent, not Claude-only syntax.
 
 The current baseline is recorded in `parity/claude-baseline.json`:
 
-- Claude Copilot framework: `5.14.16`
-- `cc`: `2.12.14`
-- `tc`: `1.3.0`
-- Codex Copilot parity release: `0.7.0`
+- Adopted Claude Copilot framework source: `5.15.0`
+- Required `cc`: `2.13.0`
+- Required `tc`: `2.0.0`
+- Current Codex version field: `0.7.0`; evidence/design changes are unreleased on `main`
+
+The manifests record source compatibility, not proof of a published foundation
+release. See [release preparation](../03-developer-guides/03-evidence-design-release.md)
+for the intended 0.8.0 release and its separate signing/rollout requirements.
 
 ## Implemented
 
@@ -16,7 +20,7 @@ The current baseline is recorded in `parity/claude-baseline.json`:
 - `$protocol`, command-equivalent skills, and `tc` work products
 - Live Docs guidance through `cc docs`
 - memory drift checks through `cc memory check`
-- artifact-bound QA-gate state convention through `tc` metadata, QA work products, and `scripts/copilot-gate.sh`
+- task/database/criterion/source-bound QA through tc 2 acceptance contracts, captured identities, observed artifacts and `scripts/copilot-gate.sh`
 - optional specialist packs for `kc`, `cco`, `cw`, `cs`, and `cpa`
 - stream validation through `scripts/orchestrate-validate.py`
 - deterministic specialist contract evals through `cc eval`
@@ -31,12 +35,13 @@ Selected Claude lifecycle-hook intent is now implemented with Codex-native plugi
 - `PostToolUse` tracks failed shell command shapes and warns on the second failure
 - `PreToolUse` denies one third repeat of a twice-failed command shape and fails open
 - `SubagentStart` injects the three-sentence return contract
+- opt-in `PostToolUse` design feedback handles supported edit events after per-project/runtime enablement and native hook trust
 
 QA closure remains substituted with explicit durable Codex mechanisms:
 
 - preflight and routing instructions
-- `tc` task metadata
-- QA work products with `ARTIFACT:` markers and verdicts
+- registered `tc` acceptance contracts and source identity captured before verification
+- task-bound QA work products covering every required criterion with actual observations, artifacts and one verdict
 - inspection scripts and tests
 
 Claude Code hook registration in `~/.claude/settings.json` and Claude payload/output schemas are not consumed by Codex. The Codex plugin uses Codex's own hook discovery and contracts. This does not mean the design-led product creation protocol; the Codex protocol remains design-led.
@@ -163,7 +168,7 @@ When Claude Copilot changes, update:
 2. `VERSION.json`
 3. `plugins/codex-copilot/agent-catalog.json`
 4. `plugins/codex-copilot/agent-catalog.schema.json`
-5. docs and tests that assert the parity surface
+5. affected docs; inspect tests that assert the parity surface and change them only with the explicit authorization required by `AGENTS.md`
 
 Then run:
 

@@ -2,14 +2,16 @@
 
 ## What "native" means here
 
-Codex does not currently expose custom first-class agent types beyond its built-in spawned agent roles.
+This framework exposes specialists as Codex skills. Delegation uses only the
+agent types actually available in the current session; it does not assume a
+Claude-style named-agent registry.
 
 The native building blocks available in Codex are:
 
 - skills
 - plugins
 - `spawn_agent`
-- built-in spawned agent types: `default`, `explorer`, `worker`
+- catalog launch mappings to `default`, `explorer` and `worker`, subject to the current session tool contract
 
 This project therefore defines each specialist as a native Codex skill and maps it to a real Codex subagent type when delegation is explicitly requested.
 

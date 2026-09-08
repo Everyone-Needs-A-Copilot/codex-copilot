@@ -54,7 +54,7 @@
   "workingTreeAdoption": {
     "initiative": "docs/40-initiatives/04-evidence-and-verified-learning",
     "date": "2026-09-07",
-    "releaseState": "unpublished local changes",
+    "releaseState": "merged Codex source; foundation release pending",
     "capabilities": [
       "delivery-evidence",
       "verified-personal-learning",
@@ -66,7 +66,7 @@
   "designQualityAdoption": {
     "date": "2026-09-07",
     "initiative": "docs/40-initiatives/05-design-quality",
-    "state": "unpublished local implementation",
+    "state": "merged Codex source; foundation release pending",
     "detectorEngine": "0.1.3",
     "authority": "tc QA; detector and reports are advisory"
   }

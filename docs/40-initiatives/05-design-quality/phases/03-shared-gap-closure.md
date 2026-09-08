@@ -36,3 +36,10 @@ The Codex adapter now accepts native `tool_input.command`, in addition to older
 replay shapes. Registration and hook trust are separate from native dispatch.
 The legacy inspection decision in ADR-002 remains historical compatibility;
 current deployments require tc 2.0.0 and its authoritative completion check.
+
+The reviewed Codex source subsequently merged into `main` through PR #1 at
+`2ac1698cc645535daf296a23bc64091157514b68` (TASK-26 / WP-59). Its tree matched
+the source verified by all 40 native tests and clean-clone smoke checks; test files
+were unchanged. [Release preparation](../../../03-developer-guides/03-evidence-design-release.md)
+records the remaining version, signing and shared-publication requirements.
+Foundation publication and consumer propagation remain separate from this merge.

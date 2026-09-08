@@ -18,8 +18,8 @@
 2. Create `tc` context for substantial work.
 3. Keep optional domain capabilities dormant in packs.
 4. Update the machine-readable catalog before prose reference pages.
-5. Add or update tests for behavior and compatibility contracts.
-6. Route implementation through `$qa` with an evidence artifact.
+5. Inspect behavior and compatibility tests; write or edit tests only when explicitly authorized under `AGENTS.md`.
+6. Route implementation through `$qa` using registered acceptance criteria, captured source identity and criterion-bound evidence.
 
 Do not reproduce Claude-only syntax or lifecycle behavior. Translate the intent into a real Codex primitive or state the limitation.
 

@@ -22,7 +22,7 @@ Port the `claude-copilot` framework into Codex-native constructs without faking 
 
 ### 1. Honest Port, Not Syntax Emulation
 
-Codex does not expose a native named-agent registry like Claude's `@qa`-style agents.
+This framework does not depend on Claude's named-agent invocation syntax.
 
 This port therefore uses:
 
@@ -47,7 +47,7 @@ The plugin bundle gives Codex a native entry point:
 - `.codex-plugin/plugin.json`
 - marketplace registration
 - bundled skills
-- bundled routing, debugging, and subagent-context hooks
+- bundled routing, debugging, subagent-context and opt-in design-feedback hooks
 
 ### 5. Project Overlays Through Packs
 
@@ -74,7 +74,13 @@ Codex Copilot requires specialists to verify installed third-party package APIs 
 
 ### 8. Native Hooks Plus An Explicit QA Gate
 
-Codex exposes lifecycle events and plugin hook discovery, but Claude Code hook files and `~/.claude/settings.json` registration do not carry over. Codex Copilot therefore ships its own adapters for conditional prompt routing, per-command-shape debug warnings and denial, and subagent return context. QA-required tasks still use `tc` metadata, implementation and test work products, `ARTIFACT:` markers, verdict tokens, and `scripts/copilot-gate.sh` because those durable artifacts remain the authoritative closure contract.
+Codex Copilot ships native adapters for conditional prompt routing, per-command-shape
+debug warnings and denial, subagent return context and opt-in design feedback.
+Claude Code hook registration and payloads do not carry over. Shared tc 2.0.0
+owns QA completion: it binds registered criteria and tested source identity to
+the task/database and checks the recorded observations, artifacts and verdict.
+Completion also rejects unfinished dependencies. `scripts/copilot-gate.sh`
+inspects this authority; neither native feedback nor metadata grants approval.
 
 This boundary does not change the design-led product protocol.
 
@@ -99,8 +105,10 @@ Claude's `kc`, `cco`, `cw`, `cs`, and `cpa` specialists are useful but not alway
 - direct software specialist skill names
 - design-led project decision-instrument scaffolding
 - design-fidelity QA expectations
-- Claude 5.14.16 parity manifest with upstream freshness detection
-- Codex-native plugin hooks for conditional routing, debug circuit breaking, and subagent return context
+- adopted Claude 5.15.0 source baseline, requiring cc 2.13.0 / tc 2.0.0, with version and content freshness checks
+- Codex-native plugin hooks for conditional routing, debug circuit breaking, subagent return context and opt-in edit feedback
+- shared design guidance, task-bound review, pinned detection and rendered comparison
+- optional skill selection with required-instruction retention and inspectable receipts
 - Live Docs guidance
 - QA gate inspection script
 - optional business/creative specialist pack
@@ -126,7 +134,7 @@ flowchart LR
     C --> A[AGENTS.md]
     C --> P[Codex Copilot plugin and skills]
     P --> TC[tc task state and work products]
-    P --> CC[cc memory, config, skills, Live Docs]
+    P --> CC[cc memory, config, skills, Live Docs, design]
     P --> S[Codex-native hooks, explicit scripts, and tests]
     P --> I[docs/40-initiatives]
     I -. links durable initiative context .-> TC
@@ -138,9 +146,9 @@ flowchart LR
 | Surface | Owner |
 | --- | --- |
 | specialist behavior and routing | Codex Copilot plugin skills and catalog |
-| live execution state and QA metadata | `tc` |
-| memory, config, skill discovery, and Live Docs | `cc` |
+| live execution state, acceptance contracts and QA completion | `tc` |
+| memory, config, skill selection, Live Docs and shared design operations | `cc` |
 | initiative briefs, phases, decisions, and retrospectives | `docs/40-initiatives/` in the consuming project |
 | domain-specific optional skills | dormant packs activated by a project |
-| Codex-native routing/debug/subagent hooks | Codex Copilot plugin |
+| Codex-native routing/debug/subagent hooks and optional design-feedback adapter | Codex Copilot plugin; shared `cc` executes design feedback |
 | Claude hook registration and payloads | Claude Code; never consumed by Codex |

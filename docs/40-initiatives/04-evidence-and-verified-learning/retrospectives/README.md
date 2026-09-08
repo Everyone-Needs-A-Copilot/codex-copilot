@@ -1,4 +1,8 @@
-# Validation and limits
+# Initial validation and limits
+
+This is the 2026-09-07 mechanism/activation record. [Shared gap closure](../../05-design-quality/phases/03-shared-gap-closure.md)
+records the later cc/tc upgrade and verified native dispatch; versions and open
+holds below describe the original run, not the current installation.
 
 Implementation mechanism checks completed on 7 September 2026 under PRD-9 /
 TASK-11–15. Architecture WP-16, security WP-17 and implementation WP-18–21 record

@@ -2,8 +2,23 @@
 
 Use `cc design` for task-scoped design guidance and review evidence. The existing
 specialist chain and `tc` QA gate remain authoritative. Implementation tasks require
-`metadata.requiresQa=true`; **tc 1.4.0** supplies the completion predicate. Requires shared **cc
-2.12.16**; use `$HOME/.local/bin/cc` if `cc` resolves to the system C compiler.
+`metadata.requiresQa=true`; **tc 2.0.0** supplies the task/source-bound completion
+predicate. Requires shared **cc 2.13.0**; these requirements are recorded in
+[`VERSION.json`](../../VERSION.json). Use `$HOME/.local/bin/cc` if `cc` resolves
+to the system C compiler.
+
+## How guidance is loaded
+
+The native design specialists and `$protocol` instruct the agent to select a
+focused guide for relevant product work through `cc design context` or
+`cc design guide`. This is agent-driven retrieval, not guaranteed runtime
+injection. You normally describe the work rather than name every guide; all 21
+guides are not loaded at startup. Additional skill context uses `cc skill select`
+under the [daily workflow](01-daily-workflow.md#load-relevant-guidance).
+
+Automatic edit feedback is a separate opt-in hook described below. It requires
+project/runtime enablement, a pinned detector and native hook trust. Merging the
+framework does not activate it in every consuming project.
 
 ## Start from the surface
 
@@ -36,6 +51,12 @@ Edit the draft before using it. A minimal complete contract looks like this:
   }]
 }
 ```
+
+Before implementation, register the corresponding tc acceptance contract as
+described in [Quality Gates](04-quality-gates.md#register-the-acceptance-contract):
+use the same criterion IDs and expected behavior, with source scopes covering
+every target, product/design authority and relevant dependency. Capture the task
+identity before verification; keep generated review files outside those scopes.
 
 Files must remain inside the project and cannot use symlink aliases. Product and
 design authority must exist. Context can name planned target files; review/audit

@@ -11,13 +11,18 @@ It mirrors Claude Copilot's capability intent through real Codex primitives: `AG
 - native hooks for conditional routing, failed-command circuit breaking, and concise subagent returns
 - `tc` PRDs, tasks, streams, handoffs, and work products
 - `cc` memory, skill discovery, configuration, and Live Docs
-- artifact-bound QA through `scripts/copilot-gate.sh`
+- task/source-bound QA through shared `tc` and `scripts/copilot-gate.sh`
 - optional capability packs that stay dormant until a project activates them
 - `docs/40-initiatives/` for durable multi-phase initiative knowledge linked to `tc` execution state
 
 ## Quick Start
 
 ### 1. Clone And Verify
+
+Current source requires shared **cc 2.13.0** and **tc 2.0.0**; see
+[`VERSION.json`](./VERSION.json). The evidence/design source is merged on `main`
+and remains under `Unreleased`; installing it is a development-source choice,
+not proof of a foundation release. See [release preparation](./docs/03-developer-guides/03-evidence-design-release.md).
 
 ```bash
 git clone https://github.com/Everyone-Needs-A-Copilot/codex-copilot.git
@@ -38,7 +43,7 @@ scripts/smoke-test.sh
   --stack "React / Next.js"
 ```
 
-Re-running the installer repairs framework-owned plugin and QA-gate files while preserving existing `AGENTS.md` and project-owned customization. New projects receive decision instruments, `docs/40-initiatives/`, and an executable link to the shared QA gate.
+Re-running the installer repairs framework-owned plugin and QA-gate files while preserving existing `AGENTS.md` and project-owned customization. New projects receive decision instruments, `docs/40-initiatives/`, and an executable copy of the shared QA gate.
 
 Start a new Codex session after installing or updating the plugin. Review and trust newly introduced hook definitions with `/hooks`; Codex skips non-managed hooks until their current hash is trusted.
 
@@ -67,6 +72,7 @@ Formal multi-phase initiatives live in `docs/40-initiatives/NN-slug/`. Their bri
 - [Documentation Index](./docs/README.md)
 - [Getting Started](./docs/01-setup/03-getting-started.md)
 - [Daily Workflow](./docs/02-user-guides/01-daily-workflow.md)
+- [Design Quality And Activation](./docs/02-user-guides/design-quality.md)
 - [Architecture](./docs/04-architecture/00-overview.md)
 - [Capability Matrix](./docs/05-reference/01-capability-matrix.md)
 - [Initiatives](./docs/40-initiatives/README.md)
