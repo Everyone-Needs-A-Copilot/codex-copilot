@@ -207,16 +207,20 @@ When an explanation conflicts with a measurement, follow the measurement and nar
 Tests define the contract. Changing them changes what "passing" means, so they are
 never collateral in a fix.
 
-- **Never edit a test to make it pass.** If a test fails, the implementation is wrong
-  until proven otherwise. Editing an assertion, renaming a test to match new behaviour,
-  or deleting a case is prohibited unless the user asked for a test change specifically.
-- **A test file is read-only** during bug-fix, refactor and feature work. It is
-  editable only when writing tests is the stated task.
-- **If a test looks wrong, stop and say so.** Report the disagreement between test and
-  implementation and let the user decide. Do not resolve it unilaterally.
-- **"The tests pass" is only evidence if the tests are unchanged.** Before reporting a
-  pass, confirm no test file differs from HEAD. If one does, say so explicitly and treat
-  the run as unverified.
+- **Never weaken tests to hide a defect.** A failing assertion is an implementation
+  defect until investigation establishes a different authoritative contract.
+- Add required missing behavior coverage in proportion to risk; an edited source
+  file alone does not require a new test. Existing assertions are not collateral.
+- An obsolete-contract migration requires explicit user authority for the test
+  changes, old/new expectations and rationale, exact changed assertions/diff, and a
+  negative control that still rejects the targeted broken behavior. If authority or
+  the intended behavior is undecided, report the disagreement and stop that edit.
+- Report changed tests explicitly. `scripts/check-test-integrity.sh [base-ref]`
+  rejects test changes by default; `--test-change-receipt <file>` permits only the
+  exact reviewed change with its authority, contract and negative-control record.
+  Receipt validation is not proof of authorization or test quality: QA reviews
+  those claims and retains tc source-bound approval. Never reset the comparison
+  base or use an integrity receipt to bypass required behavior coverage.
 
 ### When the reported problem does not exist
 

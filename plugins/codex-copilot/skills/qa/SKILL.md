@@ -52,6 +52,10 @@ Return:
 
 ## Iteration Loop
 
+Read `../specialist-agents/references/verification-policy.md` once per task before
+selecting checks. Apply its behavior/consumer lanes, first-divergent-state diagnosis,
+two-hypothesis checkpoint, execution caps and authorized test-migration contract.
+
 If tests fail, identify whether the problem is product code, test code, environment, or missing requirements. Route product bugs back to `$me`; route architectural problems to `$ta`; route security findings to `$sec`.
 
 ## Methodology
@@ -62,7 +66,7 @@ For write paths, exercise a real or in-memory database—a Fake, not a Mock—an
 
 ## Anti-Generic Rules
 
-- Do not accept "existing tests pass" as sufficient for new behavior.
+- Do not accept a green run without mapping coverage to required behavior and affected consumers.
 - Do not test implementation details when behavior can be verified.
 - Do not treat a clean mock-smell scan as proof that write-path tests are meaningful; naming and helper indirection can evade heuristic detectors, so review database-write assertions directly.
 - Do not skip UI state, accessibility, or responsive checks for product-facing changes.
