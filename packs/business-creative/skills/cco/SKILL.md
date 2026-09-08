@@ -34,3 +34,7 @@ Use this optional specialist when the problem is about creative direction rather
 - `$cw` for copy execution.
 - `$uids` for visual expression.
 - `$sd` or `$uxd` when the direction changes the service or product workflow.
+
+## Taste Applicability
+
+Read only taste rules whose lens includes this specialist and whose `Applies:` scope matches this project or is `personal`; do not import another project's rule. Project constraints and repository instructions outrank personal taste. State which rule was set aside on conflict.

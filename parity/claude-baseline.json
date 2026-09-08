@@ -1,14 +1,14 @@
 {
   "baseline": {
     "source": "claude-copilot",
-    "frameworkVersion": "5.14.16",
-    "capturedDate": "2026-08-18",
+    "frameworkVersion": "5.15.0",
+    "capturedDate": "2026-09-08",
     "codexParityVersion": "0.7.0",
-    "notes": "Codex Copilot mirrors Claude Copilot capability intent with Codex-native hooks and substitutes where harness contracts differ. Claude 5.11-5.14 CLI, reconciliation, eval, and immutable plugin packaging capabilities are adopted; conditional routing, debug circuit breaking, and subagent context now use native Codex hooks."
+    "notes": "Reviewed combined CSE hardening candidate: native v2 acceptance/identity workflow and optional-context alias behavior; legacy inspection remains historical, not current QA."
   },
   "components": {
     "cc": {
-      "version": "2.12.14",
+      "version": "2.13.0",
       "requiredCommands": [
         "cc memory",
         "cc memory check",
@@ -20,11 +20,16 @@
         "cc eval",
         "cc memory export",
         "cc config add",
-        "cc config remove"
+        "cc config remove",
+        "cc skill select",
+        "cc doctor",
+        "cc eval adoption-freeze",
+        "cc eval adoption-check",
+        "cc design"
       ]
     },
     "tc": {
-      "version": "1.3.0",
+      "version": "2.0.0",
       "requiredCommands": [
         "tc prd",
         "tc task",
@@ -36,7 +41,11 @@
         "tc watch",
         "tc worker",
         "tc wp render",
-        "tc worker --max-budget-usd"
+        "tc worker --max-budget-usd",
+        "tc task check-qa",
+        "tc task contract",
+        "tc task evidence-identity",
+        "tc provenance"
       ]
     }
   },
@@ -80,13 +89,51 @@
     "update-project"
   ],
   "workflows": {
-    "bug": ["qa", "me", "qa"],
-    "technical_feature": ["ta", "me", "qa"],
-    "experience_feature": ["sd", "uxd", "uids", "uid", "ta", "me", "qa"],
-    "physical_digital_feature": ["ind", "sd", "uxd", "uids", "uid", "ta", "me", "qa"],
-    "ui_polish": ["uids", "uid", "qa"],
-    "security_sensitive": ["ta", "sec", "me", "qa"],
-    "infrastructure": ["do", "me", "qa"]
+    "bug": [
+      "qa",
+      "me",
+      "qa"
+    ],
+    "technical_feature": [
+      "ta",
+      "me",
+      "qa"
+    ],
+    "experience_feature": [
+      "sd",
+      "uxd",
+      "uids",
+      "uid",
+      "ta",
+      "me",
+      "qa"
+    ],
+    "physical_digital_feature": [
+      "ind",
+      "sd",
+      "uxd",
+      "uids",
+      "uid",
+      "ta",
+      "me",
+      "qa"
+    ],
+    "ui_polish": [
+      "uids",
+      "uid",
+      "qa"
+    ],
+    "security_sensitive": [
+      "ta",
+      "sec",
+      "me",
+      "qa"
+    ],
+    "infrastructure": [
+      "do",
+      "me",
+      "qa"
+    ]
   },
   "runtimeSubstitutes": {
     "claudeHooks": {
@@ -146,5 +193,17 @@
     "scripts/generate-routing.py",
     "scripts/run-agent-evals.sh",
     "scripts/smoke-test.sh"
-  ]
+  ],
+  "adoption": {
+    "evidence": "native ta/me/qa handoffs; task-bound artifact gate retained",
+    "learning": "shared personal taste receipt workflow; no automatic promotion",
+    "context": "shared cc selection receipts; optional explicit loading",
+    "runtime": "direct native hook diagnostics; runtime trust/dispatch remains unknown without evidence",
+    "evaluation": "shared frozen observation policy; benchmark runner and existing sealed authority retained"
+  },
+  "designQualityAdoption": {
+    "date": "2026-09-08",
+    "scope": "cc design shared CLI; task-bound native guidance and verified native feedback",
+    "upstreamWorkingTree": "Claude 5.15.0 candidate a2227ca8195dd00fe69cc38e39c1ad110eb657b0; cc 2.13.0 / tc 2.0.0; foundation release pending"
+  }
 }

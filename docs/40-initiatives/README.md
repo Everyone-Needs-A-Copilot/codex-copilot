@@ -16,6 +16,8 @@ Formal initiative documentation lives only in `docs/40-initiatives/NN-slug/`.
 | [`01-documentation-architecture/`](./01-documentation-architecture/) | Documentation Architecture | Establish the numbered documentation system and canonical initiative workspace | Complete | PRD-6 / TASK-22 |
 | [`02-repository-portable-copilot/`](./02-repository-portable-copilot/) | Repository-Portable Copilot | Make Claude Copilot and Codex Copilot project configuration and durable state travel with a repository | Proposed | PRD-5 / TASK-6 |
 | [`03-safe-external-review-loops/`](./03-safe-external-review-loops/) | Safe External Review Loops | Define a bounded, provider-neutral external review workflow and evaluate an optional Greptile adapter | Proposed | current PRD-6 / planning TASK-7 / follow-up TASK-8 |
+| [`04-evidence-and-verified-learning/`](./04-evidence-and-verified-learning/) | Evidence and verified learning | Implement the adopted evidence, learning and evaluation recommendations | Authorized | PRD-9 / TASK-11–15 |
+| [`05-design-quality/`](./05-design-quality/) | Complete design quality | Connect surface intent, focused design work, pinned evidence and native QA across CSE | Authorized implementation | PRD-11 / TASK-18–22 |
 
 `tc` integer IDs are local to the current project database. The completed
 Documentation Architecture initiative retains its historical PRD-6 / TASK-22

@@ -2,6 +2,10 @@
 
 Run release fitness before publishing or declaring parity.
 
+The [evidence and design release preparation](03-evidence-design-release.md)
+records the next candidate's dependency migration, foundation-signing boundary,
+clean-clone checks and remaining empirical review.
+
 ## Release Fitness
 
 ```bash

@@ -38,7 +38,7 @@ scripts/smoke-test.sh
   --stack "React / Next.js"
 ```
 
-The installer refuses to replace existing `AGENTS.md`, plugin links, skill links, or QA-gate wiring. New projects receive decision instruments, `docs/40-initiatives/`, and an executable link to the shared QA gate.
+Re-running the installer repairs framework-owned plugin and QA-gate files while preserving existing `AGENTS.md` and project-owned customization. New projects receive decision instruments, `docs/40-initiatives/`, and an executable link to the shared QA gate.
 
 Start a new Codex session after installing or updating the plugin. Review and trust newly introduced hook definitions with `/hooks`; Codex skips non-managed hooks until their current hash is trusted.
 
@@ -75,7 +75,7 @@ Formal multi-phase initiatives live in `docs/40-initiatives/NN-slug/`. Their bri
 ## Honest Boundaries
 
 - Selected Claude hook intent is ported to Codex-native plugin hooks; QA closure remains explicit `tc` metadata, work products, and tests.
-- A bare `VERDICT: APPROVED` does not pass the QA gate; passing verdicts require an `ARTIFACT:` marker.
+- Current QA-required tasks need a registered acceptance contract, captured source identity, observed criterion results and evidence-bound artifacts; a bare approval token cannot complete a task.
 - The framework is degraded without the shared `cc` and `tc` CLIs.
 - Parallel work is user-approved and scope-validated; there are no hidden background workers.
 - Codex Copilot owns no memory engine, task engine, database, hosted service, or model provider.
@@ -88,3 +88,7 @@ That honesty is intentional.
 - [Security](./SECURITY.md)
 - [Changelog](./CHANGELOG.md)
 - [License](./LICENSE)
+
+<!-- cse-design-quality:start -->
+Design quality: 21 focused actions through shared `cc design`, native specialist guidance, optional edit feedback and task-bound review. See [the operating guide](docs/02-user-guides/design-quality.md).
+<!-- cse-design-quality:end -->

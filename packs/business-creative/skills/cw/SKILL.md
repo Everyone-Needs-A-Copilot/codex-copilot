@@ -34,3 +34,7 @@ Use this optional specialist for copy execution after intent and audience are cl
 - `$uxd` for flow/state language.
 - `$uids` for hierarchy and presentation.
 - `$doc` for durable documentation.
+
+## Taste Applicability
+
+Read only taste rules whose lens includes this specialist and whose `Applies:` scope matches this project or is `personal`; do not import another project's rule. Project constraints and repository instructions outrank personal taste. State which rule was set aside on conflict.
