@@ -40,3 +40,21 @@ Authoritative sources:
 | Claude 16-agent roster | 11 active software/product skills plus optional `business-creative` pack | Codex-native substitute | `kc`, `cco`, `cw`, `cs`, and `cpa` are activatable rather than globally loaded. |
 | Worktree stream validation | `scripts/orchestrate-validate.py` | Implemented utility | Validates stream metadata, dependencies, cycles, and file ownership before parallel work. |
 | Initiative documentation | `docs/40-initiatives/NN-slug/` plus linked `tc` context | Implemented convention | Markdown preserves initiative goals, phases, decisions, validation evidence, and retrospectives; `tc` remains authoritative for live execution and QA state. |
+
+## Evidence and design adoption
+
+Current dependency requirements are `cc 2.13.0` and `tc 2.0.0`. QA-required pending
+tasks register observable acceptance criteria and project-relative source scopes,
+capture identity before verification, and complete only through the shared task
+authority. Native historical artifact inspection is compatibility behavior, not
+current verification.
+
+Shared `cc design` supplies 21 on-demand guides, task-bound context/review/report,
+pinned optional detection, comparable capture review and opt-in native feedback.
+Both Claude and Codex native edit dispatch have been exercised. Hook trust and
+project activation remain explicit; neither a detector nor a report grants QA
+approval. See [the operating guide](../02-user-guides/design-quality.md).
+
+Context selection retains every required skill name with duplicate content emitted
+once. Learning requires selected evidence and owner approval; evaluation freezes
+controls and checks complete real observations without inventing human review.

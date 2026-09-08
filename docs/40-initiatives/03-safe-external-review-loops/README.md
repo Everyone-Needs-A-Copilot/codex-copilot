@@ -95,6 +95,11 @@ form:
 
 - [ADR-001: Separate review authority modes behind a bounded provider-neutral core](./decisions/ADR-001-bounded-provider-neutral-review-core.md)
 
+## Adoption cases
+
+[Additional missing-check, edited-summary, identity and budget cases](adoption-cases.md)
+were added by PRD-9; provider integration remains optional.
+
 ## Validation Contract
 
 The initiative cannot be called complete until task-bound evidence demonstrates:

@@ -7,6 +7,35 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Added
+
+- Native design guidance across the existing specialist chain, using 21 focused
+  shared `cc design` actions, task-bound review and comparable capture evidence.
+- Opt-in native edit feedback with bounded reminders and source/pin/session
+  deduplication; detector output never grants task approval.
+- Delivery-evidence, verified-learning and frozen-evaluation operating guidance,
+  with durable initiative records and explicit real-review requirements.
+
+### Changed
+
+- Require shared `cc 2.13.0` and `tc 2.0.0` for the current evidence/design workflow.
+  Pending QA-required tasks must register acceptance criteria and source scopes,
+  capture identity before verification and provide current task-bound evidence.
+  Historical completed evidence remains historical; no automatic data rewrite.
+- Route native QA checks through `tc task check-qa` when available; an authoritative
+  rejection never falls back to older work products. Legacy marker inspection is
+  explicitly limited compatibility behavior.
+- Retain every required skill name while emitting duplicate content once, and
+  preserve mandatory instructions and visible optional-context fallbacks.
+- Record the reviewed Claude 5.15.0 candidate separately from signed release and
+  empirical effectiveness; publication and consumer rollout require their own proof.
+
+### Fixed
+
+- Align native design guidance with actual database-task binding in review/report.
+- Make adoption documentation usable from a standalone clone by removing links
+  that depended on sibling checkouts or ignored local artifacts.
+
 ## [0.7.0] - 2026-09-03
 
 ### Added
