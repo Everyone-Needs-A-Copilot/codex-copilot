@@ -74,6 +74,10 @@ Codex Copilot requires specialists to verify installed third-party package APIs 
 
 ### 8. Native Hooks Plus An Explicit QA Gate
 
+An unreleased [shared enforcement candidate](01-shared-enforcement-candidate.md)
+adds shared shell safety evaluation and moves QA completion into `tc`.
+Its runtime proof, activation requirements, and remaining boundaries are explicit.
+
 Codex exposes lifecycle events and plugin hook discovery, but Claude Code hook files and `~/.claude/settings.json` registration do not carry over. Codex Copilot therefore ships its own adapters for conditional prompt routing, per-command-shape debug warnings and denial, and subagent return context. QA-required tasks still use `tc` metadata, implementation and test work products, `ARTIFACT:` markers, verdict tokens, and `scripts/copilot-gate.sh` because those durable artifacts remain the authoritative closure contract.
 
 This boundary does not change the design-led product protocol.

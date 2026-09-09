@@ -511,6 +511,15 @@ class DesignLedContractTest(unittest.TestCase):
                     args = sys.argv[1:]
                     if args[:3] == ["task", "list", "--json"]:
                         print(json.dumps([{"id": 1, "title": "Example", "metadata": {"requiresQa": True}}]))
+                    elif args == ["task", "check-qa", "1", "--json"]:
+                        # Model the shared CLI's response for these two fixtures.
+                        # Evidence evaluation itself is tested against a real tc DB.
+                        content = os.environ["QA_CONTENT"]
+                        approved = ("ARTIFACT: test-run|" in content and
+                                    "VERDICT: APPROVED" in content.splitlines())
+                        print(json.dumps({"task_id": 1, "work_product_id": 7,
+                                          "approved": approved}))
+                        sys.exit(0 if approved else 1)
                     elif args[:4] == ["wp", "list", "--task", "1"] and args[4:] == ["--json"]:
                         print(json.dumps([{"id": 7, "type": "test"}]))
                     elif args[:3] == ["wp", "get", "7"] and args[3:] == ["--json"]:

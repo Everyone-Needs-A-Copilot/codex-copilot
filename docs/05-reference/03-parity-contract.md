@@ -47,6 +47,10 @@ Headless worker orchestration is substituted with explicit user-approved `spawn_
 
 ## Deferred
 
+The [shared enforcement candidate](../04-architecture/01-shared-enforcement-candidate.md)
+is under validation. The released baseline below remains unchanged until its
+shared CLI requirements, regression checks, and activation checks pass.
+
 Hook behaviors without a tested Codex-native equivalent remain platform-dependent and must not be described as implemented.
 
 Claude's hook-backed `/careful` and `/freeze` safety primitives are therefore
