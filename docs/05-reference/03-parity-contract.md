@@ -4,14 +4,17 @@ Codex Copilot mirrors Claude Copilot capability intent, not Claude-only syntax.
 
 The current baseline is recorded in `parity/claude-baseline.json`:
 
-- Adopted Claude Copilot framework source: `5.15.0`
-- Required `cc`: `2.13.0`
+- Adopted Claude Copilot framework source: `5.15.1`
+- Required `cc`: `2.13.1`
 - Required `tc`: `2.0.0`
 - Current Codex version field: `0.7.0`; evidence/design changes are unreleased on `main`
 
 The manifests record source compatibility, not proof of a published foundation
 release. See [release preparation](../03-developer-guides/03-evidence-design-release.md)
 for the intended 0.8.0 release and its separate signing/rollout requirements.
+The [reviewed adoption record](../../parity/2026-09-09-foundation-adoption.md)
+maps the actual upstream deltas to native behavior; this is not a baseline reset
+without a port. Start through the [single foundation entry path](../01-setup/04-foundation-entrypoint.md).
 
 ## Implemented
 

@@ -6,14 +6,14 @@
   "status": "stable",
   "mirrors": {
     "project": "claude-copilot",
-    "frameworkVersion": "5.15.0",
+    "frameworkVersion": "5.15.1",
     "baselineManifest": "parity/claude-baseline.json",
-    "capturedDate": "2026-09-08",
-    "adoptionNote": "Combined candidate: strict task/source QA binding, required skill aliases, verified tc provenance and native design guidance. Historical artifact inspection remains explicitly limited."
+    "capturedDate": "2026-09-09",
+    "adoptionNote": "Reviewed source compatibility: Claude5.15.1/cc2.13.1/tc2.0.0, native proportional verification and fixed-finish-line ports. See parity/2026-09-09-foundation-adoption.md. Source verify/status capabilities are not inferred from earlier published snapshots; foundation release remains separate."
   },
   "components": {
     "cc": {
-      "requiredVersion": "2.13.0",
+      "requiredVersion": "2.13.1",
       "source": "Claude Copilot tools/cc",
       "provides": [
         "cc memory",

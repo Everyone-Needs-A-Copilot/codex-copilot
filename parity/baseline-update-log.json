@@ -1,7 +1,7 @@
 {
-  "codex_head_commit": "996b5caa5570b8731a7dd014f3cd0c75bab17375",
+  "codex_head_commit": "a8db093cb4180f82ea415266a693366af4ef5e65",
   "codex_working_tree_dirty_at_update": true,
   "port_attestation": null,
-  "updated_at": "2026-09-08T11:51:32.254735Z",
-  "upstream_commit": "2a1734f08338067c4420d8b55a62ab5cf8f7b1e4"
+  "updated_at": "2026-09-09T11:41:56.589602Z",
+  "upstream_commit": "328ec6a1e06d6ddb10578145bbdd33cacf3464f3"
 }

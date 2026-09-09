@@ -8,8 +8,8 @@
     ".claude/agents/doc.md": "06e67017eaaa667cdccc80ca53aee91be2c752632633be8fb9fb19a7ec9bc6a1",
     ".claude/agents/ind.md": "defab3eeb574342501e164d13a259e7ce1511bb748bffd51615a8ca9f1947f89",
     ".claude/agents/kc.md": "eec52000ce911cbbdd45a2528ba9375141d92f0b6cbb6cbde0b81840d3574f54",
-    ".claude/agents/me.md": "0c23c822d69292c76a9a1c95ad10dadc140ea87cc4d982ffc7227eb833d56970",
-    ".claude/agents/qa.md": "075535b0dbd6f65c60c1e9aca4c04f9ee2acf7372b1433db6a5a4b295bf25ba4",
+    ".claude/agents/me.md": "b53cb859f607a645753a07e44a5eed51bf126131dbba41c57f0797da8e41290b",
+    ".claude/agents/qa.md": "abfcddca2d884164e873b28cf48449316d2ac6582d77376b8a9e87c2556fa9bd",
     ".claude/agents/sd.md": "eabef0c000170d1c6abf2a8b2f1a74c3b120b014e4bf9b4808ce64d663189d61",
     ".claude/agents/sec.md": "cfc1df0f10a3d87892c149a2609429ca58a286769d9fedbed98603f99e22e130",
     ".claude/agents/ta.md": "1befa8b5d5562ac50bf7b2bd4a192e12845240662171b590a5e9ef38b9a675c2",
@@ -24,7 +24,7 @@
     ".claude/commands/memory.md": "952ff7d6176d9a4eee1951b73d1ca3911b3665f5593ceeb9ac5c84d876146cdc",
     ".claude/commands/orchestrate.md": "d088e64cb3ecf38f7201d55669678aec5781bf04d64f37aadc3416c062f54c61",
     ".claude/commands/pause.md": "5f4ea43edec12739a1ba6dcb292d3c666520ad4a8a39a8a2fd7826297ec357b6",
-    ".claude/commands/protocol.md": "03028920f89a73deb020627950f1b8de6a3a959e24e7047c573cb4c2a8425b49",
+    ".claude/commands/protocol.md": "de571b3730472420bf4dc6f9206e1d2b6de9e23cd7d9f085f03d6f8349f7df3a",
     ".claude/commands/reflect.md": "50c2c1f1c8b720b08608b747af4b118fd6f4885b49571865baaa69709ae6d1ae",
     ".claude/commands/setup-copilot.md": "7153a6d0a42bff4b9ff14e90efa718d11d8f58b0d5ef70a6f3293d24a0df1f6a",
     ".claude/commands/setup-knowledge-sync.md": "c6326900093e10d884410913cc65cfb5ba6a436012e895dc3e62ac5ea45bfd5f",
@@ -71,11 +71,11 @@
     ".claude/skills/testing/jest-patterns/SKILL.md": "c6ca37963cb1180a9ea2db5514e3a2e2e66a4f5cd461b46205da754ddd982baa",
     ".claude/skills/testing/pytest-patterns/SKILL.md": "85e10117406ae80d7ee77f25d1028cd6d6ab94f41f24d07164808752ee94e693"
   },
-  "generated_at": "2026-09-08T11:51:32.254735Z",
-  "upstream_commit": "2a1734f08338067c4420d8b55a62ab5cf8f7b1e4",
+  "generated_at": "2026-09-09T11:41:56.589602Z",
+  "upstream_commit": "328ec6a1e06d6ddb10578145bbdd33cacf3464f3",
   "versions": {
     "agents": "5.7.0",
     "commands": "5.4.0",
-    "framework": "5.15.0"
+    "framework": "5.15.1"
   }
 }

@@ -1,14 +1,14 @@
 {
   "baseline": {
     "source": "claude-copilot",
-    "frameworkVersion": "5.15.0",
-    "capturedDate": "2026-09-08",
+    "frameworkVersion": "5.15.1",
+    "capturedDate": "2026-09-09",
     "codexParityVersion": "0.7.0",
-    "notes": "Reviewed combined CSE hardening candidate: native v2 acceptance/identity workflow and optional-context alias behavior; legacy inspection remains historical, not current QA."
+    "notes": "Reviewed source compatibility and semantic port: proportional verification, fixed finish line and task-bound QA. See parity/2026-09-09-foundation-adoption.md; no signed release or global rollout claim."
   },
   "components": {
     "cc": {
-      "version": "2.13.0",
+      "version": "2.13.1",
       "requiredCommands": [
         "cc memory",
         "cc memory check",
