@@ -1,9 +1,9 @@
 # Evidence and design release preparation
 
-The next intended release is **0.8.0**. The reviewed evidence/design source merged
+Released as **0.8.0** on 2026-10-02 (signed tag `v0.8.0`). The reviewed evidence/design source merged
 into `main` through [PR #1](https://github.com/Everyone-Needs-A-Copilot/codex-copilot/pull/1)
 on 2026-09-08 at `2ac1698cc645535daf296a23bc64091157514b68` (Codex TASK-26 / WP-59).
-Current version metadata remains **0.7.0**, with these changes under `Unreleased`.
+Version metadata is **0.8.0**; these changes are recorded under `[0.8.0]` in the changelog.
 Source preparation and foundation publication remain tracked separately in Codex
 PRD-11 TASK-26 and TASK-27; a merged commit is not a foundation-signed release.
 

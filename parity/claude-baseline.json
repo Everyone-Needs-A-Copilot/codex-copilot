@@ -1,14 +1,14 @@
 {
   "baseline": {
     "source": "claude-copilot",
-    "frameworkVersion": "5.15.1",
-    "capturedDate": "2026-09-09",
-    "codexParityVersion": "0.7.0",
+    "frameworkVersion": "5.15.3",
+    "capturedDate": "2026-10-02",
+    "codexParityVersion": "0.8.0",
     "notes": "Reviewed source compatibility and semantic port: proportional verification, fixed finish line and task-bound QA. See parity/2026-09-09-foundation-adoption.md; no signed release or global rollout claim."
   },
   "components": {
     "cc": {
-      "version": "2.13.1",
+      "version": "2.13.2",
       "requiredCommands": [
         "cc memory",
         "cc memory check",

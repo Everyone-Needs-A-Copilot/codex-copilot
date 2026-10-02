@@ -7,6 +7,8 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-10-02
+
 ### Added
 
 - Native design guidance across the existing specialist chain, using 21 focused
@@ -18,6 +20,8 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Changed
 
+- Adopt Claude Copilot framework 5.15.3 with shared `cc 2.13.2` and `tc 2.0.0`. The
+  content baseline already matched that upstream source, so no further port was needed.
 - Require shared `cc 2.13.0` and `tc 2.0.0` for the current evidence/design workflow.
   Pending QA-required tasks must register acceptance criteria and source scopes,
   capture identity before verification and provide current task-bound evidence.

@@ -16,6 +16,7 @@ Use this skill to make focused, working code changes.
 - Keep unrelated refactors out of the change.
 - Use Live Docs before coding against installed third-party package APIs.
 - Treat `$qa` as required for implementation work that needs verification.
+- Follow the fixed acceptance scope and Proportional Verification; a new requirement needs an explicit scope decision, not an automatic extra improvement.
 
 ## Success Criteria
 

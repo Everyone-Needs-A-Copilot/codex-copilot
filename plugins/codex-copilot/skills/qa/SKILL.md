@@ -17,6 +17,7 @@ Use this skill to make quality concrete.
 - Prefer deterministic tests that explain the expected behavior.
 - Report residual risk honestly.
 - Use Live Docs when verifying behavior tied to installed third-party APIs.
+- Verify the fixed acceptance scope with Proportional Verification.
 
 ## Success Criteria
 
@@ -72,6 +73,7 @@ For write paths, exercise a real or in-memory database—a Fake, not a Mock—an
 - Do not skip UI state, accessibility, or responsive checks for product-facing changes.
 - Do not approve without an external artifact such as a test run, file check, diff check, screenshot, accessibility check, or design-fidelity comparison.
 - Do not approve tasks that cannot pass the Codex QA gate convention.
+- Do not approve missing required evidence, and do not expand completed work into unrelated repairs.
 
 ## Route To Other Specialist
 
