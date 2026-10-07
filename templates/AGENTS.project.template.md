@@ -6,124 +6,68 @@
 - Description: {{PROJECT_DESCRIPTION}}
 - Stack: {{TECH_STACK}}
 
+## Project-Specific Rules
+
+{{PROJECT_RULES}}
+
+## Project Commands
+
+- Before running project commands, verify them against the README and checked-in build/package/CI configuration; never guess.
+- Maintainers: replace this scaffolding with setup, development, build, lint, and focused test commands or precise documentation pointers. Include working directories, runtimes, prerequisites, external effects, and non-applicable categories.
+
+## Instruction Scope
+
+- Check applicable nested `AGENTS.md` / `AGENTS.override.md` before working in a subtree. Preserve scoped rules; references and Claude `paths:` frontmatter are not automatic Codex imports.
+- Keep shared project requirements consistent with `CLAUDE.md` when present; preserve scope and keep tool-specific routing separate. Do not import either whole entrypoint into the other.
+
 ## Codex Copilot
 
-This project uses the shared `codex-copilot` framework through the project-local plugin link:
-
-- `./plugins/codex-copilot`
-
-Use these native specialist skills when appropriate:
-
-- `$protocol`
-- `$launcher`
-- `$sd`
-- `$uxd`
-- `$uids`
-- `$uid`
-- `$ta`
-- `$me`
-- `$qa`
-- `$ind`
-- `$sec`
-- `$doc`
-- `$do`
+- Use relevant skills exposed in this session. `$protocol` and specialist names are shorthand, not shell commands or requests to spawn agents. Read only task-relevant skills/references.
+- Start with `$protocol` unless the specialist is obvious; use `$launcher` when routing is unclear. Apply playbooks locally; if unavailable in the session, inspect `plugins/codex-copilot/skills/<name>/SKILL.md`. Report missing capabilities.
 
 ## Output Contract
 
-For every user-facing reply, checkpoint, progress update, blocker, command report, and completion report:
-
-- Lead with what is now true: the answer, decision, result, or blocker—not the investigation chronology.
-- Include only what the reader needs to trust the result, make the decision, or take the next action. Preserve required findings, real uncertainty, citations, QA evidence, safety warnings, blockers, and next actions.
-- Default to at most 6 sentences or 5 bullets. Use more only when the user asks for depth or when risk, complexity, or completeness requires it.
-- For a real decision, give an outcome headline, 2–3 numbered options stated as outcomes, and a question of at most 4 words—normally “Which one?” Do not print generic standing options. If there is no real decision, do not manufacture options or ask for approval.
-- Keep progress updates to one short sentence: material result plus next active step. Lead completion reports with the outcome, followed only by changed scope, verification, and any remaining caveat or action.
-- Omit preambles, generic closers, self-narration, repeated findings, evidence inventories, command traces, and chronology unless the reader asked for them or needs them to trust the result.
-
-Detailed technical records belong in `tc` work products. Content always outranks form: never omit a required finding, caveat, citation, safety warning, QA artifact, verdict, Task/WP identifier, or genuine blocker to satisfy a length target.
+- Lead with the answer, decision, result, or blocker. Default to 6 sentences or 5 bullets; expand when completeness requires it. Preserve findings, uncertainty, citations, QA evidence, safety warnings, Task/WP identifiers, and blockers.
+- For real decisions, give 2–3 concrete outcome options and a short question. Do not manufacture decisions or ask again for authorized work.
+- Keep progress brief and material. Report outcome, changed scope, verification, and limitations at completion; store detail in `tc` work products.
 
 ## `cc` CLI
 
-Use the `cc` CLI for persistent memory, skill discovery, Live Docs, onboarding, and Copilot config. The retired `copilot-memory`, `skills-copilot`, and `task-copilot` MCP servers and their `initiative_*`, `memory_*`, and `skill_*` tool calls do not exist.
-
-- Preferred command: `$HOME/.local/bin/cc`
-- Fallback if needed: `cc`, after confirming it resolves to the Claude Copilot CLI and not the system C compiler
-- Source: Claude Copilot `tools/cc/`
-- Project config: `.claude/cc/config.json`
-- Project memory: `.claude/memory/entries/`
-- Project skills bridge: `.claude/skills/codex-copilot` -> `plugins/codex-copilot/skills`
-
-When a task needs Copilot config values, run:
-
-```bash
-eval "$($HOME/.local/bin/cc env)"
-```
-
-Use `cc memory ...` for durable project/global memory and `cc skill ...` to list, search, inspect, and retrieve reusable skills.
-Use `tc` PRDs/tasks for live initiative execution state; use `cc memory` for durable decisions and lessons.
+- Use `cc` for memory, skills, Live Docs, and configuration; `tc` for tasks/work products. The retired Copilot MCP servers and their `initiative_*`, `memory_*`, and `skill_*` tools do not exist.
+- Prefer `$HOME/.local/bin/cc`; verify bare `cc` is not the C compiler. Source: Claude Copilot `tools/cc/`. Config: `.claude/cc/config.json`; memory: `.claude/memory/entries/`.
+- When configuration is needed, run `eval "$($HOME/.local/bin/cc env)"`; use returned values instead of machine-specific paths.
 
 ## Live Docs
 
-Before planning or implementing against an installed third-party package API, use Live Docs through `cc`:
+- Before planning or implementing against an installed third-party package API, run `$HOME/.local/bin/cc docs get <package> --topic <area> --json`.
+- If `cc docs` is unavailable, state the limitation and verify against local package files or official documentation before coding.
 
-```bash
-$HOME/.local/bin/cc docs get <package> --topic <area> --json
-```
+## Knowledge and Optional Context
 
-If `cc docs` is unavailable, say so and verify against local package files or official docs before coding.
+- For brand, voice, product, or methodology knowledge, hydrate `cc env`; follow project consumption-contract pointers through comma-separated `CC_KNOWLEDGE_REPOS`, nearest tier first, reading the first matching sub-path. Never use singular `CC_KNOWLEDGE_REPO` for sub-path lookup. Report missing sources; never invent company facts.
+- Before `cc skill select`, read `plugins/codex-copilot/skills/specialist-agents/references/shared-behaviors.md`, section `Optional Context`. Follow its load-once, receipt, and fallback rules; mandatory instructions are never relevance-filtered.
 
 ## Task Management
 
-Use `tc` for task tracking and work-product storage in this repository.
-
-- Preferred command: `tc`
-- Fallback if unavailable: `./.venv-tc/bin/tc`
-- Use `--json` on commands that support it.
-
-### Core Pattern
-
-1. `tc task get <taskId> --json`
-2. do the work
-3. `tc wp store --task <taskId> --type <type> --title "..." --content "..." --json`
-4. `tc task update <id> --status completed --json`
-
-For three or more related `tc` operations, prefer one `python3` block using `tc.api`. For three or more related `cc` memory/skill operations, use a separate `cc.api` block. Keep `tc` and `cc` API blocks separate.
-
-### Initiative Documentation
-
-Formal multi-phase initiatives live in `docs/40-initiatives/NN-slug/`.
-
-- each initiative includes `README.md`, `phases/`, `decisions/`, and `retrospectives/`
-- initiative Markdown stores durable goals, phase design, decisions, validation evidence, and outcomes
-- `tc` remains authoritative for live tasks, dependencies, assignments, work products, and QA status
-- link initiative documents to their `tc` PRD/tasks instead of maintaining a second task board
-- add every initiative to `docs/40-initiatives/README.md`
-- never create `docs/initiatives/`
+- Track substantial work in `tc` PRDs/tasks and store detailed work products there; create missing records. Use `cc memory` for durable decisions and lessons.
+- Prefer `tc`, then `./.venv-tc/bin/tc`; use `--json` where supported. Read `plugins/codex-copilot/skills/task-copilot/SKILL.md` when managing tasks.
+- Batch three or more related operations using `tc.api`, or separately `cc.api`, with a verified interpreter. Never mix these APIs in one process.
+- Formal initiatives belong in `docs/40-initiatives/NN-slug/`, indexed in `docs/40-initiatives/README.md`, with `README.md`, `phases/`, `decisions/`, and `retrospectives/`. Markdown holds durable rationale/evidence; `tc` owns live state. Never create `docs/initiatives/`.
 
 ### QA Gate Convention
 
-Codex Copilot ships Codex-native routing, debug-circuit-breaker, and subagent-context hooks. These are separate implementations from Claude Code hooks and do not replace explicit `tc` QA state or the design-led product creation protocol.
-
-- implementation tasks that need verification should carry `metadata.requiresQa=true`
-- `$me` stores an implementation work product and routes to `$qa`
-- `$qa` stores a `test` work product with an `ARTIFACT:` marker and a `VERDICT: APPROVED`, `VERDICT: APPROVED-WITH-MINOR-FIXES`, or `VERDICT: REJECTED` token
-- `scripts/copilot-gate.sh` can inspect QA-required tasks before closure; setup installs a project-local framework-owned copy
-
-Passing QA verdicts must be evidence-bound. Valid artifact markers include
-`test-run`, `file-check`, `diff-check`, `screenshot-check`, `a11y-check`, and
-`design-fidelity-check`.
+- For verification-required implementation, set `metadata.requiresQa=true` and register observable criteria and source scope with `tc task contract <id> --file <path>` (`schemaVersion: 2`) before implementing.
+- `$me` stores implementation evidence; `$qa` verifies it. Read their installed evidence contracts for those tasks.
+- Capture `tc task evidence-identity <id>` before and after checks, preserve the exact `IDENTITY:` line, and rerun affected checks if the tested content changes.
+- Store a task-bound `test` work product with matching `CRITERION:` / `EXPECTED:`, actual observations, inspectable `ARTIFACT:` evidence, untested scope, and one `VERDICT:`. Missing required behavior, bare markers, or stale evidence cannot support approval.
+- Before completion, run `tc task check-qa <id> --json` and the setup-installed `scripts/copilot-gate.sh --task <id>`. Never remove `requiresQa` to bypass QA; installed hooks alone prove neither enforcement nor approval.
 
 ## Framework Rules
 
-- Start new work with `$protocol` unless the correct specialist path is already obvious.
-- Use `$launcher` when the correct specialist flow is unclear.
-- Read `SOUL.md` before substantial product-facing work and use it to decide whether the direction should be built, reshaped, deferred, or rejected.
-- Read `docs/01-architecture/12-architecture-guiding-principles.md` before durable architecture, migration, data, security, performance, AI pipeline, or productized implementation work.
-- Use `$ta` before implementation for architecture, refactors, or non-trivial features.
-- Use `$me` for implementation once the work is framed.
-- Use `$qa` to verify implementation work.
-- Use `$do -> $me -> $qa` for infrastructure, CI, deployment, and environment changes that require implementation.
-- Use `spawn_agent` only when the user explicitly asks for delegation or parallel subagents.
-- Keep plans free of time estimates.
+- Experience work starts with `$sd` / `$uxd`; visual direction uses `$uids` before `$uid`. Architecture and non-trivial technical work use `$ta`; `$me` implements and `$qa` verifies.
+- Bugs follow `$qa -> $me -> $qa`; security-sensitive work includes `$sec`; infrastructure changes needing implementation follow `$do -> $me -> $qa`.
+- Keep changes focused, preserve user work, omit time estimates, and respect the user's authorization and review boundaries.
+- Use `spawn_agent` only when the user explicitly requests delegation, subagents, or parallel agent work.
 
 ### Delegating to Subagents
 
@@ -143,10 +87,6 @@ When an explanation conflicts with a measurement, follow the measurement and nar
 
 ## Decision Instruments
 
-- `SOUL.md` is the product taste and purpose lens. It answers whether a product-facing direction belongs here.
-- `docs/01-architecture/12-architecture-guiding-principles.md` is the technical lens. It answers how accepted direction should be built.
-- When either file changes the route, state that explicitly before continuing.
-
-## Project-Specific Rules
-
-{{PROJECT_RULES}}
+- Read `SOUL.md` before substantial product-facing work to decide whether the direction belongs here; report missing or unfilled purpose rather than inventing it.
+- Read `docs/01-architecture/12-architecture-guiding-principles.md` for durable architecture, migration, data, security, performance, or AI pipeline decisions. Report a missing reference and use verified project authority.
+- When either instrument changes the route, state that before continuing.
