@@ -5,5 +5,6 @@ These pages describe current contracts. Machine-readable sources remain authorit
 - [Capability Matrix](./01-capability-matrix.md)
 - [Specialist Catalog](./02-specialist-catalog.md)
 - [Claude Parity Contract](./03-parity-contract.md)
+- [Project AGENTS.md Standard](./04-agents-md-standard.md)
 
 Use explanatory and task-oriented guides for rationale and procedures; use these pages to check exact support boundaries.

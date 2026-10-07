@@ -141,6 +141,10 @@ The target repo will contain:
 - `plugins/codex-copilot` -> portable project-local plugin copy
 - optionally, when an organization plugin resolved: `plugins/<org-plugin-name>` and `.claude/skills/<org-plugin-name>` -> relative symlink to `plugins/<org-plugin-name>/skills`
 
+## Complete the project instructions
+
+Follow the [Project AGENTS.md Standard](../05-reference/04-agents-md-standard.md) before treating setup as complete: supply verified project rules, replace command-discovery scaffolding with commands or precise pointers, and check effective instruction scope in a fresh Codex session. Existing project-owned `AGENTS.md` files require a reviewed migration; framework updates do not refresh them automatically.
+
 ## First prompt in Codex
 
 After opening the target project in Codex, start with:
