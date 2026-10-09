@@ -30,6 +30,8 @@ Host applications, credentials, trust decisions, personal state, and standalone 
 
 Until Git-mergeable task files exist, projects commit the `tc` SQLite database itself: `.copilot/tasks.db`, its archive `.copilot/tasks.db-history` and the `.copilot/wp/` work-product files. WAL, SHM and journal files stay ignored. This is the owner's decision, so tasks travel with each project between machines now, and it is enforced by `tc` 2.4 (`tc init` and `tc db track`, Claude Copilot 5.19.0).
 
+Public repositories are excluded: their work products hold internal notes and machine paths, so they keep task state out of Git with the `.gitignore` line `# tc: task state stays local`, which `tc` never changes. This repository is one of them.
+
 The rejection below still describes the long-term design. The interim accepts its cost: a committed database cannot be merged, so work happens on one machine at a time and starts with a pull. The inconsistency risk is limited because every `tc` command closes its connection, which folds the WAL into `tasks.db` before it can be committed. Migrating to canonical task files (Phase 3) replaces this, and the committed database becomes the migration's input.
 
 ## Alternatives Rejected
