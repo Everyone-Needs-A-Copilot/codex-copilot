@@ -5,4 +5,14 @@ __pycache__/
 .ruff_cache/
 .venv/
 .venv-tc/
-.copilot/
+.copilot/*
+
+# >>> tc task state (committed so tasks travel with the project)
+!.copilot/tasks.db
+!.copilot/tasks.db-history
+!.copilot/wp/
+.copilot/*.db-wal
+.copilot/*.db-shm
+.copilot/*-journal
+.copilot/tasks.db-archive-stamp
+# <<< tc task state
