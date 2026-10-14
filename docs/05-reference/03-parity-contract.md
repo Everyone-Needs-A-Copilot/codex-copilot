@@ -7,11 +7,12 @@ The current baseline is recorded in `parity/claude-baseline.json`:
 - Adopted Claude Copilot framework source: `5.15.3`
 - Required `cc`: `2.13.2`
 - Required `tc`: `2.0.0`
-- Current Codex version: `0.8.0` (signed foundation release `v0.8.0`)
+- Current Codex source version: `0.9.1` (release publication and signatures are verified separately)
 
 The manifests record source compatibility, not proof of a published foundation
 release. See [release preparation](../03-developer-guides/03-evidence-design-release.md)
-for the 0.8.0 release and its signing/rollout requirements.
+for the earlier 0.8.0 release and its signing/rollout requirements; subsequent
+changes are recorded in the [changelog](../../CHANGELOG.md).
 The [reviewed adoption record](../../parity/2026-09-09-foundation-adoption.md)
 maps the actual upstream deltas to native behavior; this is not a baseline reset
 without a port. Start through the [single foundation entry path](../01-setup/04-foundation-entrypoint.md).

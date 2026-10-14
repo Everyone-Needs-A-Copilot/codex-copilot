@@ -161,3 +161,5 @@ Before freezing substantial QA-required work, register observable lifecycle
 acceptance alongside delivery criteria; task-bound QA verifies the actual record,
 lesson application and artifact disposition. Exact destructive approval and
 verified recovery remain required. Instruction delivery is not a runtime hook.
+
+At start/resume (including a new PRD or initiative) and finish/merge/pause/handoff, proactively inspect relevant worktrees and surface eligible cleanup with exact paths, recovery and dependency checks, then visibly request deletion approval; do not wait for an optimize command. Merge alone is insufficient. Record owned holds and pending approval in the existing task, continue unrelated work, and reuse unchanged prior approval after drift checks.

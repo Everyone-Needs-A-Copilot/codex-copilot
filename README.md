@@ -118,8 +118,10 @@ python3 scripts/sync-work-lifecycle.py --claude-root /path/to/claude-copilot
 python3 scripts/sync-work-lifecycle.py --claude-root /path/to/claude-copilot --check
 ```
 
-Check mode detects drift without writing. Available in release 0.9.0; publishing
-a release does not update installed consumers. Setup preserves an existing
+Check mode detects drift without writing. The lifecycle was introduced in 0.9.0;
+0.9.1 makes worktree checks and visible cleanup approval requests explicit at
+start/resume, new PRD/initiative, merge, finish, pause and handoff. Publishing a
+release does not update installed consumers. Setup preserves an existing
 project `AGENTS.md`: review and add the lifecycle pointer from the project template
 when adopting into an existing project, including direct optional pack work.
 Standalone pack activation does not install the base lifecycle contract.

@@ -7,6 +7,19 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.9.1] - 2026-10-14
+
+### Fixed
+
+- Make worktree housekeeping proactive at start/resume, new PRD/initiative, finish, merge, pause and handoff; a separate optimize invocation is unnecessary.
+- Require a visible request for exact deletion approval after preservation, recovery and consumer checks; keep unique work and active dependencies on owned holds, reuse unchanged approval after drift checks, and continue unrelated work while approval is pending.
+- Carry explicit checkpoint wording through protocol, optimize and project templates.
+
+### Compatibility
+
+- Incorporates the clarified lifecycle from Claude 5.21.1; the full upstream baseline remains Claude 5.15.3 / cc 2.13.2 / tc 2.0.0.
+- Agent catalog schema remains 1.0.0; package, catalog and pack versions remain coupled at 0.9.1 by the existing release contract. No runtime hook or automatic deletion is added; installed projects require reviewed adoption.
+
 ## [0.9.0] - 2026-10-14
 
 ### Added
