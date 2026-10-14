@@ -7,6 +7,25 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-10-14
+
+### Added
+
+- Native `$optimize` and a shared lifecycle contract across protocol, direct specialists, resume, pause, reflection, QA and project setup.
+- Proportional checkpoints, scoped lesson application and later outcome measurement using existing task records.
+- Exact cleanup approval, recovery and dependency checks, with actual net retirement reported separately from retained assets and holds.
+- Canonical lifecycle synchronization with drift detection.
+
+### Fixed
+
+- Preserve differing unrecorded project files at newly introduced plugin paths and report incomplete adoption instead of overwriting them.
+- Record verified initial base and organization plugin copies in existing setup metadata, retaining normal first-update repair and project ownership protection.
+
+### Compatibility
+
+- Incorporates the work lifecycle contract from Claude 5.21.0. The existing full upstream baseline remains Claude 5.15.3 / cc 2.13.2 / tc 2.0.0; no broader adoption is implied.
+- Existing projects require reviewed setup/update adoption. No automatic cleanup or production-effectiveness claim.
+
 ## [0.8.0] - 2026-10-02
 
 ### Added

@@ -1,8 +1,8 @@
 {
   "name": "codex-copilot",
-  "version": "0.8.0",
-  "releaseDate": "2026-10-02",
-  "codename": "evidence-design",
+  "version": "0.9.0",
+  "releaseDate": "2026-10-14",
+  "codename": "work-lifecycle",
   "status": "stable",
   "mirrors": {
     "project": "claude-copilot",

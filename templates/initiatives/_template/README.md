@@ -4,36 +4,28 @@
 > Status: Proposed  
 > `tc` context: PRD-TBD / TASK-TBD
 
-## Goal
+## Purpose and scope
 
-State the outcome this initiative exists to produce.
+State the bounded outcome, affected people/systems and exclusions. Keep live task
+state and acceptance authority in the linked `tc` records.
 
-## Scope
+## Decisions and learning
 
-Describe the included systems, users, and decisions.
+Record consequential decisions and their evidence. For applicable learning, state
+when it applies, what failed, the correction, source and counterexample or
+uncertainty; identify the decision/check changed in this work. An explicit no-match
+is valid. Record observed effects separately from untested expectations.
 
-## Non-Goals
+## Outcome and verification
 
-Name what this initiative will not attempt.
+Record actual behavior and task-bound QA evidence, including failed approaches
+and corrections. Consolidate this narrative at completion; create supporting
+files only when active work or necessary original evidence requires them.
 
-## Target Outcomes
+## Continuity and artifact disposition
 
-- Outcome with an observable success condition.
-
-## Phase Index
-
-| Phase | Goal | Status | Document |
-| --- | --- | --- | --- |
-| Phase 1 | Define the first bounded outcome | Proposed | [`phases/phase-1-plan.md`](./phases/phase-1-plan.md) |
-
-## Decisions
-
-Link durable choices from `decisions/`.
-
-## Validation Contract
-
-State the checks and external artifacts required before the initiative can be called complete. Link the corresponding `tc` test work product and QA verdict when available.
-
-## Current Summary
-
-Summarize the current phase and important blockers. Keep live task state in `tc`.
+Preserve owner approvals, cumulative execution history, unfinished obligations,
+next action and their authoritative task links. Give retained evidence a purpose,
+owner and retrieval location. Report actual approved retirement, net file/byte
+change including proof artifacts, and explicit holds with release conditions.
+Do not infer destructive approval from completion or from this template.

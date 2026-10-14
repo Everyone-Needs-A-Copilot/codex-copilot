@@ -93,8 +93,8 @@ For three or more related `tc` operations, prefer a single `python3` block using
 
 Formal multi-phase initiatives live in `docs/40-initiatives/NN-slug/`.
 
-- each initiative includes `README.md`, `phases/`, `decisions/`, and `retrospectives/`
-- initiative Markdown stores durable goals, phase design, decisions, validation evidence, and outcomes
+- each initiative starts with one maintained `README.md`; create supporting files only when current work needs them
+- consolidate a completed body into its README: outcome, decisions, failures/corrections, scoped lessons and unfinished obligations; retain required original evidence separately
 - `tc` remains authoritative for live tasks, dependencies, assignments, work products, and QA status
 - link initiative documents to their `tc` PRD/tasks instead of maintaining a second task board
 - add every initiative to `docs/40-initiatives/README.md`
@@ -241,3 +241,14 @@ Before substantial work, read the relevant skill:
 - `plugins/codex-copilot/skills/protocol-router/SKILL.md`
 - `plugins/codex-copilot/skills/task-copilot/SKILL.md`
 - `plugins/codex-copilot/skills/specialist-agents/SKILL.md`
+
+## Work Lifecycle
+
+Apply `plugins/codex-copilot/skills/optimize/references/work-lifecycle.md` for all
+work, including direct specialist and noncoding work. Use `$optimize` for explicit
+consolidation and cleanup. Keep small checkpoints in the existing record; do not
+create routine handoff trees, retrospective scaffolding or duplicate memories.
+Before freezing substantial QA-required work, register observable lifecycle
+acceptance alongside delivery criteria; task-bound QA verifies the actual record,
+lesson application and artifact disposition. Exact destructive approval and
+verified recovery remain required. Instruction delivery is not a runtime hook.
