@@ -1,14 +1,14 @@
 {
   "baseline": {
     "source": "claude-copilot",
-    "frameworkVersion": "5.15.3",
-    "capturedDate": "2026-10-02",
+    "frameworkVersion": "5.22.0",
+    "capturedDate": "2026-10-15",
     "codexParityVersion": "0.9.1",
-    "notes": "Reviewed source compatibility and semantic port: proportional verification, fixed finish line and task-bound QA. See parity/2026-09-09-foundation-adoption.md; no signed release or global rollout claim."
+    "notes": "Reviewed port of upstream 5.15.3-5.22.0 drift: consolidated approval and no-progress rules, DECISION NEEDED convention, setup prerequisites; see parity/2026-10-15-upstream-5.22.0-adoption.md. No signed release or global rollout claim."
   },
   "components": {
     "cc": {
-      "version": "2.13.2",
+      "version": "2.14.2",
       "requiredCommands": [
         "cc memory",
         "cc memory check",
@@ -29,7 +29,7 @@
       ]
     },
     "tc": {
-      "version": "2.0.0",
+      "version": "2.7.0",
       "requiredCommands": [
         "tc prd",
         "tc task",
@@ -214,6 +214,6 @@
     "verification": "scripts/sync-work-lifecycle.py --claude-root <explicit checkout> --check",
     "boundary": "Native optimize skill and proportional instruction checkpoints; existing tc v2 QA; no new lifecycle hook, task engine or automatic deletion.",
     "sourceRelease": "Claude Copilot 5.21.1",
-    "scope": "Work lifecycle contract only; declared full upstream baseline remains 5.15.3."
+    "scope": "Work lifecycle contract only; declared full upstream baseline is 5.22.0 (see parity/2026-10-15-upstream-5.22.0-adoption.md)."
   }
 }

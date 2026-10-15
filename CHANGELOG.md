@@ -7,6 +7,15 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Changed
+
+- Port the reviewed Claude 5.15.3 to 5.22.0 drift: design-flow checkpoints require explicit approval, one `DECISION NEEDED:` line for owner requests, the `tc execution` no-progress stop in `AGENTS.md`, Python 3.10+ prerequisite, anonymous HTTPS knowledge clone and solo-setup guidance.
+- Add a retired-phrase test (with negative control) and record the review in `parity/2026-10-15-upstream-5.22.0-adoption.md`.
+
+### Compatibility
+
+- Adopted baseline moves to Claude 5.22.0 / cc 2.14.2 / tc 2.7.0; content baseline regenerated at upstream 74abd16.
+
 ## [0.9.1] - 2026-10-14
 
 ### Fixed

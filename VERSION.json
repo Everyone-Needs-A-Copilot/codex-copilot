@@ -6,14 +6,14 @@
   "status": "stable",
   "mirrors": {
     "project": "claude-copilot",
-    "frameworkVersion": "5.15.3",
+    "frameworkVersion": "5.22.0",
     "baselineManifest": "parity/claude-baseline.json",
-    "capturedDate": "2026-10-02",
-    "adoptionNote": "Adopted Claude 5.15.3/cc 2.13.2/tc 2.0.0 (content baseline already at upstream b064e27; 5.15.2-5.15.3 add the Claude signer migration, tc QA source-inventory scoping and hook budget fixes, none requiring a Codex port). Earlier port record: parity/2026-09-09-foundation-adoption.md."
+    "capturedDate": "2026-10-15",
+    "adoptionNote": "Adopted Claude 5.22.0/cc 2.14.2/tc 2.7.0 (content baseline at upstream 74abd16; reviewed port record: parity/2026-10-15-upstream-5.22.0-adoption.md). Earlier port records: parity/2026-10-02-foundation-adoption.md, parity/2026-09-09-foundation-adoption.md."
   },
   "components": {
     "cc": {
-      "requiredVersion": "2.13.2",
+      "requiredVersion": "2.14.2",
       "source": "Claude Copilot tools/cc",
       "provides": [
         "cc memory",
@@ -33,7 +33,7 @@
       ]
     },
     "tc": {
-      "requiredVersion": "2.0.0",
+      "requiredVersion": "2.7.0",
       "source": "Claude Copilot tools/tc",
       "provides": [
         "tc prd",
