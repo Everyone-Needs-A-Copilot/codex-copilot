@@ -193,6 +193,8 @@ When an explanation conflicts with a measurement, follow the measurement and nar
 2. State what every diagnostic exercised, including the selected key, config, binary, branch, interpreter, and working directory when relevant.
 3. Count failures through one shared dependency as one observation unless that dependency is varied.
 4. After two hypotheses are falsified, stop hypothesizing. Read the code that enforces the behavior and cite `file:line`.
+5. `tc execution` stops attempts that add no passing criterion or new evidence; report the unmet criterion and the suspect assumption instead of retrying.
+6. A request for the owner's input, from a design-flow checkpoint or a `tc` refusal, carries one line `DECISION NEEDED: <concrete decision>`. Only money beyond the project budget also needs a verbatim owner quote.
 
 ## Working Style
 

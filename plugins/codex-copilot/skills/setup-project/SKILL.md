@@ -14,7 +14,8 @@ Wire a project to Codex Copilot.
 3. Verify generated `AGENTS.md`, `.agents/plugins/marketplace.json`, `.claude/cc/config.json`, memory dirs, plugin links, `docs/40-initiatives/`, and the `scripts/copilot-gate.sh` link.
 4. Confirm existing `AGENTS.md`, initiative documentation, and any file marked `owner: project` were preserved rather than replaced.
 5. Run `cc skill list`, `cc docs sources`, `cc memory check --json`, `tc progress --json`, and `scripts/copilot-gate.sh` from the target project when available.
-6. If wiring already exists and you only want a refresh (no first-install scaffolding), use `$update-project` / `scripts/update-project.sh` directly.
+6. A project with no organization (no layer manifest and no inherited organization config) is a solo setup: organization sign-in and signed layer pins are optional, and the project is still fully wired. Signed layer resolution starts once an organization is configured; a broken organization setup still blocks. The project must sit inside an approved `projects.roots` folder (`cc config add projects.roots "<absolute folder>"`; prefer the project folder or its parent, never `$HOME`).
+7. If wiring already exists and you only want a refresh (no first-install scaffolding), use `$update-project` / `scripts/update-project.sh` directly.
 
 ## Output
 
