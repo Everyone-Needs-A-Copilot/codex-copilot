@@ -46,7 +46,7 @@ outcome, consequential decisions, failures/corrections, applicable lessons and
 unfinished obligations. The optional `_template/` examples are reference assets,
 not scaffolding to copy into every initiative.
 
-Follow `$optimize` for checkpoint and retirement. Preserve necessary originals
+Follow `$cleanup` for checkpoint and retirement. Preserve necessary originals
 with a catalog and tested retrieval; remove superseded narratives only after
 consumer/recovery checks and exact approval. Archive location follows project
 policy, not an automatic copy of every closed initiative. Report net reduction

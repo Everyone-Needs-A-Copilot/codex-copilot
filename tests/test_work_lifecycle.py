@@ -121,7 +121,7 @@ class LifecycleDistributionTests(unittest.TestCase):
         return subprocess.run(command, cwd=ROOT, capture_output=True, text=True, timeout=40)
 
     def make_unrecorded_collision(self, project):
-        path = 'plugins/codex-copilot/skills/optimize/SKILL.md'
+        path = 'plugins/codex-copilot/skills/cleanup/SKILL.md'
         target = project / path
         target.write_bytes(b'# Existing project guidance\nPreserve unique owner work.\n')
         lock = project / 'copilot.lock.json'
@@ -164,7 +164,7 @@ class LifecycleDistributionTests(unittest.TestCase):
 
     def test_tracked_drift_repair_and_explicit_project_ownership_are_preserved(self):
         project = self.install_consumer()
-        relative = 'plugins/codex-copilot/skills/optimize/SKILL.md'
+        relative = 'plugins/codex-copilot/skills/cleanup/SKILL.md'
         target = project / relative
         target.write_text('tracked framework drift')
         result = self.update_consumer(project)
@@ -186,7 +186,7 @@ class LifecycleDistributionTests(unittest.TestCase):
         metadata = project / '.codex-copilot.json'
         data = json.loads(metadata.read_text())
         recorded = 'plugins/codex-copilot/agent-catalog.json'
-        unknown = 'plugins/codex-copilot/skills/optimize/SKILL.md'
+        unknown = 'plugins/codex-copilot/skills/cleanup/SKILL.md'
         roster = data['installedFiles']['codex']
         self.assertIn(recorded, [entry['path'] for entry in roster])
         # Model an upgrade path that was not in the original installed roster.

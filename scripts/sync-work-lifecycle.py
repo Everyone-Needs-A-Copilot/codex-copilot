@@ -8,7 +8,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = Path('.claude/agents/_shared/work-lifecycle.md')
-DESTINATION = Path('plugins/codex-copilot/skills/optimize/references/work-lifecycle.md')
+DESTINATION = Path('plugins/codex-copilot/skills/cleanup/references/work-lifecycle.md')
 
 
 def synchronize(claude_root: Path, codex_root: Path, *, check: bool = False) -> bool:

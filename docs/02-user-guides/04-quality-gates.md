@@ -120,7 +120,7 @@ for the additional review and rendered-evidence workflow.
 
 Before freezing substantial QA-required work, register an observable
 `WORK-LIFECYCLE` criterion (or equivalent) alongside delivery criteria. Follow the
-[shared contract](../../plugins/codex-copilot/skills/optimize/references/work-lifecycle.md)
+[shared contract](../../plugins/codex-copilot/skills/cleanup/references/work-lifecycle.md)
 for a compact record and acceptance example. QA checks the source-bound record,
 lesson applicability and resulting decision/check, actual artifact disposition,
 recovery evidence and any explicit holds. Missing criterion evidence rejects

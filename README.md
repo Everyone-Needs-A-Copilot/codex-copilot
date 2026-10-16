@@ -101,10 +101,10 @@ Design quality: 21 focused actions through shared `cc design`, native specialist
 
 ## Work lifecycle and optimization
 
-`$optimize` preserves useful history, applies scoped lessons and retires unnecessary
+`$cleanup` preserves useful history, applies scoped lessons and retires unnecessary
 artifacts with exact approval and verified recovery. Protocol, direct specialists
 (including optional packs when the project lifecycle instruction is installed), resume, pause, reflection and task closure use the same
-[packaged contract](plugins/codex-copilot/skills/optimize/references/work-lifecycle.md).
+[packaged contract](plugins/codex-copilot/skills/cleanup/references/work-lifecycle.md).
 Small tasks use their existing record; a completed body has one maintained
 narrative. Registered lifecycle criteria are checked by existing tc v2 QA, not a
 new runtime hook or task engine. Recorded/applied lessons and cleaner files are

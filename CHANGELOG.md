@@ -7,6 +7,18 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.10.0] - 2026-10-16
+
+### Changed
+
+- Rename the `optimize` skill to `cleanup` (`$cleanup`, `plugins/codex-copilot/skills/cleanup`) to match Claude Copilot 5.23.0. The old name read as code or product optimization; the skill retires accumulated project clutter. No `optimize` alias is kept, and earlier entries keep the old name as history.
+- Update the lifecycle references in every skill, `AGENTS.md`, the project template, the sync script and the parity baseline to the new path.
+
+### Compatibility
+
+- Adopted baseline moves to Claude 5.23.0 / cc 2.15.0 / tc 2.7.0; record in `parity/2026-10-16-upstream-5.23.0-adoption.md`.
+- A project with an installed `plugins/codex-copilot/skills/optimize` copy keeps it until removed by hand; the update path does not delete retired skills.
+
 ## [0.9.2] - 2026-10-16
 
 ### Changed

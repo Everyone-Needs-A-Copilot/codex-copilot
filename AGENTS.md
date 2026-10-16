@@ -246,8 +246,8 @@ Before substantial work, read the relevant skill:
 
 ## Work Lifecycle
 
-Apply `plugins/codex-copilot/skills/optimize/references/work-lifecycle.md` for all
-work, including direct specialist and noncoding work. Use `$optimize` for explicit
+Apply `plugins/codex-copilot/skills/cleanup/references/work-lifecycle.md` for all
+work, including direct specialist and noncoding work. Use `$cleanup` for explicit
 consolidation and cleanup. Keep small checkpoints in the existing record; do not
 create routine handoff trees, retrospective scaffolding or duplicate memories.
 Before freezing substantial QA-required work, register observable lifecycle
@@ -255,4 +255,4 @@ acceptance alongside delivery criteria; task-bound QA verifies the actual record
 lesson application and artifact disposition. Exact destructive approval and
 verified recovery remain required. Instruction delivery is not a runtime hook.
 
-At start/resume (including a new PRD or initiative) and finish/merge/pause/handoff, proactively inspect relevant worktrees and surface eligible cleanup with exact paths, recovery and dependency checks, then visibly request deletion approval; do not wait for an optimize command. Merge alone is insufficient. Record owned holds and pending approval in the existing task, continue unrelated work, and reuse unchanged prior approval after drift checks.
+At start/resume (including a new PRD or initiative) and finish/merge/pause/handoff, proactively inspect relevant worktrees and surface eligible cleanup with exact paths, recovery and dependency checks, then visibly request deletion approval; do not wait for a cleanup command. Merge alone is insufficient. Record owned holds and pending approval in the existing task, continue unrelated work, and reuse unchanged prior approval after drift checks.
