@@ -3,7 +3,7 @@
     "source": "claude-copilot",
     "frameworkVersion": "5.22.0",
     "capturedDate": "2026-10-15",
-    "codexParityVersion": "0.9.1",
+    "codexParityVersion": "0.9.2",
     "notes": "Reviewed port of upstream 5.15.3-5.22.0 drift: consolidated approval and no-progress rules, DECISION NEEDED convention, setup prerequisites; see parity/2026-10-15-upstream-5.22.0-adoption.md. No signed release or global rollout claim."
   },
   "components": {

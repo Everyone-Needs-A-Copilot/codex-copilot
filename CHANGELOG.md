@@ -7,6 +7,8 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.9.2] - 2026-10-16
+
 ### Changed
 
 - Port the reviewed Claude 5.15.3 to 5.22.0 drift: design-flow checkpoints require explicit approval, one `DECISION NEEDED:` line for owner requests, the `tc execution` no-progress stop in `AGENTS.md`, Python 3.10+ prerequisite, anonymous HTTPS knowledge clone and solo-setup guidance.

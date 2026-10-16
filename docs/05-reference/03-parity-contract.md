@@ -7,7 +7,7 @@ The current baseline is recorded in `parity/claude-baseline.json`:
 - Adopted Claude Copilot framework source: `5.22.0`
 - Required `cc`: `2.14.2`
 - Required `tc`: `2.7.0`
-- Current Codex source version: `0.9.1` (release publication and signatures are verified separately)
+- Current Codex source version: `0.9.2` (release publication and signatures are verified separately)
 
 The manifests record source compatibility, not proof of a published foundation
 release. See [release preparation](../03-developer-guides/03-evidence-design-release.md)
