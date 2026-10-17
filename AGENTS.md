@@ -220,7 +220,9 @@ never collateral in a fix.
   in the product, never by weakening, skipping or deleting the check.
 - Report changed tests explicitly. `scripts/check-test-integrity.sh [base-ref]`
   rejects test changes by default; `--test-change-receipt <file>` permits only the
-  exact reviewed change with its authority, contract and negative-control record.
+  exact reviewed change with its authority and old/new contract. A receipt with
+  `changeBasis` `owner-requested-obsolete-check` needs no negative control; any other
+  receipt (`defect-detection` or unlabeled) still needs one.
   Receipt validation is not proof of authorization or test quality: QA reviews
   those claims and retains tc source-bound approval. Never reset the comparison
   base or use an integrity receipt to bypass required behavior coverage.

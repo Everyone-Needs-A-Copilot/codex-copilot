@@ -7,6 +7,23 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.10.2] - 2026-10-17
+
+### Changed
+
+- `scripts/check-test-integrity.sh` follows the owner-requested obsolete-check rule. A test-change receipt with `changeBasis` `owner-requested-obsolete-check` records the old/new expectation, rationale, authority reference and exact changed files and needs no negative control (one is still validated if supplied). A receipt with `changeBasis` `defect-detection`, or none, still requires the negative control, and an unknown `changeBasis` is rejected. Schema stays at 1; the gate still rejects test changes by default and still checks exact content, base and diff.
+- `AGENTS.md` and `plugins/codex-copilot/skills/specialist-agents/references/verification-policy.md` describe the receipt basis; the "Never weaken, skip or delete assertions" protection is unchanged.
+- `references/shared-behaviors.md` carries the canonical condensed Optional Context block from Claude `.claude/agents/_shared/optional-context.md`; the previous copy was out of sync.
+
+### Tests
+
+- `tests/test_verification_policy.py`: added owner-requested receipt cases (passes without a negative control, still rejects missing authority, old/new expectation, rationale, assertions, changed-file set and stale diff, still validates a supplied control, rejects unknown basis) and a case that `defect-detection` or unlabeled receipts still need the control; two documentation assertions added. No existing assertion changed.
+- `tests/test_mirror_parity.py`: version pin moved to 0.10.2.
+
+### Compatibility
+
+- Adopted baseline moves to Claude 5.23.2 / cc 2.15.0 / tc 2.7.0; record in `parity/2026-10-17-upstream-5.23.2-adoption.md`.
+
 ## [0.10.1] - 2026-10-17
 
 ### Changed

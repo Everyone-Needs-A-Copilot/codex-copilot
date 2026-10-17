@@ -44,6 +44,9 @@ class VerificationPolicyTests(unittest.TestCase):
         self.assertIn('never by weakening, skipping or deleting the check', flat)
         self.assertNotIn('requires explicit user authority', flat)
         self.assertIn('--test-change-receipt', authority)
+        self.assertIn('owner-requested-obsolete-check', authority)
+        self.assertIn('owner-requested-obsolete-check', policy)
+        self.assertNotIn('with its authority, contract and negative-control record', authority)
         self.assertNotIn('"The tests pass" is only evidence if the tests are unchanged', authority)
 
 
@@ -165,7 +168,7 @@ class IntegrityReceiptTests(unittest.TestCase):
     def change_test(self):
         (self.repo / 'tests/test_contract.py').write_text('assert {1, 2} == set([1, 2])\n')
 
-    def receipt(self, paths=('tests/test_contract.py',)):
+    def receipt(self, paths=('tests/test_contract.py',), basis=None):
         # The defect is deliberately reintroduced in an isolated failable command.
         control = subprocess.run(['python3', '-c', 'assert 1 + 1 == 3'],
                                  capture_output=True, timeout=10)
@@ -184,7 +187,7 @@ class IntegrityReceiptTests(unittest.TestCase):
         diffs = [self.git('diff', '--no-ext-diff', '--no-textconv', '--binary', '--no-renames',
                           *extra, self.base, '--', *sorted(paths)).hex()
                  for extra in ([], ['--cached'])]
-        return {
+        receipt = {
             'schemaVersion': 1, 'baseCommit': self.base, 'task': 'fixture-task',
             'authorizationRef': 'fixture authority: explicitly testing receipt validation',
             'oldExpectation': 'Old fixture asserts scalar arithmetic',
@@ -196,6 +199,9 @@ class IntegrityReceiptTests(unittest.TestCase):
                                 'sha256': digest(log.read_bytes()),
                                 'rejectedBehavior': 'Arithmetic defect deliberately fails the assertion'},
         }
+        if basis:
+            receipt['changeBasis'] = basis
+        return receipt
 
     def test_unchanged_tests_and_source_only_edit_pass(self):
         self.assertEqual(self.run_gate().returncode, 0)
@@ -263,6 +269,58 @@ class IntegrityReceiptTests(unittest.TestCase):
         link.symlink_to(self.repo / 'negative-control.log')
         original['negativeControl']['path'] = link.name
         self.assertEqual(self.run_gate(original).returncode, 1)
+
+    def test_owner_requested_obsolete_check_needs_no_negative_control(self):
+        self.change_test()
+        receipt = self.receipt(basis='owner-requested-obsolete-check')
+        del receipt['negativeControl']
+        result = self.run_gate(receipt)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('tc approval is still required', result.stdout)
+
+    def test_owner_requested_receipt_still_records_old_new_rationale_and_files(self):
+        self.change_test()
+        original = self.receipt(basis='owner-requested-obsolete-check')
+        del original['negativeControl']
+        for key in ('authorizationRef', 'rationale', 'oldExpectation', 'newExpectation'):
+            with self.subTest(key=key):
+                receipt = json.loads(json.dumps(original))
+                del receipt[key]
+                self.assertEqual(self.run_gate(receipt).returncode, 1)
+        receipt = json.loads(json.dumps(original))
+        receipt['changes'][0]['assertions'] = ''
+        self.assertEqual(self.run_gate(receipt).returncode, 1)
+        receipt = json.loads(json.dumps(original))
+        receipt['changes'].append({**receipt['changes'][0], 'path': 'tests/test_other.py'})
+        self.assertEqual(self.run_gate(receipt).returncode, 1)
+        receipt = json.loads(json.dumps(original))
+        receipt['diffSha256'] = '0' * 64
+        self.assertEqual(self.run_gate(receipt).returncode, 1)
+
+    def test_owner_requested_receipt_still_validates_a_supplied_negative_control(self):
+        self.change_test()
+        receipt = self.receipt(basis='owner-requested-obsolete-check')
+        receipt['negativeControl']['exitCode'] = 0
+        self.assertEqual(self.run_gate(receipt).returncode, 1)
+
+    def test_defect_detection_or_unlabeled_receipt_still_requires_negative_control(self):
+        self.change_test()
+        for basis in ('defect-detection', None):
+            with self.subTest(basis=basis):
+                receipt = self.receipt(basis=basis)
+                del receipt['negativeControl']
+                result = self.run_gate(receipt)
+                self.assertEqual(result.returncode, 1)
+                self.assertIn('negative control', result.stderr)
+
+    def test_unknown_change_basis_rejects(self):
+        self.change_test()
+        for basis in ('owner-said-so', ['owner-requested-obsolete-check']):
+            with self.subTest(basis=basis):
+                receipt = self.receipt()
+                receipt['changeBasis'] = basis
+                del receipt['negativeControl']
+                self.assertEqual(self.run_gate(receipt).returncode, 1)
 
     def test_invalid_base_or_nonrepository_fails_closed(self):
         self.assertEqual(self.run_gate(base='missing-ref').returncode, 1)

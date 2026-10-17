@@ -1,15 +1,15 @@
 {
   "name": "codex-copilot",
-  "version": "0.10.1",
+  "version": "0.10.2",
   "releaseDate": "2026-10-17",
   "codename": "work-lifecycle",
   "status": "stable",
   "mirrors": {
     "project": "claude-copilot",
-    "frameworkVersion": "5.23.1",
+    "frameworkVersion": "5.23.2",
     "baselineManifest": "parity/claude-baseline.json",
     "capturedDate": "2026-10-17",
-    "adoptionNote": "Adopted Claude 5.23.1/cc 2.15.0/tc 2.7.0 (owner-requested behavior changes update the checks they make obsolete; reviewed port record: parity/2026-10-17-upstream-5.23.1-adoption.md). Earlier port records: parity/2026-10-16-upstream-5.23.0-adoption.md, parity/2026-10-15-upstream-5.22.0-adoption.md, parity/2026-10-02-foundation-adoption.md, parity/2026-09-09-foundation-adoption.md."
+    "adoptionNote": "Adopted Claude 5.23.2/cc 2.15.0/tc 2.7.0 (Codex reference copies resynced; owner-requested receipts need no negative control; reviewed port record: parity/2026-10-17-upstream-5.23.2-adoption.md). Earlier port records: parity/2026-10-17-upstream-5.23.1-adoption.md, parity/2026-10-16-upstream-5.23.0-adoption.md, parity/2026-10-15-upstream-5.22.0-adoption.md, parity/2026-10-02-foundation-adoption.md, parity/2026-09-09-foundation-adoption.md."
   },
   "components": {
     "cc": {
