@@ -8,8 +8,8 @@
     ".claude/agents/doc.md": "b93cb8dec50a203dba2eddc6bd5b6ea4792f99f5328915ab262c9d4f6238bfc8",
     ".claude/agents/ind.md": "fd42b102882f6ebdb12eb1c3b7b5020db61d6e8533b869f14f324e5144ec84e1",
     ".claude/agents/kc.md": "7ceec89ba5d576cea41d2ced605a3fcfadca201a8c8cd8e71fef04373bca20eb",
-    ".claude/agents/me.md": "0c56b7db008eea26749d8b8f37d35903e4d50c34e79eedd690398d55967cffb2",
-    ".claude/agents/qa.md": "06b62a3bd4b85a301bec96e6f150b071ee80408bc2c4f8bd9d3cb9ec4a0aaa4c",
+    ".claude/agents/me.md": "b5b4d2843c675383c7e0126609838bc21d1015b1391cf7ebfadef21cbede40d2",
+    ".claude/agents/qa.md": "ef5619ede107a113c404a1cde94a35f6669052f69c98aef236b416af2a67aaf4",
     ".claude/agents/sd.md": "f756a7c0ca2bd8a9ca56d74c71b933fda8f9674f6a3ae21a46b24203316c036d",
     ".claude/agents/sec.md": "af1491a8d69b3527dc340f85ba01743072f2e4f4faeed18d9c28bcaa5be85cdf",
     ".claude/agents/ta.md": "99a186e123071b6f334c79e4bf4b53e906de181984692fa88e4fbf2995886f9a",
@@ -73,11 +73,11 @@
     ".claude/skills/testing/jest-patterns/SKILL.md": "c6ca37963cb1180a9ea2db5514e3a2e2e66a4f5cd461b46205da754ddd982baa",
     ".claude/skills/testing/pytest-patterns/SKILL.md": "85e10117406ae80d7ee77f25d1028cd6d6ab94f41f24d07164808752ee94e693"
   },
-  "generated_at": "2026-10-16T11:57:24.682823Z",
-  "upstream_commit": "5b3be69645848c36bdf4084fbb1b63aeaa2497a8",
+  "generated_at": "2026-10-17T15:11:01.960083Z",
+  "upstream_commit": "d7274e4991f6dbdd6f211ffd5b8a258c02856785",
   "versions": {
-    "agents": "5.9.0",
+    "agents": "5.9.1",
     "commands": "5.7.0",
-    "framework": "5.23.0"
+    "framework": "5.23.1"
   }
 }

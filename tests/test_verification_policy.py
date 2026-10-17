@@ -27,11 +27,22 @@ class VerificationPolicyTests(unittest.TestCase):
             self.assertIn('Do not downgrade requiresQa', skill)
         for term in ('Instructions/routing', 'Logic/transformation', 'Storage/installation',
                      'UI behavior', 'Unknown impact selects a broader named lane',
-                     'tc remains the sole\nsource-bound QA authority', 'negative control',
-                     'exact changed\nassertions/diff', 'two falsified', 'Timeout is incomplete'):
+                     'tc remains the sole\nsource-bound QA authority',
+                     'Never weaken, skip or delete assertions',
+                     'A behavior change the\nowner requested is the authority to update checks it makes obsolete',
+                     'record old/new expectations, rationale and exact changed files in the work product',
+                     'report it without asking', 'Ask only when the change was not requested',
+                     'a real defect, which is fixed in the product, never by\nweakening, skipping or deleting the check',
+                     'two falsified', 'Timeout is incomplete'):
             self.assertIn(term, policy)
+        self.assertNotIn('Obsolete-contract migration', policy)
+        self.assertNotIn('Escalate undecided', policy)
         authority = (ROOT / 'AGENTS.md').read_text()
-        self.assertIn('explicit user authority', authority)
+        flat = ' '.join(authority.split())
+        self.assertIn('A behavior change the owner requested is the authority to update checks it makes obsolete', flat)
+        self.assertIn('Ask only when the change was not requested', flat)
+        self.assertIn('never by weakening, skipping or deleting the check', flat)
+        self.assertNotIn('requires explicit user authority', flat)
         self.assertIn('--test-change-receipt', authority)
         self.assertNotIn('"The tests pass" is only evidence if the tests are unchanged', authority)
 

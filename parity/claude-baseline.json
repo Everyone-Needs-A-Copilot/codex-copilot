@@ -1,10 +1,10 @@
 {
   "baseline": {
     "source": "claude-copilot",
-    "frameworkVersion": "5.23.0",
-    "capturedDate": "2026-10-16",
-    "codexParityVersion": "0.10.0",
-    "notes": "Reviewed port of upstream 5.15.3-5.23.0 drift (5.23.0 renames optimize to cleanup; see parity/2026-10-16-upstream-5.23.0-adoption.md): consolidated approval and no-progress rules, DECISION NEEDED convention, setup prerequisites; see parity/2026-10-15-upstream-5.22.0-adoption.md. No signed release or global rollout claim."
+    "frameworkVersion": "5.23.1",
+    "capturedDate": "2026-10-17",
+    "codexParityVersion": "0.10.1",
+    "notes": "Reviewed port of upstream 5.15.3-5.23.1 drift (5.23.1 lets owner-requested behavior changes update the checks they make obsolete, see parity/2026-10-17-upstream-5.23.1-adoption.md; 5.23.0 renames optimize to cleanup, see parity/2026-10-16-upstream-5.23.0-adoption.md): consolidated approval and no-progress rules, DECISION NEEDED convention, setup prerequisites; see parity/2026-10-15-upstream-5.22.0-adoption.md. No signed release or global rollout claim."
   },
   "components": {
     "cc": {

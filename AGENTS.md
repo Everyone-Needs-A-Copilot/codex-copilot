@@ -213,10 +213,11 @@ never collateral in a fix.
   defect until investigation establishes a different authoritative contract.
 - Add required missing behavior coverage in proportion to risk; an edited source
   file alone does not require a new test. Existing assertions are not collateral.
-- An obsolete-contract migration requires explicit user authority for the test
-  changes, old/new expectations and rationale, exact changed assertions/diff, and a
-  negative control that still rejects the targeted broken behavior. If authority or
-  the intended behavior is undecided, report the disagreement and stop that edit.
+- A behavior change the owner requested is the authority to update checks it makes
+  obsolete: update them, record old/new expectations, rationale and exact changed
+  files in the work product, and report it without asking. Ask only when the change
+  was not requested, or when a failing check reveals a real defect, which is fixed
+  in the product, never by weakening, skipping or deleting the check.
 - Report changed tests explicitly. `scripts/check-test-integrity.sh [base-ref]`
   rejects test changes by default; `--test-change-receipt <file>` permits only the
   exact reviewed change with its authority, contract and negative-control record.

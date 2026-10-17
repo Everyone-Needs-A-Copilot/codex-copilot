@@ -7,6 +7,18 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.10.1] - 2026-10-17
+
+### Changed
+
+- Port the Claude 5.23.1 verification-policy change: a behavior change the owner requested is the authority to update checks it makes obsolete. Update them, record old/new expectations, rationale and exact changed files in the work product, and report it without asking. Ask only when the change was not requested, or when a failing check reveals a real defect, which is fixed in the product, never by weakening, skipping or deleting the check. "Never weaken, skip or delete assertions" is unchanged.
+- Applied in `AGENTS.md` (Test Integrity) and `plugins/codex-copilot/skills/specialist-agents/references/verification-policy.md`. The retired "explicit authority" and "negative control" requirement and the "Escalate undecided authority/behavior" sentence are removed.
+- `tests/test_verification_policy.py` asserts the new rule and rejects the old wording. The assertions that required the retired wording (`negative control`, the `exact changed assertions/diff` phrase and `explicit user authority`) were replaced by new-rule assertions under the requested rule; the `--test-change-receipt` assertion is unchanged.
+
+### Compatibility
+
+- Adopted baseline moves to Claude 5.23.1 / cc 2.15.0 / tc 2.7.0; record in `parity/2026-10-17-upstream-5.23.1-adoption.md`.
+
 ## [0.10.0] - 2026-10-16
 
 ### Changed
