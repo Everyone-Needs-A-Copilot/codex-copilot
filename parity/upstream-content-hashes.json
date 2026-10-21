@@ -29,7 +29,7 @@
     ".claude/commands/reflect.md": "b4aba6c7cc68273f9ec9805f4ce7cd5162da5636d09321620b57d367ae50e38b",
     ".claude/commands/setup-copilot.md": "7153a6d0a42bff4b9ff14e90efa718d11d8f58b0d5ef70a6f3293d24a0df1f6a",
     ".claude/commands/setup-knowledge-sync.md": "c6326900093e10d884410913cc65cfb5ba6a436012e895dc3e62ac5ea45bfd5f",
-    ".claude/commands/setup-project.md": "b86c5f63800b94bbbb9a75986f676f0794f8e5132fe45923b772682183383d6c",
+    ".claude/commands/setup-project.md": "4e4b7f1625f1a6585cec1d25898db8e7930c153f6be3935b7ea4195622ecf091",
     ".claude/commands/setup.md": "2d84882a7adbc04ab4f1af7fc99f16e6d754a6484a1c464d1e20b77e042fc2ac",
     ".claude/commands/skills-approve.md": "1bd7c70762438bdb8c617f80ba3a4b5bbadf5fba87879985c5c18c8c74113e36",
     ".claude/commands/update-copilot.md": "b2322a7a7bb7b5e1dd2e3a2e2827afbdbbf5c6c71c032ade85c4c01b6723584d",
@@ -73,11 +73,11 @@
     ".claude/skills/testing/jest-patterns/SKILL.md": "c6ca37963cb1180a9ea2db5514e3a2e2e66a4f5cd461b46205da754ddd982baa",
     ".claude/skills/testing/pytest-patterns/SKILL.md": "85e10117406ae80d7ee77f25d1028cd6d6ab94f41f24d07164808752ee94e693"
   },
-  "generated_at": "2026-10-21T19:32:09.548062Z",
-  "upstream_commit": "f0c2a8d0af582a9be6eda2704d940e003df081d6",
+  "generated_at": "2026-10-21T20:25:11.582702Z",
+  "upstream_commit": "de2fc824c92c4ce4a51d65a180fe690ffa5f6f50",
   "versions": {
     "agents": "5.9.1",
-    "commands": "5.7.0",
-    "framework": "5.23.3"
+    "commands": "5.8.0",
+    "framework": "5.24.0"
   }
 }

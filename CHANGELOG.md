@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.10.4] - 2026-10-21
+
+- Align the project instruction template and preserve current lifecycle rules.
+- Adopt Claude 5.24.0, cc 2.15.1 and tc 2.7.1; port optional identity capture after verified first setup.
+- Keep existing project-authored descriptions and skipped answers intact.
+
 All notable changes to codex-copilot will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),

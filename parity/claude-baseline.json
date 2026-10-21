@@ -1,14 +1,14 @@
 {
   "baseline": {
     "source": "claude-copilot",
-    "frameworkVersion": "5.23.3",
+    "frameworkVersion": "5.24.0",
     "capturedDate": "2026-10-21",
-    "codexParityVersion": "0.10.3",
-    "notes": "Reviewed Claude 5.23.2 to 5.23.3: tc deployment CLI interpreter selection and Coolify response parsing changed; no mirrored agent, command or skill content changed. Historical port evidence remains in parity/. Release publication and signatures are verified separately."
+    "codexParityVersion": "0.10.4",
+    "notes": "Reviewed Claude 5.24.0: setup interview ported to the Codex setup skill, native instructions aligned, and dependencies/release verification updated. Existing project instruction ownership preserved."
   },
   "components": {
     "cc": {
-      "version": "2.15.0",
+      "version": "2.15.1",
       "requiredCommands": [
         "cc memory",
         "cc memory check",

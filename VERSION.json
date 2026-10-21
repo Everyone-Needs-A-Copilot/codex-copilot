@@ -1,19 +1,19 @@
 {
   "name": "codex-copilot",
-  "version": "0.10.3",
+  "version": "0.10.4",
   "releaseDate": "2026-10-21",
   "codename": "work-lifecycle",
   "status": "stable",
   "mirrors": {
     "project": "claude-copilot",
-    "frameworkVersion": "5.23.3",
+    "frameworkVersion": "5.24.0",
     "baselineManifest": "parity/claude-baseline.json",
     "capturedDate": "2026-10-21",
-    "adoptionNote": "Adopted Claude 5.23.3 / cc 2.15.0 / tc 2.7.1. The upstream release fixes tc deployment invocation and response parsing; no mirrored agent, command or skill content changed. See CHANGELOG.md for the reviewed adoption and earlier parity records."
+    "adoptionNote": "Adopted Claude 5.24.0 / cc 2.15.1 / tc 2.7.1. Ported optional first-setup identity capture to the Codex setup skill; updated project instruction template and reviewed dependency/release maintenance."
   },
   "components": {
     "cc": {
-      "requiredVersion": "2.15.0",
+      "requiredVersion": "2.15.1",
       "source": "Claude Copilot tools/cc",
       "provides": [
         "cc memory",
