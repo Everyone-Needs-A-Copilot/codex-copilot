@@ -7,6 +7,13 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.10.3] - 2026-10-21
+
+### Changed
+
+- Adopt Claude 5.23.3 / cc 2.15.0 / tc 2.7.1. The upstream change fixes `tc deploy wait` interpreter selection and Coolify response parsing; the mirrored agent, command and skill content is unchanged.
+- Check the agent catalog release version against `VERSION.json`, replacing the hard-coded test release number while retaining the consistency assertion.
+
 ## [0.10.2] - 2026-10-17
 
 ### Changed

@@ -1,15 +1,15 @@
 {
   "name": "codex-copilot",
-  "version": "0.10.2",
-  "releaseDate": "2026-10-17",
+  "version": "0.10.3",
+  "releaseDate": "2026-10-21",
   "codename": "work-lifecycle",
   "status": "stable",
   "mirrors": {
     "project": "claude-copilot",
-    "frameworkVersion": "5.23.2",
+    "frameworkVersion": "5.23.3",
     "baselineManifest": "parity/claude-baseline.json",
-    "capturedDate": "2026-10-17",
-    "adoptionNote": "Adopted Claude 5.23.2/cc 2.15.0/tc 2.7.0 (Codex reference copies resynced; owner-requested receipts need no negative control; reviewed port record: parity/2026-10-17-upstream-5.23.2-adoption.md). Earlier port records: parity/2026-10-17-upstream-5.23.1-adoption.md, parity/2026-10-16-upstream-5.23.0-adoption.md, parity/2026-10-15-upstream-5.22.0-adoption.md, parity/2026-10-02-foundation-adoption.md, parity/2026-09-09-foundation-adoption.md."
+    "capturedDate": "2026-10-21",
+    "adoptionNote": "Adopted Claude 5.23.3 / cc 2.15.0 / tc 2.7.1. The upstream release fixes tc deployment invocation and response parsing; no mirrored agent, command or skill content changed. See CHANGELOG.md for the reviewed adoption and earlier parity records."
   },
   "components": {
     "cc": {
@@ -33,7 +33,7 @@
       ]
     },
     "tc": {
-      "requiredVersion": "2.7.0",
+      "requiredVersion": "2.7.1",
       "source": "Claude Copilot tools/tc",
       "provides": [
         "tc prd",

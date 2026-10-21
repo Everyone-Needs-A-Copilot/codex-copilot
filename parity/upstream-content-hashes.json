@@ -73,11 +73,11 @@
     ".claude/skills/testing/jest-patterns/SKILL.md": "c6ca37963cb1180a9ea2db5514e3a2e2e66a4f5cd461b46205da754ddd982baa",
     ".claude/skills/testing/pytest-patterns/SKILL.md": "85e10117406ae80d7ee77f25d1028cd6d6ab94f41f24d07164808752ee94e693"
   },
-  "generated_at": "2026-10-17T15:24:58.720900Z",
-  "upstream_commit": "a795b15bd78ba3f6aa7a380bebc1593d582e72f1",
+  "generated_at": "2026-10-21T19:32:09.548062Z",
+  "upstream_commit": "f0c2a8d0af582a9be6eda2704d940e003df081d6",
   "versions": {
     "agents": "5.9.1",
     "commands": "5.7.0",
-    "framework": "5.23.2"
+    "framework": "5.23.3"
   }
 }
