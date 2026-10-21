@@ -115,3 +115,15 @@ Completed historical records remain historical. Pending work needs a registered
 contract and fresh identity-bound verification; neither replayed approval tokens
 nor rewriting old evidence is a migration. See [design quality](design-quality.md)
 for the additional review and rendered-evidence workflow.
+
+## Work lifecycle acceptance
+
+Before freezing substantial QA-required work, register an observable
+`WORK-LIFECYCLE` criterion (or equivalent) alongside delivery criteria. Follow the
+[shared contract](../../plugins/codex-copilot/skills/cleanup/references/work-lifecycle.md)
+for a compact record and acceptance example. QA checks the source-bound record,
+lesson applicability and resulting decision/check, actual artifact disposition,
+recovery evidence and any explicit holds. Missing criterion evidence rejects
+completion through the existing tc v2 gate. A documented hold is not a completed
+cleanup, and a learning entry is not a measured product improvement. These prompt
+instructions are not an unbypassable lifecycle hook.

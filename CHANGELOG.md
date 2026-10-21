@@ -7,6 +7,97 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.10.3] - 2026-10-21
+
+### Changed
+
+- Adopt Claude 5.23.3 / cc 2.15.0 / tc 2.7.1. The upstream change fixes `tc deploy wait` interpreter selection and Coolify response parsing; the mirrored agent, command and skill content is unchanged.
+- Check the agent catalog release version against `VERSION.json`, replacing the hard-coded test release number while retaining the consistency assertion.
+
+## [0.10.2] - 2026-10-17
+
+### Changed
+
+- `scripts/check-test-integrity.sh` follows the owner-requested obsolete-check rule. A test-change receipt with `changeBasis` `owner-requested-obsolete-check` records the old/new expectation, rationale, authority reference and exact changed files and needs no negative control (one is still validated if supplied). A receipt with `changeBasis` `defect-detection`, or none, still requires the negative control, and an unknown `changeBasis` is rejected. Schema stays at 1; the gate still rejects test changes by default and still checks exact content, base and diff.
+- `AGENTS.md` and `plugins/codex-copilot/skills/specialist-agents/references/verification-policy.md` describe the receipt basis; the "Never weaken, skip or delete assertions" protection is unchanged.
+- `references/shared-behaviors.md` carries the canonical condensed Optional Context block from Claude `.claude/agents/_shared/optional-context.md`; the previous copy was out of sync.
+
+### Tests
+
+- `tests/test_verification_policy.py`: added owner-requested receipt cases (passes without a negative control, still rejects missing authority, old/new expectation, rationale, assertions, changed-file set and stale diff, still validates a supplied control, rejects unknown basis) and a case that `defect-detection` or unlabeled receipts still need the control; two documentation assertions added. No existing assertion changed.
+- `tests/test_mirror_parity.py`: version pin moved to 0.10.2.
+
+### Compatibility
+
+- Adopted baseline moves to Claude 5.23.2 / cc 2.15.0 / tc 2.7.0; record in `parity/2026-10-17-upstream-5.23.2-adoption.md`.
+
+## [0.10.1] - 2026-10-17
+
+### Changed
+
+- Port the Claude 5.23.1 verification-policy change: a behavior change the owner requested is the authority to update checks it makes obsolete. Update them, record old/new expectations, rationale and exact changed files in the work product, and report it without asking. Ask only when the change was not requested, or when a failing check reveals a real defect, which is fixed in the product, never by weakening, skipping or deleting the check. "Never weaken, skip or delete assertions" is unchanged.
+- Applied in `AGENTS.md` (Test Integrity) and `plugins/codex-copilot/skills/specialist-agents/references/verification-policy.md`. The retired "explicit authority" and "negative control" requirement and the "Escalate undecided authority/behavior" sentence are removed.
+- `tests/test_verification_policy.py` asserts the new rule and rejects the old wording. The assertions that required the retired wording (`negative control`, the `exact changed assertions/diff` phrase and `explicit user authority`) were replaced by new-rule assertions under the requested rule; the `--test-change-receipt` assertion is unchanged.
+
+### Compatibility
+
+- Adopted baseline moves to Claude 5.23.1 / cc 2.15.0 / tc 2.7.0; record in `parity/2026-10-17-upstream-5.23.1-adoption.md`.
+
+## [0.10.0] - 2026-10-16
+
+### Changed
+
+- Rename the `optimize` skill to `cleanup` (`$cleanup`, `plugins/codex-copilot/skills/cleanup`) to match Claude Copilot 5.23.0. The old name read as code or product optimization; the skill retires accumulated project clutter. No `optimize` alias is kept, and earlier entries keep the old name as history.
+- Update the lifecycle references in every skill, `AGENTS.md`, the project template, the sync script and the parity baseline to the new path.
+
+### Compatibility
+
+- Adopted baseline moves to Claude 5.23.0 / cc 2.15.0 / tc 2.7.0; record in `parity/2026-10-16-upstream-5.23.0-adoption.md`.
+- A project with an installed `plugins/codex-copilot/skills/optimize` copy keeps it until removed by hand; the update path does not delete retired skills.
+
+## [0.9.2] - 2026-10-16
+
+### Changed
+
+- Port the reviewed Claude 5.15.3 to 5.22.0 drift: design-flow checkpoints require explicit approval, one `DECISION NEEDED:` line for owner requests, the `tc execution` no-progress stop in `AGENTS.md`, Python 3.10+ prerequisite, anonymous HTTPS knowledge clone and solo-setup guidance.
+- Add a retired-phrase test (with negative control) and record the review in `parity/2026-10-15-upstream-5.22.0-adoption.md`.
+
+### Compatibility
+
+- Adopted baseline moves to Claude 5.22.0 / cc 2.14.2 / tc 2.7.0; content baseline regenerated at upstream 74abd16.
+
+## [0.9.1] - 2026-10-14
+
+### Fixed
+
+- Make worktree housekeeping proactive at start/resume, new PRD/initiative, finish, merge, pause and handoff; a separate optimize invocation is unnecessary.
+- Require a visible request for exact deletion approval after preservation, recovery and consumer checks; keep unique work and active dependencies on owned holds, reuse unchanged approval after drift checks, and continue unrelated work while approval is pending.
+- Carry explicit checkpoint wording through protocol, optimize and project templates.
+
+### Compatibility
+
+- Incorporates the clarified lifecycle from Claude 5.21.1; the full upstream baseline remains Claude 5.15.3 / cc 2.13.2 / tc 2.0.0.
+- Agent catalog schema remains 1.0.0; package, catalog and pack versions remain coupled at 0.9.1 by the existing release contract. No runtime hook or automatic deletion is added; installed projects require reviewed adoption.
+
+## [0.9.0] - 2026-10-14
+
+### Added
+
+- Native `$optimize` and a shared lifecycle contract across protocol, direct specialists, resume, pause, reflection, QA and project setup.
+- Proportional checkpoints, scoped lesson application and later outcome measurement using existing task records.
+- Exact cleanup approval, recovery and dependency checks, with actual net retirement reported separately from retained assets and holds.
+- Canonical lifecycle synchronization with drift detection.
+
+### Fixed
+
+- Preserve differing unrecorded project files at newly introduced plugin paths and report incomplete adoption instead of overwriting them.
+- Record verified initial base and organization plugin copies in existing setup metadata, retaining normal first-update repair and project ownership protection.
+
+### Compatibility
+
+- Incorporates the work lifecycle contract from Claude 5.21.0. The existing full upstream baseline remains Claude 5.15.3 / cc 2.13.2 / tc 2.0.0; no broader adoption is implied.
+- Existing projects require reviewed setup/update adoption. No automatic cleanup or production-effectiveness claim.
+
 ## [0.8.0] - 2026-10-02
 
 ### Added

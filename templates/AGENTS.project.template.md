@@ -52,7 +52,7 @@
 - Track substantial work in `tc` PRDs/tasks and store detailed work products there; create missing records. Use `cc memory` for durable decisions and lessons.
 - Prefer `tc`, then `./.venv-tc/bin/tc`; use `--json` where supported. Read `plugins/codex-copilot/skills/task-copilot/SKILL.md` when managing tasks.
 - Batch three or more related operations using `tc.api`, or separately `cc.api`, with a verified interpreter. Never mix these APIs in one process.
-- Formal initiatives belong in `docs/40-initiatives/NN-slug/`, indexed in `docs/40-initiatives/README.md`, with `README.md`, `phases/`, `decisions/`, and `retrospectives/`. Markdown holds durable rationale/evidence; `tc` owns live state. Never create `docs/initiatives/`.
+- Formal initiatives belong in `docs/40-initiatives/NN-slug/`, indexed in `docs/40-initiatives/README.md`. Start with one maintained `README.md`; create supporting files only when current work needs them. Consolidate completed work into that README while retaining required original evidence separately. Markdown holds durable rationale/evidence; `tc` owns live state. Never create `docs/initiatives/`.
 
 ### QA Gate Convention
 
@@ -84,9 +84,24 @@ When an explanation conflicts with a measurement, follow the measurement and nar
 2. State what every diagnostic exercised, including the selected key, config, binary, branch, interpreter, and working directory when relevant.
 3. Count failures through one shared dependency as one observation unless that dependency is varied.
 4. After two hypotheses are falsified, stop hypothesizing. Read the code that enforces the behavior and cite `file:line`.
+5. `tc execution` stops attempts that add no passing criterion or new evidence; report the unmet criterion and the suspect assumption instead of retrying.
+6. A request for the owner's input, from a design-flow checkpoint or a `tc` refusal, carries one line `DECISION NEEDED: <concrete decision>`. Only money beyond the project budget also needs a verbatim owner quote.
 
 ## Decision Instruments
 
 - Read `SOUL.md` before substantial product-facing work to decide whether the direction belongs here; report missing or unfilled purpose rather than inventing it.
 - Read `docs/01-architecture/12-architecture-guiding-principles.md` for durable architecture, migration, data, security, performance, or AI pipeline decisions. Report a missing reference and use verified project authority.
 - When either instrument changes the route, state that before continuing.
+
+## Work Lifecycle
+
+Apply `plugins/codex-copilot/skills/cleanup/references/work-lifecycle.md` for all
+work, including direct specialist and noncoding work. Use `$cleanup` for explicit
+consolidation and cleanup. Keep small checkpoints in the existing record; do not
+create routine handoff trees, retrospective scaffolding or duplicate memories.
+Before freezing substantial QA-required work, register observable lifecycle
+acceptance alongside delivery criteria; task-bound QA verifies the actual record,
+lesson application and artifact disposition. Exact destructive approval and
+verified recovery remain required. Instruction delivery is not a runtime hook.
+
+At start/resume (including a new PRD or initiative) and finish/merge/pause/handoff, proactively inspect relevant worktrees and surface eligible cleanup with exact paths, recovery and dependency checks, then visibly request deletion approval; do not wait for a cleanup command. Merge alone is insufficient. Record owned holds and pending approval in the existing task, continue unrelated work, and reuse unchanged prior approval after drift checks.

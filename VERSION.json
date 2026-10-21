@@ -1,19 +1,19 @@
 {
   "name": "codex-copilot",
-  "version": "0.8.0",
-  "releaseDate": "2026-10-02",
-  "codename": "evidence-design",
+  "version": "0.10.3",
+  "releaseDate": "2026-10-21",
+  "codename": "work-lifecycle",
   "status": "stable",
   "mirrors": {
     "project": "claude-copilot",
-    "frameworkVersion": "5.15.3",
+    "frameworkVersion": "5.23.3",
     "baselineManifest": "parity/claude-baseline.json",
-    "capturedDate": "2026-10-02",
-    "adoptionNote": "Adopted Claude 5.15.3/cc 2.13.2/tc 2.0.0 (content baseline already at upstream b064e27; 5.15.2-5.15.3 add the Claude signer migration, tc QA source-inventory scoping and hook budget fixes, none requiring a Codex port). Earlier port record: parity/2026-09-09-foundation-adoption.md."
+    "capturedDate": "2026-10-21",
+    "adoptionNote": "Adopted Claude 5.23.3 / cc 2.15.0 / tc 2.7.1. The upstream release fixes tc deployment invocation and response parsing; no mirrored agent, command or skill content changed. See CHANGELOG.md for the reviewed adoption and earlier parity records."
   },
   "components": {
     "cc": {
-      "requiredVersion": "2.13.2",
+      "requiredVersion": "2.15.0",
       "source": "Claude Copilot tools/cc",
       "provides": [
         "cc memory",
@@ -33,7 +33,7 @@
       ]
     },
     "tc": {
-      "requiredVersion": "2.0.0",
+      "requiredVersion": "2.7.1",
       "source": "Claude Copilot tools/tc",
       "provides": [
         "tc prd",

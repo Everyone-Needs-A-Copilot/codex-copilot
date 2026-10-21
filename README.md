@@ -98,3 +98,30 @@ That honesty is intentional.
 <!-- cse-design-quality:start -->
 Design quality: 21 focused actions through shared `cc design`, native specialist guidance, optional edit feedback and task-bound review. See [the operating guide](docs/02-user-guides/design-quality.md).
 <!-- cse-design-quality:end -->
+
+## Work lifecycle and optimization
+
+`$cleanup` preserves useful history, applies scoped lessons and retires unnecessary
+artifacts with exact approval and verified recovery. Protocol, direct specialists
+(including optional packs when the project lifecycle instruction is installed), resume, pause, reflection and task closure use the same
+[packaged contract](plugins/codex-copilot/skills/cleanup/references/work-lifecycle.md).
+Small tasks use their existing record; a completed body has one maintained
+narrative. Registered lifecycle criteria are checked by existing tc v2 QA, not a
+new runtime hook or task engine. Recorded/applied lessons and cleaner files are
+not evidence of improved product outcomes until later work measures the effect.
+
+Maintainers synchronize only this canonical contract from an explicit Claude
+foundation checkout:
+
+```bash
+python3 scripts/sync-work-lifecycle.py --claude-root /path/to/claude-copilot
+python3 scripts/sync-work-lifecycle.py --claude-root /path/to/claude-copilot --check
+```
+
+Check mode detects drift without writing. The lifecycle was introduced in 0.9.0;
+0.9.1 makes worktree checks and visible cleanup approval requests explicit at
+start/resume, new PRD/initiative, merge, finish, pause and handoff. Publishing a
+release does not update installed consumers. Setup preserves an existing
+project `AGENTS.md`: review and add the lifecycle pointer from the project template
+when adopting into an existing project, including direct optional pack work.
+Standalone pack activation does not install the base lifecycle contract.

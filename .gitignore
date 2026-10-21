@@ -5,4 +5,5 @@ __pycache__/
 .ruff_cache/
 .venv/
 .venv-tc/
+# tc: task state stays local
 .copilot/

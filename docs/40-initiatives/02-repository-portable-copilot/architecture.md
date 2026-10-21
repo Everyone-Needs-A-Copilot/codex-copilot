@@ -6,7 +6,7 @@ Projects configured for Claude Copilot or Codex Copilot currently preserve only 
 
 Codex Copilot creates repository-local configuration, but [the current setup script](../../../scripts/setup-project.sh) links the plugin and QA gate to a separate framework checkout. The link may be relative, but a fresh clone does not contain its target. Claude Copilot copies more of its prompt layer into each project, while its machine tooling and some clone-mode configuration still depend on a separate installation.
 
-Project memory entries already use a portable Markdown representation. Task state does not: `tc` uses `.copilot/tasks.db`, and [this repository ignores `.copilot/`](../../../.gitignore). Committing SQLite databases, WAL files, or SHM files is not a safe substitute because they are binary, difficult to merge, and may not represent a consistent snapshot.
+Project memory entries already use a portable Markdown representation. Task state does not: `tc` uses `.copilot/tasks.db`, and [this repository ignores `.copilot/`](../../../.gitignore). Committing SQLite databases, WAL files, or SHM files is not a safe long-term substitute because they are binary, difficult to merge, and may not represent a consistent snapshot. As an interim (ADR-001, 2026-10-09), projects now commit `tasks.db`, its history file and work products, never WAL or SHM, and work on one machine at a time.
 
 ## Design Principle
 

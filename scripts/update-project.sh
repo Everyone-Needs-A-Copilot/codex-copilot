@@ -54,7 +54,11 @@ A file is never touched if it is marked ownership: project, either via
 `owner: project` YAML frontmatter inside the file itself, or via a
 `copilot.lock.json` entry for that path with "ownership": "project". This
 mirrors the owner: project convention Claude Copilot projects already use
-to protect hand-authored content, applied to the codex plugin tree.
+to protect hand-authored content, applied to the codex plugin tree. Fresh setup
+records its copied roster in .codex-copilot.json; the first update adopts that
+ownership evidence into the lock. A differing destination with no ownership
+record is preserved and held for review (exit 2), not silently claimed by a new
+framework roster. Other eligible updates may be applied before a hold is reported.
 
 Idempotent: running this twice in a row makes no further changes on the
 second run. Never destructive outside the discovered locked paths -- AGENTS.md,
@@ -278,11 +282,29 @@ if lock_path.is_file():
     except (json.JSONDecodeError, OSError):
         lock_data = {"schema_version": "1.0", "components": []}
 
+# Setup records its actual copied roster in existing install metadata, without
+# prematurely creating a lock. Bootstrap only a missing component: an existing
+# component is authoritative, including paths deliberately absent from its roster.
+setup_rosters = {}
+setup_org_name = None
+setup_metadata = project_root / ".codex-copilot.json"
+if setup_metadata.is_file():
+    try:
+        setup_data = json.loads(setup_metadata.read_text(encoding="utf-8"))
+        setup_rosters = setup_data.get("installedFiles", {})
+        setup_org_name = setup_data.get("orgPluginName")
+    except (json.JSONDecodeError, OSError):
+        pass
+
 components = lock_data.get("components", [])
 codex_component = next((c for c in components if c.get("component") == "codex"), None)
-prior_files = {f.get("path"): f for f in (codex_component or {}).get("files", [])}
+prior_files = {f.get("path"): f for f in (
+    codex_component.get("files", []) if codex_component is not None
+    else setup_rosters.get("codex", []))}
 prior_org_component = next((c for c in components if c.get("component") == ORG_LOCK_COMPONENT), None)
-prior_org_files = {f.get("path"): f for f in (prior_org_component or {}).get("files", [])}
+prior_org_files = {f.get("path"): f for f in (
+    prior_org_component.get("files", []) if prior_org_component is not None
+    else setup_rosters.get(ORG_LOCK_COMPONENT, []) if setup_org_name == org_plugin_name else [])}
 other_components = [c for c in components if c.get("component") not in ("codex", ORG_LOCK_COMPONENT)]
 
 
@@ -313,6 +335,7 @@ other_components = [c for c in components if c.get("component") not in ("codex",
 def sync_tree(source_root: Path, dest_root: Path, canonical_paths: list, prior: dict, dry_run: bool) -> dict:
     added, updated, unchanged, preserved, retired, orphaned_project = [], [], [], [], [], []
     mode_repaired = []
+    adoption_holds = []
     new_entries = []
 
     for relpath in canonical_paths:
@@ -323,7 +346,7 @@ def sync_tree(source_root: Path, dest_root: Path, canonical_paths: list, prior: 
         target_mode = desired_mode(source)
 
         prior_entry = prior.get(relpath)
-        prior_ownership = prior_entry.get("ownership") if prior_entry else "framework"
+        prior_ownership = prior_entry.get("ownership") if prior_entry else None
 
         if not target.exists():
             if not dry_run:
@@ -334,14 +357,32 @@ def sync_tree(source_root: Path, dest_root: Path, canonical_paths: list, prior: 
             new_entries.append({"path": relpath, "ownership": "framework", "checksum": source_sum})
             continue
 
-        effective_ownership = "project" if (has_project_owner_frontmatter(target) or prior_ownership == "project") else "framework"
+        target_sum = sha256_bytes(target.read_bytes())
+        # A new roster entry is not authority to replace an existing project file.
+        # Identical unrecorded copies can be adopted; differing bytes require an
+        # explicit ownership decision. Keep the hold across subsequent updates.
+        project_frontmatter = has_project_owner_frontmatter(target)
+        unrecorded_conflict = (prior_entry is None and target_sum != source_sum
+                               and not project_frontmatter)
+        hold_reason = ((prior_entry or {}).get("holdReason")
+                       if prior_ownership == "project" else None)
+        if unrecorded_conflict:
+            hold_reason = "unrecorded destination differs from framework source"
+        effective_ownership = "project" if (
+            project_frontmatter or prior_ownership == "project"
+            or unrecorded_conflict
+        ) else "framework"
 
         if effective_ownership == "project":
             preserved.append(relpath)
-            new_entries.append({"path": relpath, "ownership": "project", "checksum": sha256_bytes(target.read_bytes())})
+            entry = {"path": relpath, "ownership": "project", "checksum": target_sum}
+            if hold_reason:
+                entry["holdReason"] = hold_reason
+                adoption_holds.append(relpath)
+            new_entries.append(entry)
             continue
 
-        target_sum = sha256_bytes(target.read_bytes())
+
         content_changed = target_sum != source_sum
         mode_changed = stat.S_IMODE(target.lstat().st_mode) != target_mode
 
@@ -376,6 +417,7 @@ def sync_tree(source_root: Path, dest_root: Path, canonical_paths: list, prior: 
         "added": added, "updated": updated, "unchanged": unchanged,
         "preserved": preserved, "retired": retired, "orphaned_project": orphaned_project,
         "mode_repaired": mode_repaired,
+        "adoption_holds": adoption_holds,
         "new_files_entries": new_entries,
     }
 
@@ -388,6 +430,7 @@ preserved = base_sync["preserved"]
 retired = base_sync["retired"]
 orphaned_project = base_sync["orphaned_project"]
 mode_repaired = base_sync["mode_repaired"]
+adoption_holds = base_sync["adoption_holds"]
 new_files_entries = base_sync["new_files_entries"]
 
 org_sync = None
@@ -580,6 +623,7 @@ section("Added (missing framework files installed)", added)
 section("Mode repaired (content matched, executable bit corrected)", mode_repaired)
 print(f"Unchanged (already matched source, content and mode): {len(unchanged)}")
 section("Preserved (ownership: project -- left untouched)", preserved)
+section("Adoption held (unrecorded conflicting files preserved; ownership decision required)", adoption_holds)
 section("Retired (removed; no longer part of the framework roster)", retired)
 section("Orphaned project files (path left the roster, ownership: project -- left in place, review manually)", orphaned_project)
 print(f"Skill symlink (.claude/skills/codex-copilot): {symlink_status}")
@@ -596,6 +640,7 @@ if org_sync is not None:
     section("Org plugin -- Mode repaired (content matched, executable bit corrected)", org_sync["mode_repaired"])
     print(f"Org plugin -- Unchanged (already matched source, content and mode): {len(org_sync['unchanged'])}")
     section("Org plugin -- Preserved (ownership: project -- left untouched)", org_sync["preserved"])
+    section("Org plugin -- Adoption held (ownership decision required)", org_sync["adoption_holds"])
     section("Org plugin -- Retired (removed; no longer part of the org plugin roster)", org_sync["retired"])
     section("Org plugin -- Orphaned project files", org_sync["orphaned_project"])
     print(f"Org plugin skill symlink (.claude/skills/{org_plugin_name}): {org_symlink_status}")
@@ -608,6 +653,11 @@ if org_sync is not None:
     )
 print()
 changed = bool(updated or added or retired or mode_repaired or symlink_status not in ("unchanged",)) or org_changed
+if adoption_holds or (org_sync and org_sync["adoption_holds"]):
+    print("Result: adoption incomplete; conflicting files held for project-owner review"
+          + (" (dry-run, nothing written)" if dry_run else "; other eligible updates applied"))
+    print("Resolve each held path explicitly; project-owned files remain protected on later updates.")
+    sys.exit(2)
 if dry_run:
     print("Result: changes previewed (dry-run, nothing written)" if changed else "Result: no changes needed (dry-run)")
 else:

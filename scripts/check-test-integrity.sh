@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 # Fail closed for changed grading files unless an exact reviewed receipt is supplied.
 # Validates receipt freshness/completeness, not user authority or QA approval.
+# A receipt with changeBasis "owner-requested-obsolete-check" records the old/new
+# expectation, rationale and exact changed files and needs no negative control; any
+# other receipt (changeBasis "defect-detection" or absent) must carry one.
 # Usage: check-test-integrity.sh [base-ref] [--test-change-receipt receipt.json]
 set -euo pipefail
 exec python3 - "$@" <<'PY'
@@ -41,6 +44,25 @@ def local_file(root, name):
     if not path.resolve().is_relative_to(root) or path.is_symlink():
         fail("receipt path escapes repository or names a symlink")
     return path
+
+
+BASES = {"owner-requested-obsolete-check", "defect-detection"}
+OWNER_BASIS = "owner-requested-obsolete-check"
+
+
+def check_negative_control(root, control):
+    if not isinstance(control, dict):
+        fail("receipt missing negative control")
+    command = control.get("command")
+    if not isinstance(command, list) or not command or any(not text(a) for a in command):
+        fail("negative control must name a failable command argument array")
+    if type(control.get("exitCode")) is not int or control["exitCode"] <= 0:
+        fail("negative control must record rejection of the targeted broken behavior")
+    if not text(control.get("rejectedBehavior")):
+        fail("negative control must explain the rejected behavior")
+    artifact = local_file(root, control.get("path"))
+    if not artifact.is_file() or not artifact.stat().st_size or control.get("sha256") != digest(artifact.read_bytes()):
+        fail("negative-control artifact is missing, empty or stale")
 
 
 parser = argparse.ArgumentParser(description="Review exact test changes, never grant QA approval")
@@ -99,19 +121,16 @@ try:
              for extra in ([], ["--cached"])]
     if receipt.get("diffSha256") != digest(json.dumps(diffs, separators=(",", ":")).encode()):
         fail("receipt exact test diff is stale")
+    basis = receipt.get("changeBasis")
+    if basis is not None and basis not in BASES:
+        fail("receipt changeBasis must be one of: " + ", ".join(sorted(BASES)))
     control = receipt.get("negativeControl")
-    if not isinstance(control, dict):
-        fail("receipt missing negative control")
-    command = control.get("command")
-    if not isinstance(command, list) or not command or any(not text(a) for a in command):
-        fail("negative control must name a failable command argument array")
-    if type(control.get("exitCode")) is not int or control["exitCode"] <= 0:
-        fail("negative control must record rejection of the targeted broken behavior")
-    if not text(control.get("rejectedBehavior")):
-        fail("negative control must explain the rejected behavior")
-    artifact = local_file(root, control.get("path"))
-    if not artifact.is_file() or not artifact.stat().st_size or control.get("sha256") != digest(artifact.read_bytes()):
-        fail("negative-control artifact is missing, empty or stale")
+    if basis == OWNER_BASIS and control is None:
+        pass  # An owner-requested obsolete check records the change; it detects no defect.
+    else:
+        if control is None:
+            fail("receipt missing negative control")
+        check_negative_control(root, control)
 except (OSError, ValueError, TypeError, KeyError) as exc:
     fail("invalid or unreadable receipt: " + str(exc))
 

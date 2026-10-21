@@ -93,8 +93,8 @@ For three or more related `tc` operations, prefer a single `python3` block using
 
 Formal multi-phase initiatives live in `docs/40-initiatives/NN-slug/`.
 
-- each initiative includes `README.md`, `phases/`, `decisions/`, and `retrospectives/`
-- initiative Markdown stores durable goals, phase design, decisions, validation evidence, and outcomes
+- each initiative starts with one maintained `README.md`; create supporting files only when current work needs them
+- consolidate a completed body into its README: outcome, decisions, failures/corrections, scoped lessons and unfinished obligations; retain required original evidence separately
 - `tc` remains authoritative for live tasks, dependencies, assignments, work products, and QA status
 - link initiative documents to their `tc` PRD/tasks instead of maintaining a second task board
 - add every initiative to `docs/40-initiatives/README.md`
@@ -193,6 +193,8 @@ When an explanation conflicts with a measurement, follow the measurement and nar
 2. State what every diagnostic exercised, including the selected key, config, binary, branch, interpreter, and working directory when relevant.
 3. Count failures through one shared dependency as one observation unless that dependency is varied.
 4. After two hypotheses are falsified, stop hypothesizing. Read the code that enforces the behavior and cite `file:line`.
+5. `tc execution` stops attempts that add no passing criterion or new evidence; report the unmet criterion and the suspect assumption instead of retrying.
+6. A request for the owner's input, from a design-flow checkpoint or a `tc` refusal, carries one line `DECISION NEEDED: <concrete decision>`. Only money beyond the project budget also needs a verbatim owner quote.
 
 ## Working Style
 
@@ -211,13 +213,16 @@ never collateral in a fix.
   defect until investigation establishes a different authoritative contract.
 - Add required missing behavior coverage in proportion to risk; an edited source
   file alone does not require a new test. Existing assertions are not collateral.
-- An obsolete-contract migration requires explicit user authority for the test
-  changes, old/new expectations and rationale, exact changed assertions/diff, and a
-  negative control that still rejects the targeted broken behavior. If authority or
-  the intended behavior is undecided, report the disagreement and stop that edit.
+- A behavior change the owner requested is the authority to update checks it makes
+  obsolete: update them, record old/new expectations, rationale and exact changed
+  files in the work product, and report it without asking. Ask only when the change
+  was not requested, or when a failing check reveals a real defect, which is fixed
+  in the product, never by weakening, skipping or deleting the check.
 - Report changed tests explicitly. `scripts/check-test-integrity.sh [base-ref]`
   rejects test changes by default; `--test-change-receipt <file>` permits only the
-  exact reviewed change with its authority, contract and negative-control record.
+  exact reviewed change with its authority and old/new contract. A receipt with
+  `changeBasis` `owner-requested-obsolete-check` needs no negative control; any other
+  receipt (`defect-detection` or unlabeled) still needs one.
   Receipt validation is not proof of authorization or test quality: QA reviews
   those claims and retains tc source-bound approval. Never reset the comparison
   base or use an integrity receipt to bypass required behavior coverage.
@@ -241,3 +246,16 @@ Before substantial work, read the relevant skill:
 - `plugins/codex-copilot/skills/protocol-router/SKILL.md`
 - `plugins/codex-copilot/skills/task-copilot/SKILL.md`
 - `plugins/codex-copilot/skills/specialist-agents/SKILL.md`
+
+## Work Lifecycle
+
+Apply `plugins/codex-copilot/skills/cleanup/references/work-lifecycle.md` for all
+work, including direct specialist and noncoding work. Use `$cleanup` for explicit
+consolidation and cleanup. Keep small checkpoints in the existing record; do not
+create routine handoff trees, retrospective scaffolding or duplicate memories.
+Before freezing substantial QA-required work, register observable lifecycle
+acceptance alongside delivery criteria; task-bound QA verifies the actual record,
+lesson application and artifact disposition. Exact destructive approval and
+verified recovery remain required. Instruction delivery is not a runtime hook.
+
+At start/resume (including a new PRD or initiative) and finish/merge/pause/handoff, proactively inspect relevant worktrees and surface eligible cleanup with exact paths, recovery and dependency checks, then visibly request deletion approval; do not wait for a cleanup command. Merge alone is insufficient. Record owned holds and pending approval in the existing task, continue unrelated work, and reuse unchanged prior approval after drift checks.

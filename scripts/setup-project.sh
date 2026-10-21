@@ -446,6 +446,51 @@ with open(path, "w", encoding="utf-8") as f:
 PY
 fi
 
+
+# Fresh setup has no copilot.lock.json yet. Record only the files this invocation
+# actually copied so the first update can distinguish repairable installed drift
+# from a genuinely unrecorded destination claimed by a later framework release.
+if [[ "${EXISTING_INSTALL}" -eq 0 ]]; then
+  python3 - "${INSTALL_METADATA_PATH}" "${PROJECT_PATH}" "${FRAMEWORK_ROOT}" "${ORG_PLUGIN_SOURCE}" "${ORG_PLUGIN_NAME}" <<'PYSETUP'
+import hashlib
+import json
+from pathlib import Path
+import sys
+
+metadata_path, project, framework = map(Path, sys.argv[1:4])
+org_source, org_name = sys.argv[4:6]
+data = json.loads(metadata_path.read_text(encoding="utf-8"))
+
+
+def installed_entry(source, target, relative):
+    payload = source.read_bytes()
+    if not target.is_file() or target.read_bytes() != payload:
+        raise SystemExit(f"Installed-file receipt mismatch; setup incomplete: {target}")
+    return {"path": relative, "ownership": "framework",
+            "checksum": "sha256:" + hashlib.sha256(payload).hexdigest()}
+
+
+files = []
+for source in sorted((framework / "plugins/codex-copilot").rglob("*")):
+    if source.is_file():
+        relative = source.relative_to(framework).as_posix()
+        files.append(installed_entry(source, project / relative, relative))
+relative = "scripts/copilot-gate.sh"
+files.append(installed_entry(framework / relative, project / relative, relative))
+rosters = {"codex": files}
+if org_source:
+    source_root = Path(org_source)
+    org_files = []
+    for source in sorted(source_root.rglob("*")):
+        if source.is_file():
+            relative = source.relative_to(source_root).as_posix()
+            org_files.append(installed_entry(source, project / "plugins" / org_name / relative, relative))
+    rosters["codex-org"] = org_files
+data["installedFiles"] = rosters
+metadata_path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+PYSETUP
+fi
+
 render_project_template() {
   local source_path="$1"
   local output_path="$2"
