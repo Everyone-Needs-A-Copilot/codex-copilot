@@ -9,7 +9,7 @@
     "frameworkVersion": "5.25.1",
     "baselineManifest": "parity/claude-baseline.json",
     "capturedDate": "2026-10-22",
-    "adoptionNote": "Adopted Claude 5.25.1 / cc 2.15.1 / tc 2.7.1. Ported the exact-rule taste step (find's reason verbatim, no trace when skipped, command shown before asking, env-var invocation only) to uids and the cco and cw pack skills; the six taste readers name 08-taste/TASTE.md. Hashed at the 5.25.1 fix commit 67b349e on the claude-copilot branch fix/taste-p2-qa-defects; the signed tag v5.25.1 is pending at adoption."
+    "adoptionNote": "Adopted Claude 5.25.1 / cc 2.15.1 / tc 2.7.1. Ported the exact-rule taste step (find's reason verbatim, no trace when skipped, command shown before asking, env-var invocation only) to uids and the cco and cw pack skills; the six taste readers name 08-taste/TASTE.md. Hashed at signed tag v5.25.1 (fc0778f)."
   },
   "components": {
     "cc": {

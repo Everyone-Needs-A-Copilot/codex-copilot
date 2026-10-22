@@ -2,7 +2,7 @@
 
 ## [0.11.1] - 2026-10-22
 
-- Adopt Claude 5.25.1 (cc 2.15.1, tc 2.7.1), see `parity/2026-10-22-upstream-5.25.1-adoption.md`; the Claude tag is pending at adoption.
+- Adopt Claude 5.25.1 (cc 2.15.1, tc 2.7.1), see `parity/2026-10-22-upstream-5.25.1-adoption.md`; hashed at the signed tag `v5.25.1` (fc0778f).
 - Fixes four defects found by live-session QA in the taste step of `uids` and both copies of `cco` and `cw`: the `Taste:` line carries `find`'s `reason` field verbatim or `find-failed: <exit code>`, never a paraphrase (the placeholder `<reason from find, or its failure>` is gone); a skipped step leaves no `Taste:` line, no offer and no note in the reply, work product or any file (was reply-only silence); the offer displays the exact `ref add|reject` command with the owner's words, then asks, as one instruction (Codex `uids` skipped showing it); the script is invoked only as `"$CC_PERSONAL_KNOWLEDGE_REPO/scripts/taste"` after `eval "$(cc env)"`, never a literal path.
 
 ### Tests

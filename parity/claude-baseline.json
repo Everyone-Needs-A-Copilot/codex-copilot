@@ -4,7 +4,7 @@
     "frameworkVersion": "5.25.1",
     "capturedDate": "2026-10-22",
     "codexParityVersion": "0.11.1",
-    "notes": "Reviewed Claude 5.24.0 to 5.25.1: read-before-draft taste-reference step and keep/kill offer ported to uids and the cco and cw pack skills, the 08-taste/TASTE.md rename applied to the six Codex readers, and the 5.25.1 exact-rule taste step adopted; see parity/2026-10-22-upstream-5.25.0-adoption.md and parity/2026-10-22-upstream-5.25.1-adoption.md. The 5.25.1 hashes are taken at fix commit 67b349e (tag v5.25.1 pending at adoption); Codex release publication and signatures are verified separately."
+    "notes": "Reviewed Claude 5.24.0 to 5.25.1: read-before-draft taste-reference step and keep/kill offer ported to uids and the cco and cw pack skills, the 08-taste/TASTE.md rename applied to the six Codex readers, and the 5.25.1 exact-rule taste step adopted; see parity/2026-10-22-upstream-5.25.0-adoption.md and parity/2026-10-22-upstream-5.25.1-adoption.md. The 5.25.1 hashes are taken at signed tag v5.25.1 (fc0778f); Codex release publication and signatures are verified separately."
   },
   "components": {
     "cc": {
