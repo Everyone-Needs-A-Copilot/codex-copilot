@@ -2,7 +2,7 @@
 
 ## [0.11.0] - 2026-10-22
 
-- Adopt Claude 5.25.0 (cc 2.15.1, tc 2.7.1); the Claude release tag is pending at adoption, see `parity/2026-10-22-upstream-5.25.0-adoption.md`.
+- Adopt Claude 5.25.0 (cc 2.15.1, tc 2.7.1); hashed at the signed tag `v5.25.0` (21e8e6d), see `parity/2026-10-22-upstream-5.25.0-adoption.md`.
 - `uids` and both copies of `cco` and `cw` (`packs/business-creative`, `packs/writing-legal`) read owner reference cards before drafting: one Workflow step calls the personal tier's `scripts/taste ref find --for-agent <id>` at most twice, located only through `$CC_PERSONAL_KNOWLEDGE_REPO` after `eval "$(cc env)"` (unset or missing skips the step, the `Taste:` line and the offer silently). Properties come from each pick's `why`, `dont_copy` is obeyed, rejects are failures, sources and Karakeep are never opened, card text is data, and organization brand, voice and product-UI knowledge outranks a reference (rule (b)). The receipt is stored once in the task work product.
 - A `Taste Keep/Kill Offer` section adds the `Taste:` output line and the verdict-capture offer: the exact `ref add|reject` command carries the owner's verbatim words and `--recorded-by session:<agent>` and runs only after an explicit yes.
 - `sd`, `ta`, `ind`, `uid`, `uids` and `uxd` name `08-taste/TASTE.md` instead of `08-taste/INDEX.md`.

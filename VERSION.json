@@ -9,7 +9,7 @@
     "frameworkVersion": "5.25.0",
     "baselineManifest": "parity/claude-baseline.json",
     "capturedDate": "2026-10-22",
-    "adoptionNote": "Adopted Claude 5.25.0 / cc 2.15.1 / tc 2.7.1. Ported the read-before-draft taste-reference step and keep/kill offer to uids and the cco and cw pack skills; the six taste readers now name 08-taste/TASTE.md. Claude release tag pending at adoption."
+    "adoptionNote": "Adopted Claude 5.25.0 / cc 2.15.1 / tc 2.7.1. Ported the read-before-draft taste-reference step and keep/kill offer to uids and the cco and cw pack skills; the six taste readers now name 08-taste/TASTE.md. Hashed at signed tag v5.25.0 (21e8e6d)."
   },
   "components": {
     "cc": {
