@@ -32,7 +32,8 @@ CLI = '"$CC_PERSONAL_KNOWLEDGE_REPO/scripts/taste"'
 BEHAVIOURS = (
     ("hydrates env", 'run `eval "$(cc env)"`'),
     ("locates only via the env var", CLI),
-    ("silent skip", "is unset or missing, skip this step, the `Taste:` line and the keep/kill offer silently"),
+    ("silent skip leaves no trace", "is unset or missing, skip this step and leave no trace: no `Taste:` line, no keep/kill offer, no note in the reply, work product or any file"),
+    ("only the quoted env-var form", "run it at most twice, only as that quoted form, never a literal path"),
     ("at most two calls", "run it at most twice"),
     ("find", "ref find"),
     ("for-agent", "--for-agent"),
@@ -49,8 +50,9 @@ BEHAVIOURS = (
     ("critique", "Critique the draft against picks and rejects"),
     ("receipt once", "Store the receipt"),
     ("never block", "Never block on `find`"),
-    ("Taste line", "Taste: <id8> (<property>), ... | none fit | none (<reason from find, or its failure>)"),
+    ("Taste line carries find's reason verbatim", "| none fit | none (<reason field of find --json, verbatim; never paraphrased>) | none (find-failed: <exit code>)` (omit if the Taste step was skipped; none fit only when reason is absent)."),
     ("draft in a file", "keep each draft the owner may judge in a file and name its path"),
+    ("show the exact command, then ask", "display this exact command with his exact words, then ask; run it only after an explicit yes: `"),
     ("explicit yes", "only after an explicit yes"),
     ("verbatim words", '--why "<his exact words>"'),
     ("lost-to", "--lost-to <winner id>"),
@@ -72,7 +74,39 @@ def check_reader(text: str) -> None:
     assert "08-taste/INDEX.md" not in text
 
 
+LEGACY_PLACEHOLDER = "<reason from find, or its failure>"
+ABSOLUTE_TASTE_PATH = re.compile(r"(?:/Volumes|/Users|/home|~)/[^\s`]*taste")
+NO_TRACE = "skip this step and leave no trace: no `Taste:` line, no keep/kill offer, no note in the reply, work product or any file"
+SHOW_THEN_ASK = "display this exact command with his exact words, then ask; run it only after an explicit yes: `"
+
+
+def check_defect_rules(rel: str, text: str) -> None:
+    """D1-D4 of the live-session QA, pinned on the specific lines rather than anywhere in the file."""
+    lines = text.splitlines()
+    step = [line for line in lines if re.match(r"\d+\. Taste: run `eval", line)]
+    taste = [line for line in lines if line.startswith("Report one line: `Taste: <id8>")]
+    offer = [line for line in lines if line.startswith("Keep/kill (if the Taste step ran)")]
+    assert (len(step), len(taste), len(offer)) == (1, 1, 1), f"{rel}: one step, one Taste line, one offer"
+    step, taste, offer = step[0], taste[0], offer[0]
+    # D1: the reason is find's own, never a paraphrase and never the loose placeholder.
+    assert LEGACY_PLACEHOLDER not in text, f"{rel}: loose placeholder reinstated"
+    assert "none (<reason field of find --json, verbatim; never paraphrased>)" in taste
+    assert "none (find-failed: <exit code>)" in taste
+    # D2: the skip leaves no trace in any output, stated on the step itself.
+    assert NO_TRACE in step
+    assert "silently" not in step, f"{rel}: the old reply-only silence wording is back"
+    # D3: show the exact command, then ask, one clause, before the command and the yes gate.
+    assert SHOW_THEN_ASK in offer and CLI in offer, f"{rel}: the offer shows no command through the variable"
+    assert offer.index(SHOW_THEN_ASK) < offer.index(CLI)
+    # D4: the script is only ever invoked through the environment variable.
+    assert "only as that quoted form, never a literal path" in step
+    assert ABSOLUTE_TASTE_PATH.search(text) is None, f"{rel}: a literal taste path is carried"
+    for m in re.finditer(r"scripts/taste", text):
+        assert text[: m.start()].endswith("$CC_PERSONAL_KNOWLEDGE_REPO/"), f"{rel}: scripts/taste not reached through the variable"
+
+
 def check_consumer(rel: str, text: str) -> None:
+    check_defect_rules(rel, text)
     agent, domains = CONSUMERS[rel]
     for label, needle in BEHAVIOURS:
         assert needle in text, f"{rel}: missing {label}: {needle}"
@@ -151,6 +185,35 @@ class ConsumerContractTest(unittest.TestCase):
                         check_consumer(rel, text.replace(needle, ""))
 
 
+DEFECT_MUTANTS = (
+    ("D1 placeholder reinstated", lambda t: t.replace("none (<reason field of find --json, verbatim; never paraphrased>) | none (find-failed: <exit code>)", "none (<reason from find, or its failure>)")),
+    ("D1 find-failed branch removed", lambda t: t.replace(" | none (find-failed: <exit code>)", "")),
+    ("D1 paraphrase allowed", lambda t: t.replace("verbatim; never paraphrased", "summarised")),
+    ("D2 silence clause removed", lambda t: t.replace(NO_TRACE, "skip this step")),
+    ("D2 reply-only silence restored", lambda t: t.replace(NO_TRACE, "skip this step, the `Taste:` line and the keep/kill offer silently")),
+    ("D2 work product note allowed", lambda t: t.replace("no note in the reply, work product or any file", "no note in the reply")),
+    ("D3 display clause removed", lambda t: t.replace(SHOW_THEN_ASK, "show and, only after an explicit yes, run `")),
+    ("D3 ask before display", lambda t: t.replace("display this exact command with his exact words, then ask;", "ask;")),
+    ("D3 yes gate removed", lambda t: t.replace("run it only after an explicit yes: `", "run `")),
+    ("D4 literal path inserted in the offer", lambda t: t.replace(SHOW_THEN_ASK + CLI, SHOW_THEN_ASK + "/Volumes/Dev/Sites/CSE/knowledge-copilot-private/scripts/taste")),
+    ("D4 literal path inserted in the find call", lambda t: t.replace("run it at most twice, only as that quoted form, never a literal path: `ref find", "run it at most twice: `~/knowledge/scripts/taste ref find")),
+    ("D4 bare relative path", lambda t: t.replace("`ref find ", "`scripts/taste ref find ", 1)),
+    ("D4 literal-path prohibition removed", lambda t: t.replace(", only as that quoted form, never a literal path", "")),
+)
+
+
+class DefectRuleMutantTest(unittest.TestCase):
+    def test_each_defect_rule_is_killed_by_its_mutant(self):
+        for rel in CONSUMERS:
+            text = skill(rel)
+            for label, mutate in DEFECT_MUTANTS:
+                with self.subTest(rel=rel, mutant=label):
+                    mutant = mutate(text)
+                    self.assertNotEqual(mutant, text, "the mutation must apply")
+                    with self.assertRaises(AssertionError):
+                        check_consumer(rel, mutant)
+
+
 def personal_cli() -> Path | None:
     root = os.environ.get("CC_PERSONAL_KNOWLEDGE_REPO")
     cli = Path(root) / "scripts" / "taste" if root else None
@@ -184,6 +247,7 @@ class RealCliTest(unittest.TestCase):
                 self.assertEqual(receipt["include_rejects"], 2)
                 self.assertIsNone(receipt["lens"])
                 self.assertEqual(receipt["selected"], [])
+                self.assertNotIn("reason", receipt, "an empty corpus has no reason field, which is what `none fit` means")
                 for field in ("query", "domain", "corpus_revision", "excluded", "loaded_characters", "selected", "rejects"):
                     self.assertIn(field, receipt)
 

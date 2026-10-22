@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.11.1] - 2026-10-22
+
+- Adopt Claude 5.25.1 (cc 2.15.1, tc 2.7.1), see `parity/2026-10-22-upstream-5.25.1-adoption.md`; the Claude tag is pending at adoption.
+- Fixes four defects found by live-session QA in the taste step of `uids` and both copies of `cco` and `cw`: the `Taste:` line carries `find`'s `reason` field verbatim or `find-failed: <exit code>`, never a paraphrase (the placeholder `<reason from find, or its failure>` is gone); a skipped step leaves no `Taste:` line, no offer and no note in the reply, work product or any file (was reply-only silence); the offer displays the exact `ref add|reject` command with the owner's words, then asks, as one instruction (Codex `uids` skipped showing it); the script is invoked only as `"$CC_PERSONAL_KNOWLEDGE_REPO/scripts/taste"` after `eval "$(cc env)"`, never a literal path.
+
+### Tests
+
+- `tests/test_taste_consumers.py` pins the four rules on their specific lines with thirteen mutants per consumer skill (placeholder reinstated, find-failed branch removed, silence clause removed or narrowed to the reply, display clause or yes gate removed, literal absolute, home and relative paths inserted, prohibition removed), and the integration case asserts an empty corpus has no `reason` field. Obsolete expectations updated: the "silent skip" needle `is unset or missing, skip this step, the `Taste:` line and the keep/kill offer silently` became the no-trace clause (the old wording left work products and files unaddressed); the "Taste line" needle `none (<reason from find, or its failure>)` became the exact-rule line (the old placeholder allowed paraphrase). No assertion deleted or weakened.
+
 ## [0.11.0] - 2026-10-22
 
 - Adopt Claude 5.25.0 (cc 2.15.1, tc 2.7.1); hashed at the signed tag `v5.25.0` (21e8e6d), see `parity/2026-10-22-upstream-5.25.0-adoption.md`.
