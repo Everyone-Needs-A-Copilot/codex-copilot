@@ -1,15 +1,15 @@
 {
   "name": "codex-copilot",
-  "version": "0.10.4",
-  "releaseDate": "2026-10-21",
+  "version": "0.11.0",
+  "releaseDate": "2026-10-22",
   "codename": "work-lifecycle",
   "status": "stable",
   "mirrors": {
     "project": "claude-copilot",
-    "frameworkVersion": "5.24.0",
+    "frameworkVersion": "5.25.0",
     "baselineManifest": "parity/claude-baseline.json",
-    "capturedDate": "2026-10-21",
-    "adoptionNote": "Adopted Claude 5.24.0 / cc 2.15.1 / tc 2.7.1. Ported optional first-setup identity capture to the Codex setup skill; updated project instruction template and reviewed dependency/release maintenance."
+    "capturedDate": "2026-10-22",
+    "adoptionNote": "Adopted Claude 5.25.0 / cc 2.15.1 / tc 2.7.1. Ported the read-before-draft taste-reference step and keep/kill offer to uids and the cco and cw pack skills; the six taste readers now name 08-taste/TASTE.md. Claude release tag pending at adoption."
   },
   "components": {
     "cc": {

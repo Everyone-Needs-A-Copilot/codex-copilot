@@ -1,21 +1,21 @@
 {
   "files": {
-    ".claude/agents/cco.md": "b4c89dcb099d9fee703839625db80c88c5d457fcea05a31f9cfb9c303f774f64",
+    ".claude/agents/cco.md": "1a52b043f93d33aedc89e3ad4db9089baf3ce1b3069a810a51273b8e072f5c09",
     ".claude/agents/cpa.md": "936e066ee64ae19bdf1240b26357a2a706e5795c620bce9265d50792f76c8ee2",
     ".claude/agents/cs.md": "15e7f279eccd13714bc0aa91483527c3c95fa08fbf95b9242531d5ebe8099d3b",
-    ".claude/agents/cw.md": "f3595ce25b63bb8851607fc27607718dd115e6e3346c29d017d06b5b77087b4e",
+    ".claude/agents/cw.md": "cb1fd0bc5907b6a76134a522128d3ce22d7ba99a28616289bbafb1494929708f",
     ".claude/agents/do.md": "5b61c835d13fa7f2bd696ff0231d682810698443ba0013c84f5ee35c56f58713",
     ".claude/agents/doc.md": "b93cb8dec50a203dba2eddc6bd5b6ea4792f99f5328915ab262c9d4f6238bfc8",
-    ".claude/agents/ind.md": "fd42b102882f6ebdb12eb1c3b7b5020db61d6e8533b869f14f324e5144ec84e1",
+    ".claude/agents/ind.md": "41fb474045bcbd653df49131363ff78d450d5fc53a7de0f36d19de0fb0ee77a6",
     ".claude/agents/kc.md": "7ceec89ba5d576cea41d2ced605a3fcfadca201a8c8cd8e71fef04373bca20eb",
     ".claude/agents/me.md": "b5b4d2843c675383c7e0126609838bc21d1015b1391cf7ebfadef21cbede40d2",
     ".claude/agents/qa.md": "ef5619ede107a113c404a1cde94a35f6669052f69c98aef236b416af2a67aaf4",
-    ".claude/agents/sd.md": "f756a7c0ca2bd8a9ca56d74c71b933fda8f9674f6a3ae21a46b24203316c036d",
+    ".claude/agents/sd.md": "b3601b95ee810f18e592d0f484da8fc77490d732107659cbabd16894a6882eb5",
     ".claude/agents/sec.md": "af1491a8d69b3527dc340f85ba01743072f2e4f4faeed18d9c28bcaa5be85cdf",
-    ".claude/agents/ta.md": "99a186e123071b6f334c79e4bf4b53e906de181984692fa88e4fbf2995886f9a",
+    ".claude/agents/ta.md": "260b47960179d1db2ab5ffe0e0f61bcd5aa686b235fd8dc4ed5a7a052133fa95",
     ".claude/agents/uid.md": "dfd3531440e5e84996302c7d07d7ce8f058e6f4ac568ea0c035e1e0a462e409b",
-    ".claude/agents/uids.md": "aa71036b37c0be94e16803a424669dd940b1da7318efa879e6784c1a80eb4f26",
-    ".claude/agents/uxd.md": "c34c4a80d493c0a0ca49a2d94de55b70ba2e6acf88fc2dca0282cab68ae7e576",
+    ".claude/agents/uids.md": "faff5bedc0c9a1ad27b5a53e9a57680e900468145b65eedd4f0767cdc86d563f",
+    ".claude/agents/uxd.md": "ca57694886004d5f16979ea893527188a126edcc0407290ee24cecca35767064",
     ".claude/commands/cleanup.md": "396604c2e0bc57fffa8ef3fca9e91f6eb235e471c960c617b6dccd75827dceef",
     ".claude/commands/config.md": "e43f7a6108546018a80c0e6dff6efb3b9e1ab283d6051ead2f4ac9445830ce4a",
     ".claude/commands/continue.md": "8f46333a585b6281c949f9576c76514a560bc97c97dc58ed6c7e1a354617cb94",
@@ -73,11 +73,11 @@
     ".claude/skills/testing/jest-patterns/SKILL.md": "c6ca37963cb1180a9ea2db5514e3a2e2e66a4f5cd461b46205da754ddd982baa",
     ".claude/skills/testing/pytest-patterns/SKILL.md": "85e10117406ae80d7ee77f25d1028cd6d6ab94f41f24d07164808752ee94e693"
   },
-  "generated_at": "2026-10-21T20:25:11.582702Z",
-  "upstream_commit": "de2fc824c92c4ce4a51d65a180fe690ffa5f6f50",
+  "generated_at": "2026-10-22T18:06:30.725425Z",
+  "upstream_commit": "21b85ff76e337d3584c78d1f95c043a6d4060815",
   "versions": {
-    "agents": "5.9.1",
+    "agents": "5.10.0",
     "commands": "5.8.0",
-    "framework": "5.24.0"
+    "framework": "5.25.0"
   }
 }
