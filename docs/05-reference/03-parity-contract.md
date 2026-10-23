@@ -5,7 +5,7 @@ Codex Copilot mirrors Claude Copilot capability intent, not Claude-only syntax.
 The current baseline is recorded in `parity/claude-baseline.json`:
 
 - Declared Claude Copilot framework source (candidate; publication pending): `5.27.3`
-- Required `cc`: `2.15.1`
+- Required `cc`: `2.15.2`
 - Required `tc`: `2.9.0`
 - Current Codex source version: `0.11.3` (release publication and signatures are verified separately)
 

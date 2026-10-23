@@ -4,11 +4,11 @@
     "frameworkVersion": "5.27.3",
     "capturedDate": "2026-10-23",
     "codexParityVersion": "0.11.3",
-    "notes": "Native UI persistence guard ported from signed Claude candidate3d7d002. Baseline must bind the actual merged release before publication. See parity/2026-10-23-upstream-5.27.3-adoption.md."
+    "notes": "Native UI persistence guard ported from signed Claude candidate127ccc75. Baseline must bind the actual merged release before publication. See parity/2026-10-23-upstream-5.27.3-adoption.md."
   },
   "components": {
     "cc": {
-      "version": "2.15.1",
+      "version": "2.15.2",
       "requiredCommands": [
         "cc memory",
         "cc memory check",

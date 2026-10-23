@@ -9,11 +9,11 @@
     "frameworkVersion": "5.27.3",
     "baselineManifest": "parity/claude-baseline.json",
     "capturedDate": "2026-10-23",
-    "adoptionNote": "Candidate adoption of Claude 5.27.3 / cc 2.15.1 / tc 2.9.0: enforce empty-output silence at UI specification/process-record persistence. See parity/2026-10-23-upstream-5.27.3-adoption.md; publication is pending."
+    "adoptionNote": "Candidate adoption of Claude 5.27.3 / cc 2.15.2 / tc 2.9.0: enforce empty-output silence at UI specification/process-record persistence. See parity/2026-10-23-upstream-5.27.3-adoption.md; publication is pending."
   },
   "components": {
     "cc": {
-      "requiredVersion": "2.15.1",
+      "requiredVersion": "2.15.2",
       "source": "Claude Copilot tools/cc",
       "provides": [
         "cc memory",
