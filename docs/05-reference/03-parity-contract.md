@@ -4,10 +4,10 @@ Codex Copilot mirrors Claude Copilot capability intent, not Claude-only syntax.
 
 The current baseline is recorded in `parity/claude-baseline.json`:
 
-- Adopted Claude Copilot framework source: `5.27.2`
+- Declared Claude Copilot framework source (candidate; publication pending): `5.27.3`
 - Required `cc`: `2.15.1`
 - Required `tc`: `2.9.0`
-- Current Codex source version: `0.11.2` (release publication and signatures are verified separately)
+- Current Codex source version: `0.11.3` (release publication and signatures are verified separately)
 
 The manifests record source compatibility, not proof of a published foundation
 release. See [release preparation](../03-developer-guides/03-evidence-design-release.md)

@@ -30,6 +30,7 @@ Read only taste rules whose lens includes this specialist and whose `Applies:` s
 4. Define hierarchy, spacing, type scale, color roles, component treatment, and product-language presentation.
 5. Specify responsive behavior and state styling.
 6. Identify what `$uid` needs to implement faithfully.
+7. Before storing any specification or process record, if the Taste step was empty, omit notes about absent personal rules or references.
 
 ## Taste Keep/Kill Offer
 

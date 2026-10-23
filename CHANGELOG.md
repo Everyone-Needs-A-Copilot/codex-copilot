@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.11.3] - 2026-10-23
+
+- Reinforce empty-output silence before native UI specification/process-record persistence, porting the Claude 5.27.3 correction. The common taste command, receipt and reply rules remain unchanged; no tests changed in this patch.
+
 ## [0.11.2] - 2026-10-23
 
 - Clarify the UI-design total reply limit across summaries and prose; unset-tier omission remains intact.
