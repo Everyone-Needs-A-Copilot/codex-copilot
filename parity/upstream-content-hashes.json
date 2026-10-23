@@ -14,7 +14,7 @@
     ".claude/agents/sec.md": "af1491a8d69b3527dc340f85ba01743072f2e4f4faeed18d9c28bcaa5be85cdf",
     ".claude/agents/ta.md": "67cc2d4e5700e2a49da84f6ad55fc67f828e554b82b97a428cf118c2ced36ed2",
     ".claude/agents/uid.md": "dfd3531440e5e84996302c7d07d7ce8f058e6f4ac568ea0c035e1e0a462e409b",
-    ".claude/agents/uids.md": "8ff81d1c51bff856c4eacc871cee1a3a03b568648225fc9ecc8bf200dc3cc242",
+    ".claude/agents/uids.md": "d6d20848ee4b66ece1485f78013dc1807ba827e7329c40b9a77820fbfc51c4ea",
     ".claude/agents/uxd.md": "ca57694886004d5f16979ea893527188a126edcc0407290ee24cecca35767064",
     ".claude/commands/cleanup.md": "396604c2e0bc57fffa8ef3fca9e91f6eb235e471c960c617b6dccd75827dceef",
     ".claude/commands/config.md": "e43f7a6108546018a80c0e6dff6efb3b9e1ab283d6051ead2f4ac9445830ce4a",
@@ -73,11 +73,11 @@
     ".claude/skills/testing/jest-patterns/SKILL.md": "c6ca37963cb1180a9ea2db5514e3a2e2e66a4f5cd461b46205da754ddd982baa",
     ".claude/skills/testing/pytest-patterns/SKILL.md": "85e10117406ae80d7ee77f25d1028cd6d6ab94f41f24d07164808752ee94e693"
   },
-  "generated_at": "2026-10-23T18:35:49.400383Z",
-  "upstream_commit": "840a3166fa69707165351e5adca11441a3dc2b33",
+  "generated_at": "2026-10-23T19:10:47.359719Z",
+  "upstream_commit": "b94b388c3229e6299b4fd2682cf25b5d4a573a23",
   "versions": {
-    "agents": "5.11.1",
+    "agents": "5.11.2",
     "commands": "5.8.1",
-    "framework": "5.27.1"
+    "framework": "5.27.2"
   }
 }

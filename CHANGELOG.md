@@ -4,7 +4,7 @@
 
 - Clarify the UI-design total reply limit across summaries and prose; unset-tier omission remains intact.
 - Correct the ported isolation detector: generic receipt capture in reflection is not reference consumption; consumer-specific markers and source-path checks remain enforced. The first candidate failure is retained.
-- Adopt Claude 5.27.1, cc 2.15.1 and tc 2.9.0. Taste consumers load the environment, guard and find in one shell; copy the returned taste_line; remain silent on empty output; and gate the offer on printed output.
+- Adopt Claude 5.27.2, cc 2.15.1 and tc 2.9.0. Taste consumers load the environment, guard and find in one shell; copy the returned taste_line; remain silent on empty output; and gate the offer on printed output.
 - Copywriter correction work products verify expanded draft text and link the first receipt owner without repeating receipt fields.
 - Port schemaVersion 3 external-source guidance to me, qa, ta and protocol. Catalog schema is unchanged because no catalog shape changed.
 - Update exact-text consumer assertions to the stronger contract, retain defect mutants and exercise the actual single-shell command.
