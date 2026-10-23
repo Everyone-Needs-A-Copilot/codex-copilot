@@ -33,6 +33,8 @@ Read only taste rules whose lens includes this specialist and whose `Applies:` s
 
 ## Taste Keep/Kill Offer
 
+Across the complete reply, including summaries and prose, emit at most one Taste line.
+
 Report one line: Taste: <the `taste_line` or find-failed line copied verbatim | <id8> (<property>), ... when picks were selected> (omit only when the Taste step printed nothing).
 
 Keep/kill (if the Taste step printed output): keep each draft the owner may judge in a file and name its path. When he keeps or kills one and says why, display this exact command with his exact words, then ask; run it only after an explicit yes: `"$CC_PERSONAL_KNOWLEDGE_REPO/scripts/taste" ref add|reject <path> --origin agent --agent uids --project <project> --domain <visual|illustration|motion> --why "<his exact words>" --recorded-by session:uids`; add `--lost-to <winner id>` (record the winner first) if he chose one draft over another, `--dont-copy` only from his words, `--applies personal` only if he says the reason holds beyond this project. If he edits the wording, write his. No reason: ask once, write nothing. Never paraphrase or infer a reason.

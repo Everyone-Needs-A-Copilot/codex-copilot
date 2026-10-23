@@ -73,7 +73,8 @@ BEHAVIOURS = (
     ("no reason", "No reason: ask once, write nothing"),
     ("no paraphrase", "Never paraphrase or infer a reason"),
 )
-STEP_MARKERS = ("ref find", "--for-agent", "scripts/taste", "Taste: <id8>", "Taste: <the", "Taste: before drafting", "taste_line", "dont_copy", "Karakeep", "CC_PERSONAL_KNOWLEDGE_REPO")
+# Generic scripts/taste receipt capture in reflect is not reference consumption.
+STEP_MARKERS = ("ref find", "--for-agent", "Taste: <id8>", "Taste: <the", "Taste: before drafting", "taste_line", "dont_copy", "Karakeep", "CC_PERSONAL_KNOWLEDGE_REPO")
 
 
 def skill(rel: str) -> str:
@@ -134,6 +135,8 @@ def check_consumer(rel: str, text: str) -> None:
     assert f"--recorded-by session:{agent}" in text
     assert text.count(f"--domain <{domains}>") == 2, "find and verdict commands carry the agent's own domains"
     assert text.count("ref find") == 1, "the step must appear once"
+    if agent == "uids":
+        assert "Across the complete reply, including summaries and prose, emit at most one Taste line." in text
     if agent == "cw":
         assert "Verify expanded draft text" in text
         assert "Correction WPs link the first receipt WP only; omit all receipt fields" in text
@@ -236,6 +239,12 @@ DEFECT_MUTANTS = (
 
 
 class DefectRuleMutantTest(unittest.TestCase):
+    def test_uids_total_reply_line_constraint_is_required(self):
+        for rel, (agent, _) in CONSUMERS.items():
+            if agent == "uids":
+                with self.subTest(rel=rel), self.assertRaises(AssertionError):
+                    check_consumer(rel, skill(rel).replace("Across the complete reply, including summaries and prose, emit at most one Taste line.", ""))
+
     def test_cw_recovery_does_not_repeat_receipt_fields(self):
         for rel, (agent, _) in CONSUMERS.items():
             if agent != "cw":
