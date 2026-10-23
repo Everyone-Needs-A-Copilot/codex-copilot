@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.2] - 2026-10-23
+
+- Adopt Claude 5.27.1, cc 2.15.1 and tc 2.9.0. Taste consumers load the environment, guard and find in one shell; copy the returned taste_line; remain silent on empty output; and gate the offer on printed output.
+- Copywriter correction work products verify expanded draft text and link the first receipt owner without repeating receipt fields.
+- Port schemaVersion 3 external-source guidance to me, qa, ta and protocol. Catalog schema is unchanged because no catalog shape changed.
+- Update exact-text consumer assertions to the stronger contract, retain defect mutants and exercise the actual single-shell command.
+
 ## [0.11.1] - 2026-10-22
 
 - Adopt Claude 5.25.1 (cc 2.15.1, tc 2.7.1), see `parity/2026-10-22-upstream-5.25.1-adoption.md`; hashed at the signed tag `v5.25.1` (fc0778f).

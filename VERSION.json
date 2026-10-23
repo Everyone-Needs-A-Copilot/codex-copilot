@@ -1,15 +1,15 @@
 {
   "name": "codex-copilot",
-  "version": "0.11.1",
-  "releaseDate": "2026-10-22",
+  "version": "0.11.2",
+  "releaseDate": "2026-10-23",
   "codename": "work-lifecycle",
   "status": "stable",
   "mirrors": {
     "project": "claude-copilot",
-    "frameworkVersion": "5.25.1",
+    "frameworkVersion": "5.27.1",
     "baselineManifest": "parity/claude-baseline.json",
-    "capturedDate": "2026-10-22",
-    "adoptionNote": "Adopted Claude 5.25.1 / cc 2.15.1 / tc 2.7.1. Ported the exact-rule taste step (find's reason verbatim, no trace when skipped, command shown before asking, env-var invocation only) to uids and the cco and cw pack skills; the six taste readers name 08-taste/TASTE.md. Hashed at signed tag v5.25.1 (fc0778f)."
+    "capturedDate": "2026-10-23",
+    "adoptionNote": "Adopted Claude 5.27.1 / cc 2.15.1 / tc 2.9.0. Native single-command taste selection, verbatim taste_line, silent empty output, link-only CW receipt correction, and schemaVersion 3 external-source guidance. See parity/2026-10-23-upstream-5.27.1-adoption.md."
   },
   "components": {
     "cc": {
@@ -33,7 +33,7 @@
       ]
     },
     "tc": {
-      "requiredVersion": "2.7.1",
+      "requiredVersion": "2.9.0",
       "source": "Claude Copilot tools/tc",
       "provides": [
         "tc prd",

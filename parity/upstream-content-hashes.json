@@ -1,20 +1,20 @@
 {
   "files": {
-    ".claude/agents/cco.md": "4fb5616ae5a9b74ace60140e691e1f815306f3ac4cb8b96ae0fc6d6d941c4abd",
+    ".claude/agents/cco.md": "6b4d90c7afda728cfb0c6632bc1a435ecf9f5e84f7fcbb0d75b2d531af2a434e",
     ".claude/agents/cpa.md": "936e066ee64ae19bdf1240b26357a2a706e5795c620bce9265d50792f76c8ee2",
     ".claude/agents/cs.md": "15e7f279eccd13714bc0aa91483527c3c95fa08fbf95b9242531d5ebe8099d3b",
-    ".claude/agents/cw.md": "df11205e986f504c40edad8da7c3c1719355d2fa21ed6c7ec71425a52a96685a",
+    ".claude/agents/cw.md": "896979cd66ad2628a938354e05d0320e76d1406bd5e68ca449ca6d82359024bc",
     ".claude/agents/do.md": "5b61c835d13fa7f2bd696ff0231d682810698443ba0013c84f5ee35c56f58713",
     ".claude/agents/doc.md": "b93cb8dec50a203dba2eddc6bd5b6ea4792f99f5328915ab262c9d4f6238bfc8",
     ".claude/agents/ind.md": "41fb474045bcbd653df49131363ff78d450d5fc53a7de0f36d19de0fb0ee77a6",
     ".claude/agents/kc.md": "7ceec89ba5d576cea41d2ced605a3fcfadca201a8c8cd8e71fef04373bca20eb",
-    ".claude/agents/me.md": "b5b4d2843c675383c7e0126609838bc21d1015b1391cf7ebfadef21cbede40d2",
-    ".claude/agents/qa.md": "ef5619ede107a113c404a1cde94a35f6669052f69c98aef236b416af2a67aaf4",
+    ".claude/agents/me.md": "1911e92b0ec5fc4608f7dd75f3f470ab1929de8dfc0a06585a31858b9dd11ab9",
+    ".claude/agents/qa.md": "d09017e7816973067a26713bfaad1d5fd63147c1d923106715422b55e9e960b0",
     ".claude/agents/sd.md": "b3601b95ee810f18e592d0f484da8fc77490d732107659cbabd16894a6882eb5",
     ".claude/agents/sec.md": "af1491a8d69b3527dc340f85ba01743072f2e4f4faeed18d9c28bcaa5be85cdf",
-    ".claude/agents/ta.md": "260b47960179d1db2ab5ffe0e0f61bcd5aa686b235fd8dc4ed5a7a052133fa95",
+    ".claude/agents/ta.md": "67cc2d4e5700e2a49da84f6ad55fc67f828e554b82b97a428cf118c2ced36ed2",
     ".claude/agents/uid.md": "dfd3531440e5e84996302c7d07d7ce8f058e6f4ac568ea0c035e1e0a462e409b",
-    ".claude/agents/uids.md": "f35b415c44905312994f2b35e142c817f094185535746ea3bccc178fedfd1f48",
+    ".claude/agents/uids.md": "8ff81d1c51bff856c4eacc871cee1a3a03b568648225fc9ecc8bf200dc3cc242",
     ".claude/agents/uxd.md": "ca57694886004d5f16979ea893527188a126edcc0407290ee24cecca35767064",
     ".claude/commands/cleanup.md": "396604c2e0bc57fffa8ef3fca9e91f6eb235e471c960c617b6dccd75827dceef",
     ".claude/commands/config.md": "e43f7a6108546018a80c0e6dff6efb3b9e1ab283d6051ead2f4ac9445830ce4a",
@@ -25,7 +25,7 @@
     ".claude/commands/memory.md": "952ff7d6176d9a4eee1951b73d1ca3911b3665f5593ceeb9ac5c84d876146cdc",
     ".claude/commands/orchestrate.md": "d088e64cb3ecf38f7201d55669678aec5781bf04d64f37aadc3416c062f54c61",
     ".claude/commands/pause.md": "2983eae992bfcd89a2ce9273dc32fe15edc0a372fc7eb8c8b41b7c3bf81d7384",
-    ".claude/commands/protocol.md": "2b4f7599f41c958274d34d9245621dc2498594bfa4ca06b0ccafd23f15b75a92",
+    ".claude/commands/protocol.md": "a12d84848696e0db14005a9380c19110ad9afd3d7c1a53ae387a1c4e3c181d10",
     ".claude/commands/reflect.md": "b4aba6c7cc68273f9ec9805f4ce7cd5162da5636d09321620b57d367ae50e38b",
     ".claude/commands/setup-copilot.md": "7153a6d0a42bff4b9ff14e90efa718d11d8f58b0d5ef70a6f3293d24a0df1f6a",
     ".claude/commands/setup-knowledge-sync.md": "c6326900093e10d884410913cc65cfb5ba6a436012e895dc3e62ac5ea45bfd5f",
@@ -73,11 +73,11 @@
     ".claude/skills/testing/jest-patterns/SKILL.md": "c6ca37963cb1180a9ea2db5514e3a2e2e66a4f5cd461b46205da754ddd982baa",
     ".claude/skills/testing/pytest-patterns/SKILL.md": "85e10117406ae80d7ee77f25d1028cd6d6ab94f41f24d07164808752ee94e693"
   },
-  "generated_at": "2026-10-22T21:44:52.535143Z",
-  "upstream_commit": "fc0778f0e9a23ad8957510e06fe204e880101eec",
+  "generated_at": "2026-10-23T18:35:49.400383Z",
+  "upstream_commit": "840a3166fa69707165351e5adca11441a3dc2b33",
   "versions": {
-    "agents": "5.10.1",
-    "commands": "5.8.0",
-    "framework": "5.25.1"
+    "agents": "5.11.1",
+    "commands": "5.8.1",
+    "framework": "5.27.1"
   }
 }
