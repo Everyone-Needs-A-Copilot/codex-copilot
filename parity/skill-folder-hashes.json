@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "skills": {
     "new-product": {
-      "SKILL.md": "40ef4329a7b97139d90d46e7dd0e8d7a9a7bceeb7557ee77d6c122769a6d2c09",
+      "SKILL.md": "a8c351ac3dff99771c5c97729c32575cd428b9b89b4f9f38bfd6025ef7b46049",
       "assets/templates/00-overview/00-vision.md": "ab170296a5ccfa95853f85d10a81d8be4b912c69fa1d63f01072a828a3ed6005",
       "assets/templates/00-overview/10-scope-and-non-goals.md": "36db9278d894ad36da8640f31852e68957d087cf41419055010abfa72ed600db",
       "assets/templates/00-overview/20-success-metrics.md": "aaa8024c30f4382edfdd111bfdb21d090a0aca277ab92996ac2007eeb6b91085",
