@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "skills": {
+    "new-product": {
+      "SKILL.md": "40ef4329a7b97139d90d46e7dd0e8d7a9a7bceeb7557ee77d6c122769a6d2c09",
+      "assets/templates/00-overview/00-vision.md": "ab170296a5ccfa95853f85d10a81d8be4b912c69fa1d63f01072a828a3ed6005",
+      "assets/templates/00-overview/10-scope-and-non-goals.md": "36db9278d894ad36da8640f31852e68957d087cf41419055010abfa72ed600db",
+      "assets/templates/00-overview/20-success-metrics.md": "aaa8024c30f4382edfdd111bfdb21d090a0aca277ab92996ac2007eeb6b91085",
+      "assets/templates/01-research/10-interviews/00-interview-template.md": "6d65b4a1fc11cdeb65a963679411a40131a759d7c4e3a5d7b4a11bf9b1374e59",
+      "assets/templates/01-research/10-interviews/01-interview-self.md": "f5a21a6758b84d892f5315f7186f20da63d66fbea3c025ebd51b735fa53141db",
+      "assets/templates/02-service-design/10-service-blueprint.md": "5bd8185f223369e7a5f9262f338ea0375054b02ef6618e30471b5dd92c049009",
+      "assets/templates/02-service-design/20-journey-maps.md": "12906e879b713869b050ed08b0acb6d855c21dd9a6f2ebe7017f7a72bcfa8f5f",
+      "assets/templates/02-service-design/30-jtbd.md": "5df166b6fa6a0c2be1f41b0c578f742205128a63a1c6bda3cf014f778bb10d9a",
+      "assets/templates/02-service-design/40-moments-that-matter.md": "075b77e71184774fbec3377ad0f595c03863107c96310f40e69c64088bc99ee4",
+      "assets/templates/03-requirements/10-user-stories.md": "41e6d8587aadf7ef055856975d9361a648784bdf14d78e67d48fcfb6c37f5012",
+      "assets/templates/03-requirements/20-use-cases-and-scenarios.md": "7239ecc68d0a6dc50243ec2a28d4c496d5aaa2efd7c47730b924924212404617",
+      "assets/templates/03-requirements/30-acceptance-criteria.md": "a28a9d11692ad1db3d54c21c67ba02c103e8ee59e5cdb85e4bead0f5c25e4032",
+      "assets/templates/04-experience-design/50-ux-design.md": "0bf9d6f3b8340d648b6eb245297f78ba8e4c9a1b61f4a7af0462d5e753338299",
+      "assets/templates/04-experience-design/60-ui-design.md": "9c8cab2cb645a1dadcff9257717ae45c29bdbd719278d2cd380ca8af604aac34",
+      "assets/templates/04-experience-design/70-copy-voice.md": "2c8c969b03440d4d0a187839306df33ed040eea31c00c5f10104d07583264d2b",
+      "assets/templates/05-design-challenge/00-brief.md": "aa75ae069acf4d81539dc3741272fb0fbd2ea7e00f78476b7b4c4312c1f61e7a",
+      "assets/templates/06-prototype/00-figma-design.md": "b4f9dc2b53e46282aeceea3e3728f318fd0f1c2ce239b43c76f66c6e6b3cd741",
+      "assets/templates/06-prototype/10-design-spec.md": "db00c6cbfcaf03d4edeec3c0d75026491bac95c52a4c61e2b48c2c8a128d9134",
+      "assets/templates/06-prototype/20-storybook.md": "431758de303dec1c54e192ddd43f8fc7f528c018b0fbe15ee2b840f873a6e20a",
+      "assets/templates/06-prototype/30-nextjs-prototype.md": "30c9feb2cf6fc820f58b37a639332c0bad2f9e05c7b09079f64280303b579056",
+      "assets/templates/06-prototype/README.md": "be0e4fe96cb9f49b14a6249510952344328ed1d0669c5f8d21fa5b7dae271ded",
+      "assets/templates/README.md": "c305aebaeae5839a4904feeb25096b7947d57cf70894dcfd536c7d4b2914095f",
+      "assets/templates/SOUL.md": "168a2ab31ed86ca6baf9557710fb25a0a82a7a247a7a9ca75e03efe8e73c21b3",
+      "assets/templates/TODO-DESIGN-PACKAGE.md": "62f90cafb4f918ef23f01cd402026e1bd028285c889bc74056d5c80b179e66f7",
+      "references/document-sequence.md": "c5a20e83ef88526b30189a47bb880769956a9abdef32e93fe1044c722445606a",
+      "references/facilitation-process.md": "fd2e9058e5bdd6ef0f48cae0c7649f7a8dd1d6e1c63a1a770505f72404e22f7b",
+      "references/facilitation-rules.md": "2ec73c839149dec3f42fb70fad3a25fb67c7bb197815c34afedcfccd3f5aef43",
+      "references/prototype-outputs.md": "f48929cb7a112af4bdcfd908f590fd2faa8b3d37162d6a36c51fd4fd43a0615b",
+      "references/runtime.md": "6c2aeae28140f9bc4f2b577694b5cd772aecb824d2aaf1cf6f78bf6a1cb24e32",
+      "references/session-flow.md": "b6507d1e69b2e1f0ac6b7b041fc8720295ddd9a947763e78fad41f43b4f08002",
+      "references/setup-and-resume.md": "6674db55716283c4b6f07a28b928cae7715a840397d40eb7950dc037ac9af075",
+      "references/soul-file.md": "481bac72907785c86447c9f627d42bd4c80e8978a9846443259ff2b9cf49e773",
+      "references/soul-retrofit.md": "106dfa437dd9de7c4cb780ca73c550b643607da0ac4fab65e48cd2c13b8a411a"
+    }
+  }
+}
