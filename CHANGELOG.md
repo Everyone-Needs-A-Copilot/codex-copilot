@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.12.0] - 2026-10-28
+
+- Add `$new-product`, the zero-to-one product definition skill (`plugins/codex-copilot/skills/new-product`), vendored from Claude Copilot's `/new-product`. It sets up `docs/` and `SOUL.md` in an empty folder, runs a six-phase facilitated interview from vision through prototype, and resumes from `docs/TODO-DESIGN-PACKAGE.md`. The Codex plugin delivers it machine-wide, so it is available in any project once the plugin is updated. Whole-folder parity is enforced by `parity/skill-folder-hashes.json` and its test.
+- Adopt Claude 5.28.0 (cc 2.15.1, tc 2.9.0), see `parity/2026-10-28-upstream-5.28.0-adoption.md`. Claude's machine-wide skill roster and `/update-copilot` byte verification are Claude-specific and are not ported.
 ## [0.11.2] - 2026-10-23
 
 - Clarify the UI-design total reply limit across summaries and prose; unset-tier omission remains intact.

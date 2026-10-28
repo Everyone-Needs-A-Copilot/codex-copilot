@@ -32,7 +32,7 @@
     ".claude/commands/setup-project.md": "4e4b7f1625f1a6585cec1d25898db8e7930c153f6be3935b7ea4195622ecf091",
     ".claude/commands/setup.md": "2d84882a7adbc04ab4f1af7fc99f16e6d754a6484a1c464d1e20b77e042fc2ac",
     ".claude/commands/skills-approve.md": "1bd7c70762438bdb8c617f80ba3a4b5bbadf5fba87879985c5c18c8c74113e36",
-    ".claude/commands/update-copilot.md": "b2322a7a7bb7b5e1dd2e3a2e2827afbdbbf5c6c71c032ade85c4c01b6723584d",
+    ".claude/commands/update-copilot.md": "ec076cb0fa53f3c4ca2ad918a484ea232de0e21376750b1ca80a7aec44a3ac45",
     ".claude/commands/update-project.md": "65abd3888780837d35025a8ebcd954440da205cf270b87f3881a5b2da19ff3d5",
     ".claude/skills/architecture/system-design-patterns/SKILL.md": "b34da95bb8b7a255aa6656f8d5c964367b16e8adf245a594dd6725ad803f5135",
     ".claude/skills/cleanup/SKILL.md": "324c77a7944ef50adf68d27ef1658bd45a035396e46a22eca10731a14245fee0",
@@ -57,6 +57,7 @@
     ".claude/skills/devops/kubernetes/SKILL.md": "9efd615608a58a6f306797ff286122ffc0861163efc37fd311d196c767c2d669",
     ".claude/skills/documentation/api-docs/SKILL.md": "cdbbe48b52b05f4f1aa07d7b1cc9d14e12b1c9ad7f4e03733a2e38b88bec75ec",
     ".claude/skills/documentation/tutorial-patterns/SKILL.md": "201bdf6ea71137596ac108387122e902a7857e56281485e6763d798adfb32847",
+    ".claude/skills/new-product/SKILL.md": "a8c351ac3dff99771c5c97729c32575cd428b9b89b4f9f38bfd6025ef7b46049",
     ".claude/skills/sales/account-research/SKILL.md": "73b728f990e0452a104a78478cdec88ba6a44e6b7e4bc03349a8fd18ca1981d1",
     ".claude/skills/sales/call-prep/SKILL.md": "51b075cf1a1cecdd1022034de5a552971917a1fea2304f564bb550bdc6dbbf72",
     ".claude/skills/sales/call-summary/SKILL.md": "b3129ce396c5d76c04cf237132da7d84adbc8e88f5ae26798db14acc5487a066",
@@ -73,11 +74,11 @@
     ".claude/skills/testing/jest-patterns/SKILL.md": "c6ca37963cb1180a9ea2db5514e3a2e2e66a4f5cd461b46205da754ddd982baa",
     ".claude/skills/testing/pytest-patterns/SKILL.md": "85e10117406ae80d7ee77f25d1028cd6d6ab94f41f24d07164808752ee94e693"
   },
-  "generated_at": "2026-10-23T19:10:47.359719Z",
-  "upstream_commit": "b94b388c3229e6299b4fd2682cf25b5d4a573a23",
+  "generated_at": "2026-10-28T16:53:10.795207Z",
+  "upstream_commit": "41dc59bff172f1cadfaa76be156746dab461f1b4",
   "versions": {
     "agents": "5.11.2",
     "commands": "5.8.1",
-    "framework": "5.27.2"
+    "framework": "5.28.0"
   }
 }
