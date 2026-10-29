@@ -28,8 +28,9 @@
 ## Output Contract
 
 - Lead with the answer, decision, result, or blocker. Default to 6 sentences or 5 bullets; expand when completeness requires it. Preserve findings, uncertainty, citations, QA evidence, safety warnings, Task/WP identifiers, and blockers.
-- For real decisions, give 2–3 concrete outcome options and a short question. Do not manufacture decisions or ask again for authorized work.
-- Keep progress brief and material. Report outcome, changed scope, verification, and limitations at completion; store detail in `tc` work products.
+- Decisions lead with a recommendation; if every option is reversible within current authorization, take it and report instead of asking, and offer options only for irreversible, outward or budget-affecting choices. Design-flow checkpoints still need explicit approval. Do not manufacture decisions or ask again for authorized work.
+- Keep progress brief and material. Completion has four lines: Works (with evidence), Unverified, Parked (with task IDs), Decision needed (or “none”); no confidence percentages. Store detail in `tc` work products.
+- Before substantial work post a five-line done block (Done means / Proven by / Not in scope / Assumptions / First example) and wait for one word; register it with `tc task contract <id> --from-done-block <file>`. For a family of things, build one populated first example, show it, then expand. At most three concurrent subagents; one QA pass per batch.
 
 ## `cc` CLI
 

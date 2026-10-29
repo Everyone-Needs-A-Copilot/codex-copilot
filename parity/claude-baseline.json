@@ -1,14 +1,14 @@
 {
   "baseline": {
     "source": "claude-copilot",
-    "frameworkVersion": "5.28.0",
-    "capturedDate": "2026-10-28",
-    "codexParityVersion": "0.12.0",
-    "notes": "Reviewed Claude 5.27.2 to signed 5.28.0: the new-product skill is vendored natively as $new-product and the update-copilot machine-skill verification is Claude-specific. See parity/2026-10-28-upstream-5.28.0-adoption.md. Release publication and signatures are verified separately."
+    "frameworkVersion": "5.29.0",
+    "capturedDate": "2026-10-29",
+    "codexParityVersion": "0.13.0",
+    "notes": "Reviewed Claude 5.28.0 to 5.29.0 (collaboration review gap plan, actions A1 to A13): ported the done block, example-first rule, four-line completion report, recommendation-first decisions, fan-out cap, make-this-a-rule, weekly reflect sweep, QA lane reporting and the consolidated test-weakening rule; the PreCompact handoff hook is Claude-specific. See parity/2026-10-29-upstream-5.29.0-adoption.md. Release publication and signatures are verified separately."
   },
   "components": {
     "cc": {
-      "version": "2.15.1",
+      "version": "2.16.0",
       "requiredCommands": [
         "cc memory",
         "cc memory check",
@@ -25,11 +25,13 @@
         "cc doctor",
         "cc eval adoption-freeze",
         "cc eval adoption-check",
-        "cc design"
+        "cc design",
+        "cc rule",
+        "cc priorities"
       ]
     },
     "tc": {
-      "version": "2.9.0",
+      "version": "2.10.0",
       "requiredCommands": [
         "tc prd",
         "tc task",
@@ -45,7 +47,10 @@
         "tc task check-qa",
         "tc task contract",
         "tc task evidence-identity",
-        "tc provenance"
+        "tc provenance",
+        "tc tests map",
+        "tc task review",
+        "tc execution run --live"
       ]
     }
   },

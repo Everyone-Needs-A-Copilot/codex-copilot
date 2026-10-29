@@ -1,19 +1,19 @@
 {
   "name": "codex-copilot",
-  "version": "0.12.0",
-  "releaseDate": "2026-10-28",
+  "version": "0.13.0",
+  "releaseDate": "2026-10-29",
   "codename": "work-lifecycle",
   "status": "stable",
   "mirrors": {
     "project": "claude-copilot",
-    "frameworkVersion": "5.28.0",
+    "frameworkVersion": "5.29.0",
     "baselineManifest": "parity/claude-baseline.json",
-    "capturedDate": "2026-10-28",
-    "adoptionNote": "Adopted Claude 5.28.0 / cc 2.15.1 / tc 2.9.0. Adds the foundation product-definition skill as $new-product, delivered by the Codex plugin; the Claude machine-wide skill installer is Claude-specific. See parity/2026-10-28-upstream-5.28.0-adoption.md."
+    "capturedDate": "2026-10-29",
+    "adoptionNote": "Adopted Claude 5.29.0 / cc 2.16.0 / tc 2.10.0 (collaboration review actions A1 to A13). Ports the done block, example-first rule, four-line completion report, recommendation-first decisions, fan-out cap, make-this-a-rule, weekly reflect sweep, QA lane reporting and the consolidated test-weakening rule; the PreCompact hook is Claude-specific. See parity/2026-10-29-upstream-5.29.0-adoption.md."
   },
   "components": {
     "cc": {
-      "requiredVersion": "2.15.1",
+      "requiredVersion": "2.16.0",
       "source": "Claude Copilot tools/cc",
       "provides": [
         "cc memory",
@@ -29,11 +29,13 @@
         "cc doctor --runtime-details",
         "cc eval adoption-freeze",
         "cc eval adoption-check",
-        "cc design"
+        "cc design",
+        "cc rule",
+        "cc priorities"
       ]
     },
     "tc": {
-      "requiredVersion": "2.9.0",
+      "requiredVersion": "2.10.0",
       "source": "Claude Copilot tools/tc",
       "provides": [
         "tc prd",
@@ -47,7 +49,11 @@
         "tc task check-qa",
         "tc task contract",
         "tc task evidence-identity",
-        "tc provenance"
+        "tc provenance",
+        "tc tests map",
+        "tc task review",
+        "tc execution run --live",
+        "tc task contract --from-done-block"
       ]
     }
   },

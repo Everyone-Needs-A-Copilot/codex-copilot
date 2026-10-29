@@ -28,20 +28,21 @@ class VerificationPolicyTests(unittest.TestCase):
         for term in ('Instructions/routing', 'Logic/transformation', 'Storage/installation',
                      'UI behavior', 'Unknown impact selects a broader named lane',
                      'tc remains the sole\nsource-bound QA authority',
-                     'Never weaken, skip or delete assertions',
-                     'A behavior change the\nowner requested is the authority to update checks it makes obsolete',
-                     'record old/new expectations, rationale and exact changed files in the work product',
-                     'report it without asking', 'Ask only when the change was not requested',
-                     'a real defect, which is fixed in the product, never by\nweakening, skipping or deleting the check',
+                     'A failing check is fixed in the product, never by weakening the check',
                      'two falsified', 'Timeout is incomplete'):
             self.assertIn(term, policy)
+        flat_policy = ' '.join(policy.split())
+        for term in ("The one exception is a check that the owner's requested change makes obsolete",
+                     'record old and new expectations in the work product, report it, do not ask',
+                     'Record the rationale and exact changed files'):
+            self.assertIn(term, flat_policy)
         self.assertNotIn('Obsolete-contract migration', policy)
         self.assertNotIn('Escalate undecided', policy)
         authority = (ROOT / 'AGENTS.md').read_text()
         flat = ' '.join(authority.split())
-        self.assertIn('A behavior change the owner requested is the authority to update checks it makes obsolete', flat)
-        self.assertIn('Ask only when the change was not requested', flat)
-        self.assertIn('never by weakening, skipping or deleting the check', flat)
+        self.assertIn('A failing check is fixed in the product, never by weakening the check', flat)
+        self.assertIn("The one exception is a check that the owner's requested change makes obsolete", flat)
+        self.assertIn('record old and new expectations in the work product, report it, do not ask', flat)
         self.assertNotIn('requires explicit user authority', flat)
         self.assertIn('--test-change-receipt', authority)
         self.assertIn('owner-requested-obsolete-check', authority)

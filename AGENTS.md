@@ -31,11 +31,22 @@ For every user-facing reply, checkpoint, progress update, blocker, command repor
 - Lead with what is now true: the answer, decision, result, or blocker—not the investigation chronology.
 - Include only what the reader needs to trust the result, make the decision, or take the next action. Preserve required findings, real uncertainty, citations, QA evidence, safety warnings, blockers, and next actions.
 - Default to at most 6 sentences or 5 bullets. Use more only when the user asks for depth or when risk, complexity, or completeness requires it.
-- For a real decision, give an outcome headline, 2–3 numbered options stated as outcomes, and a question of at most 4 words—normally “Which one?” Do not print generic standing options. If there is no real decision, do not manufacture options or ask for approval.
-- Keep progress updates to one short sentence: material result plus next active step. Lead completion reports with the outcome, followed only by changed scope, verification, and any remaining caveat or action.
+- Decisions lead with a recommendation. If every option is reversible within current authorization, take the recommendation and report it instead of asking; otherwise ask in one sentence. Offer options only when a choice is irreversible, outward or budget-affecting. Design-flow checkpoints still require explicit approval. Do not print generic standing options or manufacture approval questions.
+- Keep progress updates to one short sentence: material result plus next active step.
+- Completion reports have four lines: Works (with evidence), Unverified (what was not tested, and why), Parked (ideas left out, with task IDs), Decision needed (or “none”). No confidence percentages; a bare “done” is incomplete.
 - Omit preambles, generic closers, self-narration, repeated findings, evidence inventories, command traces, and chronology unless the reader asked for them or needs them to trust the result.
 
 Detailed technical records belong in `tc` work products. Content always outranks form: never omit a required finding, caveat, citation, safety warning, QA artifact, verdict, Task/WP identifier, or genuine blocker to satisfy a length target.
+
+## Done Block, Example First, Rules
+
+**Done block (2026-10-29).** Before substantial work, post five short lines (Done means / Proven by / Not in scope / Assumptions / First example) and wait for one word from the owner. The confirmed block becomes the task contract: `tc task contract <id> --from-done-block <file>`.
+
+**Example first (2026-10-29).** For a collection, workflow family, integration or asset family, build one populated first example with real content (one journey; one narrative section; one item through the real path; one record plus one exception; one device and an observed action), show it, apply the correction, then expand.
+
+**Fan-out cap (2026-10-29).** When the user asks for subagents, run at most three concurrently unless the done block says otherwise, close each when its piece is done, and run one QA pass per batch rather than per step.
+
+**Make this a rule (2026-10-29).** When the owner says “make this a rule”, propose the destination (global instructions, framework file, project `AGENTS.md` or memory), rewrite the current rule rather than appending an exception, and report where it went. The command is `cc rule add`.
 
 ## `cc` CLI
 
@@ -209,15 +220,9 @@ When an explanation conflicts with a measurement, follow the measurement and nar
 Tests define the contract. Changing them changes what "passing" means, so they are
 never collateral in a fix.
 
-- **Never weaken tests to hide a defect.** A failing assertion is an implementation
-  defect until investigation establishes a different authoritative contract.
-- Add required missing behavior coverage in proportion to risk; an edited source
-  file alone does not require a new test. Existing assertions are not collateral.
-- A behavior change the owner requested is the authority to update checks it makes
-  obsolete: update them, record old/new expectations, rationale and exact changed
-  files in the work product, and report it without asking. Ask only when the change
-  was not requested, or when a failing check reveals a real defect, which is fixed
-  in the product, never by weakening, skipping or deleting the check.
+- A failing check is fixed in the product, never by weakening the check (skipping or deleting it counts as weakening). A failing assertion is an implementation defect until investigation establishes a different authoritative contract.
+- Add required missing behavior coverage in proportion to risk; an edited source file alone does not require a new test. Existing assertions are not collateral.
+- The one exception is a check that the owner's requested change makes obsolete: update it, record old and new expectations in the work product, report it, do not ask. A behavior change the owner requested is the authority to update checks it makes obsolete. Record the rationale and exact changed files.
 - Report changed tests explicitly. `scripts/check-test-integrity.sh [base-ref]`
   rejects test changes by default; `--test-change-receipt <file>` permits only the
   exact reviewed change with its authority and old/new contract. A receipt with

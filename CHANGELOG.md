@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.13.0] - 2026-10-29
+
+- Adopt Claude 5.29.0 (cc 2.16.0, tc 2.10.0), collaboration review actions A1 to A13, see `parity/2026-10-29-upstream-5.29.0-adoption.md`.
+- Done block before substantial work (five lines, one word from the owner, `tc task contract --from-done-block`), example-first rule for collections and families (`ta`, `sd`, checkpoints), and a fan-out cap of three concurrent agents with one QA pass per batch.
+- Four-line completion report (Works / Unverified / Parked / Decision needed) and recommendation-first decisions replace the "2–3 numbered options … Which one?" shape in `AGENTS.md`, the project template, `checkpoints.md`, `protocol` and `shared-behaviors.md`; design-flow checkpoints keep explicit approval.
+- "Make this a rule" through `cc rule add`, the weekly sweep in `reflect`, and `LANE:` / `OUTSIDE LANE:` lines plus a criterion-ID completeness rule in the `qa` packet.
+- One consolidated test-weakening rule in `verification-policy.md` and `AGENTS.md`. Obsolete expectations updated at the owner's request in `tests/test_verification_policy.py`: the old needles for "Never weaken, skip or delete assertions", "report it without asking" and "Ask only when the change was not requested" now assert the new wording; no assertion was deleted or weakened.
+- Not ported: the PreCompact handoff hook (Codex has no PreCompact event) and the protocol flow archive (the Codex protocol skill never carried those flows). `cleanup/references/work-lifecycle.md` re-synchronized with no content change.
+- Required commands added to the parity baseline: `tc tests map`, `tc task review`, `tc execution run --live`, `cc rule`, `cc priorities`.
+
 ## [0.12.0] - 2026-10-28
 
 - Add `$new-product`, the zero-to-one product definition skill (`plugins/codex-copilot/skills/new-product`), vendored from Claude Copilot's `/new-product`. It sets up `docs/` and `SOUL.md` in an empty folder, runs a six-phase facilitated interview from vision through prototype, and resumes from `docs/TODO-DESIGN-PACKAGE.md`. The Codex plugin delivers it machine-wide, so it is available in any project once the plugin is updated. Whole-folder parity is enforced by `parity/skill-folder-hashes.json` and its test.
