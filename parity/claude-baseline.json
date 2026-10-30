@@ -1,10 +1,10 @@
 {
   "baseline": {
     "source": "claude-copilot",
-    "frameworkVersion": "5.29.0",
-    "capturedDate": "2026-10-29",
-    "codexParityVersion": "0.13.0",
-    "notes": "Reviewed Claude 5.28.0 to 5.29.0 (collaboration review gap plan, actions A1 to A13): ported the done block, example-first rule, four-line completion report, recommendation-first decisions, fan-out cap, make-this-a-rule, weekly reflect sweep, QA lane reporting and the consolidated test-weakening rule; the PreCompact handoff hook is Claude-specific. See parity/2026-10-29-upstream-5.29.0-adoption.md. Release publication and signatures are verified separately."
+    "frameworkVersion": "5.30.0",
+    "capturedDate": "2026-10-30",
+    "codexParityVersion": "0.14.0",
+    "notes": "Reviewed Claude 5.29.0 to 5.30.0: the new-product skill 1.1.0 (soul walk-away test) is re-vendored byte-for-byte and the project SOUL template asks the same question; the reflect sweep wording is ported and the cc priorities discovery fix has no Codex surface. See parity/2026-10-30-upstream-5.30.0-adoption.md. Release publication and signatures are verified separately."
   },
   "components": {
     "cc": {

@@ -1,8 +1,11 @@
 # Changelog
 
-## [Unreleased]
+## [0.14.0] - 2026-10-30
+
+- Adopt Claude 5.30.0 (cc 2.16.0, tc 2.10.0), see `parity/2026-10-30-upstream-5.30.0-adoption.md`.
 
 - `$new-product` 1.1.0 re-vendored from Claude Copilot: every soul file asks the walk-away test ("What would make you stop using this every day?"), records it in the user's words, ties each stop condition to an anti-pattern and a drift signal, and ends the Feature Filter with a Walk-away gate; a soul is not ratified without the answer. `parity/skill-folder-hashes.json` regenerated.
+- `$reflect` sweep lists corrections since the last review, matching Claude's wording.
 - `templates/SOUL.template.md` asks what would make the person the product serves stop using it, and adds the walk-away question to the decision questions.
 
 ## [0.13.0] - 2026-10-29
