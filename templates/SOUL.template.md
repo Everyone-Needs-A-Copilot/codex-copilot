@@ -11,6 +11,7 @@ Use this file to decide whether product-facing work belongs in the product befor
 - What should this product help people do better?
 - What should using it feel like?
 - What should it never become?
+- What would make the person it serves stop using it every day? Ask them, record the answer in their words and never infer it.
 
 ## Quality Bar
 
@@ -41,4 +42,5 @@ Before substantial product-facing work, answer:
 2. What user effort, uncertainty, or risk does it remove?
 3. What simpler version would preserve the essential value?
 4. Which state or failure path would make this feel unfinished?
-5. Should this be built, reshaped, deferred, or rejected?
+5. Would this make the person it serves more or less likely to open it tomorrow?
+6. Should this be built, reshaped, deferred, or rejected?

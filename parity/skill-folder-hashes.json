@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "skills": {
     "new-product": {
-      "SKILL.md": "a8c351ac3dff99771c5c97729c32575cd428b9b89b4f9f38bfd6025ef7b46049",
+      "SKILL.md": "916685f9c00e86e56de44ad2ddb7cc669f3650f0c3f8c2812a003c79884fea59",
       "assets/templates/00-overview/00-vision.md": "ab170296a5ccfa95853f85d10a81d8be4b912c69fa1d63f01072a828a3ed6005",
       "assets/templates/00-overview/10-scope-and-non-goals.md": "36db9278d894ad36da8640f31852e68957d087cf41419055010abfa72ed600db",
       "assets/templates/00-overview/20-success-metrics.md": "aaa8024c30f4382edfdd111bfdb21d090a0aca277ab92996ac2007eeb6b91085",
@@ -25,17 +25,17 @@
       "assets/templates/06-prototype/30-nextjs-prototype.md": "30c9feb2cf6fc820f58b37a639332c0bad2f9e05c7b09079f64280303b579056",
       "assets/templates/06-prototype/README.md": "be0e4fe96cb9f49b14a6249510952344328ed1d0669c5f8d21fa5b7dae271ded",
       "assets/templates/README.md": "c305aebaeae5839a4904feeb25096b7947d57cf70894dcfd536c7d4b2914095f",
-      "assets/templates/SOUL.md": "168a2ab31ed86ca6baf9557710fb25a0a82a7a247a7a9ca75e03efe8e73c21b3",
-      "assets/templates/TODO-DESIGN-PACKAGE.md": "62f90cafb4f918ef23f01cd402026e1bd028285c889bc74056d5c80b179e66f7",
-      "references/document-sequence.md": "c5a20e83ef88526b30189a47bb880769956a9abdef32e93fe1044c722445606a",
-      "references/facilitation-process.md": "fd2e9058e5bdd6ef0f48cae0c7649f7a8dd1d6e1c63a1a770505f72404e22f7b",
+      "assets/templates/SOUL.md": "c541695c622934b7049ac02e0c74396c172c892f5ac900b995e2f4df0a99f27a",
+      "assets/templates/TODO-DESIGN-PACKAGE.md": "00c7ca4d64f52b4054a11173bef84881318d16195623946f72f4cc6aa3097e26",
+      "references/document-sequence.md": "e318ce063a67def7df651ba06d161111892a1f2939d3b590732276439e4aef3e",
+      "references/facilitation-process.md": "44c510bd769da0e516bef14bac772f1bd5ad77fb6e2b4e0d0c963a0757b17540",
       "references/facilitation-rules.md": "2ec73c839149dec3f42fb70fad3a25fb67c7bb197815c34afedcfccd3f5aef43",
       "references/prototype-outputs.md": "f48929cb7a112af4bdcfd908f590fd2faa8b3d37162d6a36c51fd4fd43a0615b",
       "references/runtime.md": "6c2aeae28140f9bc4f2b577694b5cd772aecb824d2aaf1cf6f78bf6a1cb24e32",
       "references/session-flow.md": "b6507d1e69b2e1f0ac6b7b041fc8720295ddd9a947763e78fad41f43b4f08002",
       "references/setup-and-resume.md": "6674db55716283c4b6f07a28b928cae7715a840397d40eb7950dc037ac9af075",
-      "references/soul-file.md": "2306b3b17ecb0462426e3e8296a8724c78339ace3fb589e9f0a918814001ede3",
-      "references/soul-retrofit.md": "106dfa437dd9de7c4cb780ca73c550b643607da0ac4fab65e48cd2c13b8a411a"
+      "references/soul-file.md": "9bcd49858796144f97818c82984a221502c00f92bb80a3022b15587a0670910a",
+      "references/soul-retrofit.md": "a0beafbf9325eec2be9f9d9124f12b49cde396c4f99f7d0cf8ba48d6845982ee"
     }
   }
 }
