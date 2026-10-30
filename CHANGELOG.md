@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.14.1] - 2026-10-30
+
+- Adopt Claude 5.30.1 (cc 2.16.0, tc 2.10.1), see `parity/2026-10-30-upstream-5.30.1-adoption.md`. tc 2.10.1 fixes QA identity for tasks registered to a linked worktree and keeps tasks with execution history out of the archive. No skill, template or hook changes.
+
 ## [0.14.0] - 2026-10-30
 
 - Adopt Claude 5.30.0 (cc 2.16.0, tc 2.10.0), see `parity/2026-10-30-upstream-5.30.0-adoption.md`.

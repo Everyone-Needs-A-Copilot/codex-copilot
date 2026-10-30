@@ -1,15 +1,15 @@
 {
   "name": "codex-copilot",
-  "version": "0.14.0",
+  "version": "0.14.1",
   "releaseDate": "2026-10-30",
   "codename": "work-lifecycle",
   "status": "stable",
   "mirrors": {
     "project": "claude-copilot",
-    "frameworkVersion": "5.30.0",
+    "frameworkVersion": "5.30.1",
     "baselineManifest": "parity/claude-baseline.json",
     "capturedDate": "2026-10-30",
-    "adoptionNote": "Adopted Claude 5.30.0 / cc 2.16.0 / tc 2.10.0. Re-vendors $new-product 1.1.0, whose soul files require the walk-away test, and adds the same question to the project SOUL template. See parity/2026-10-30-upstream-5.30.0-adoption.md."
+    "adoptionNote": "Adopted Claude 5.30.1 / cc 2.16.0 / tc 2.10.1. tc 2.10.1 fixes QA identity for tasks registered to a linked worktree and keeps tasks with execution history out of the archive; no Codex skill or template changes. See parity/2026-10-30-upstream-5.30.1-adoption.md."
   },
   "components": {
     "cc": {
@@ -35,7 +35,7 @@
       ]
     },
     "tc": {
-      "requiredVersion": "2.10.0",
+      "requiredVersion": "2.10.1",
       "source": "Claude Copilot tools/tc",
       "provides": [
         "tc prd",

@@ -1,10 +1,10 @@
 {
   "baseline": {
     "source": "claude-copilot",
-    "frameworkVersion": "5.30.0",
+    "frameworkVersion": "5.30.1",
     "capturedDate": "2026-10-30",
-    "codexParityVersion": "0.14.0",
-    "notes": "Reviewed Claude 5.29.0 to 5.30.0: the new-product skill 1.1.0 (soul walk-away test) is re-vendored byte-for-byte and the project SOUL template asks the same question; the reflect sweep wording is ported and the cc priorities discovery fix has no Codex surface. See parity/2026-10-30-upstream-5.30.0-adoption.md. Release publication and signatures are verified separately."
+    "codexParityVersion": "0.14.1",
+    "notes": "Reviewed Claude 5.30.0 to 5.30.1: tc 2.10.1 binds QA identity to a task's registered execution root and keeps tasks with execution history out of the archive. tc is shared, so Codex consumes the fix directly; no skill, template or hook changes. See parity/2026-10-30-upstream-5.30.1-adoption.md. Release publication and signatures are verified separately."
   },
   "components": {
     "cc": {
@@ -31,7 +31,7 @@
       ]
     },
     "tc": {
-      "version": "2.10.0",
+      "version": "2.10.1",
       "requiredCommands": [
         "tc prd",
         "tc task",
