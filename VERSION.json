@@ -1,19 +1,19 @@
 {
   "name": "codex-copilot",
-  "version": "0.14.1",
-  "releaseDate": "2026-10-30",
-  "codename": "work-lifecycle",
+  "version": "0.15.0",
+  "releaseDate": "2026-11-02",
+  "codename": "tiered-verification",
   "status": "stable",
   "mirrors": {
     "project": "claude-copilot",
-    "frameworkVersion": "5.30.1",
+    "frameworkVersion": "5.33.0",
     "baselineManifest": "parity/claude-baseline.json",
-    "capturedDate": "2026-10-30",
-    "adoptionNote": "Adopted Claude 5.30.1 / cc 2.16.0 / tc 2.10.1. tc 2.10.1 fixes QA identity for tasks registered to a linked worktree and keeps tasks with execution history out of the archive; no Codex skill or template changes. See parity/2026-10-30-upstream-5.30.1-adoption.md."
+    "capturedDate": "2026-11-02",
+    "adoptionNote": "Adopted Claude 5.33.0 / cc 2.18.0 / tc 2.11.0. Verification depth follows the change: tc records a T1/T2/T3 tier and approves T1/T2 by attestation. The canonical verification-policy.md is now copied byte for byte from Claude and the me, qa and protocol skills reference it; copilot-gate.sh already defers to tc task check-qa. Also adopts the 5.31.0 and 5.32.0 shared-tool releases (cc resources, organization skills) with no Codex port. See parity/2026-11-02-upstream-5.33.0-adoption.md."
   },
   "components": {
     "cc": {
-      "requiredVersion": "2.16.0",
+      "requiredVersion": "2.18.0",
       "source": "Claude Copilot tools/cc",
       "provides": [
         "cc memory",
@@ -35,7 +35,7 @@
       ]
     },
     "tc": {
-      "requiredVersion": "2.10.1",
+      "requiredVersion": "2.11.0",
       "source": "Claude Copilot tools/tc",
       "provides": [
         "tc prd",
@@ -53,7 +53,10 @@
         "tc tests map",
         "tc task review",
         "tc execution run --live",
-        "tc task contract --from-done-block"
+        "tc task contract --from-done-block",
+        "tc task tier",
+        "tc task attest",
+        "tc task qa-packet"
       ]
     }
   },

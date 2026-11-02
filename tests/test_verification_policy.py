@@ -46,7 +46,24 @@ class VerificationPolicyTests(unittest.TestCase):
         self.assertNotIn('requires explicit user authority', flat)
         self.assertIn('--test-change-receipt', authority)
         self.assertIn('owner-requested-obsolete-check', authority)
-        self.assertIn('owner-requested-obsolete-check', policy)
+        # Obsolete check (plan: one byte-for-byte policy copied from Claude). The Codex-only
+        # change-basis token `owner-requested-obsolete-check` used to be asserted in the reworded
+        # policy copy; the canonical neutral policy cannot carry it. It stays required in AGENTS.md
+        # (asserted above) where the integrity gate's `--test-change-receipt` contract is documented.
+        # Tier contract: the canonical policy leads with the three tiers and the real tc flags.
+        flat_tiers = ' '.join(policy.split())
+        for term in ('## Verification Tiers', 'tc task tier <id> T1|T2|T3', 'tc task attest <id> --tier T1',
+                     '--in <built file>', '--present', '--absent', '--load', 'tc task attest <id> --tier T2',
+                     '--render <artifact>', '--checks <cc verify run id>', 'pablo:<quote>',
+                     'Untiered tasks default to T3', 'escalates upward only', 'Downgrades are owner-only'):
+            self.assertIn(term, flat_tiers)
+        for role in ('me', 'qa', 'protocol'):
+            skill = (ROOT / f'plugins/codex-copilot/skills/{role}/SKILL.md').read_text()
+            self.assertIn('../specialist-agents/references/verification-policy.md', skill)
+            self.assertIn('tc task attest', skill)
+            self.assertIn('T3', skill)
+        self.assertNotIn('Treat `$qa` as required for implementation work that needs verification.',
+                         (ROOT / 'plugins/codex-copilot/skills/me/SKILL.md').read_text())
         self.assertNotIn('with its authority, contract and negative-control record', authority)
         self.assertNotIn('"The tests pass" is only evidence if the tests are unchanged', authority)
 

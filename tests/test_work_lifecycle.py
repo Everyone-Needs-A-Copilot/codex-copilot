@@ -24,6 +24,10 @@ class LifecycleDistributionTests(unittest.TestCase):
         self.destination = self.codex / sync.DESTINATION
         self.source.parent.mkdir(parents=True)
         self.source.write_bytes(b'# Work lifecycle\n\nEvidence before acceptance.\n')
+        # The CLI now carries the canonical verification policy too, so its fixture root holds both files.
+        self.policy_source = self.claude / sync.POLICY_SOURCE
+        self.policy_destination = self.codex / sync.POLICY_DESTINATION
+        self.policy_source.write_bytes(b'## Verification Tiers\n\nT1 copy, T2 structural, T3 foundational.\n')
 
     def test_copy_is_exact_and_leaves_unrelated_files_untouched(self):
         other = self.codex / 'project-owned.txt'
@@ -80,6 +84,26 @@ class LifecycleDistributionTests(unittest.TestCase):
                                  str(self.claude)], capture_output=True, text=True, timeout=5)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(self.destination.read_bytes(), self.source.read_bytes())
+        self.assertEqual(self.policy_destination.read_bytes(), self.policy_source.read_bytes())
+
+    def test_policy_copy_is_byte_for_byte_and_check_detects_drift(self):
+        pair = (sync.POLICY_SOURCE, sync.POLICY_DESTINATION)
+        self.assertFalse(sync.synchronize(self.claude, self.codex, check=True, pair=pair))
+        self.assertTrue(sync.synchronize(self.claude, self.codex, pair=pair))
+        self.assertEqual(self.policy_destination.read_bytes(), self.policy_source.read_bytes())
+        self.assertTrue(sync.synchronize(self.claude, self.codex, check=True, pair=pair))
+        self.policy_destination.write_bytes(self.policy_source.read_bytes() + b'reworded locally\n')
+        self.assertFalse(sync.synchronize(self.claude, self.codex, check=True, pair=pair))
+        self.assertEqual(sync.synchronize_all(self.claude, self.codex, check=True), [sync.DESTINATION, sync.POLICY_DESTINATION])
+
+    def test_missing_canonical_policy_fails_the_cli_closed(self):
+        self.policy_source.unlink()
+        script = self.codex / 'scripts/sync-work-lifecycle.py'
+        script.parent.mkdir(parents=True)
+        script.write_bytes((ROOT / 'scripts/sync-work-lifecycle.py').read_bytes())
+        result = subprocess.run([sys.executable, str(script), '--claude-root', str(self.claude)],
+                                capture_output=True, text=True, timeout=5)
+        self.assertEqual(result.returncode, 2)
 
     def test_native_skill_and_reference_survive_packaged_install(self):
         project = self.root / 'consumer'

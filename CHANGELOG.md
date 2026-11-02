@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.15.0] - 2026-11-02
+
+- Adopt Claude 5.33.0 (cc 2.18.0, tc 2.11.0), see `parity/2026-11-02-upstream-5.33.0-adoption.md`. Verification depth follows the change: `tc task tier` records T1 copy, T2 structural or T3 foundational, and `tc task attest` approves T1/T2 without a QA specialist. Codex needs no gate change because `scripts/copilot-gate.sh` already defers to `tc task check-qa`.
+- `verification-policy.md` is now the Claude canonical file copied byte for byte (it replaces the reworded copy). `scripts/sync-work-lifecycle.py` copies and checks both canonical files, work lifecycle and verification policy.
+- `$me`, `$qa` and `$protocol` read the policy's Verification Tiers: `$qa` is required for T3 and escalations, T1/T2 finish with `tc task attest`, and untiered tasks are T3.
+- Obsolete checks updated: the Codex-only `owner-requested-obsolete-check` token is no longer required inside the policy copy (still required in `AGENTS.md`), and the lifecycle sync fixtures carry both canonical files.
+
 ## [0.14.1] - 2026-10-30
 
 - Adopt Claude 5.30.1 (cc 2.16.0, tc 2.10.1), see `parity/2026-10-30-upstream-5.30.1-adoption.md`. tc 2.10.1 fixes QA identity for tasks registered to a linked worktree and keeps tasks with execution history out of the archive. No skill, template or hook changes.

@@ -5,5 +5,6 @@ type: structural
 source: {type: file, path: "plugins/codex-copilot/skills/me/SKILL.md"}
 assertions:
   - {type: contains, value: "Kent Beck's simple design", description: "Simple-design methodology is present"}
-  - {type: contains, value: "`$qa` always", description: "Implementation routes to QA"}
+  - {type: contains, value: "`$qa` for T3 and escalated work", description: "T3 and escalated implementation routes to QA"}
+  - {type: contains, value: "T1/T2: no QA specialist; run `tc task attest` instead", description: "T1 and T2 finish with a tc attestation, not a QA specialist"}
   - {type: contains, value: "Live Docs", description: "Third-party API assumptions are checked"}

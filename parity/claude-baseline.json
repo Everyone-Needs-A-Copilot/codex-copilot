@@ -1,14 +1,14 @@
 {
   "baseline": {
     "source": "claude-copilot",
-    "frameworkVersion": "5.30.1",
-    "capturedDate": "2026-10-30",
-    "codexParityVersion": "0.14.1",
-    "notes": "Reviewed Claude 5.30.0 to 5.30.1: tc 2.10.1 binds QA identity to a task's registered execution root and keeps tasks with execution history out of the archive. tc is shared, so Codex consumes the fix directly; no skill, template or hook changes. See parity/2026-10-30-upstream-5.30.1-adoption.md. Release publication and signatures are verified separately."
+    "frameworkVersion": "5.33.0",
+    "capturedDate": "2026-11-02",
+    "codexParityVersion": "0.15.0",
+    "notes": "Reviewed Claude 5.30.1 to 5.33.0: tiered verification (tc 2.11.0) is adopted through the shared tc and the byte-for-byte canonical verification-policy.md; the me, qa and protocol skills reference the tier table; the gate already defers to tc task check-qa. 5.31.0 (cc resources, Homebrew-safe tc install) and 5.32.0 (organization skills distribution) are shared cc/tc changes with no Codex port. See parity/2026-11-02-upstream-5.33.0-adoption.md. Release publication and signatures are verified separately."
   },
   "components": {
     "cc": {
-      "version": "2.16.0",
+      "version": "2.18.0",
       "requiredCommands": [
         "cc memory",
         "cc memory check",
@@ -31,7 +31,7 @@
       ]
     },
     "tc": {
-      "version": "2.10.1",
+      "version": "2.11.0",
       "requiredCommands": [
         "tc prd",
         "tc task",
@@ -50,7 +50,10 @@
         "tc provenance",
         "tc tests map",
         "tc task review",
-        "tc execution run --live"
+        "tc execution run --live",
+        "tc task tier",
+        "tc task attest",
+        "tc task qa-packet"
       ]
     }
   },
