@@ -103,7 +103,7 @@ One question, not a checklist. State the recommendation first; if every option i
 
 **Resolving a genuine ambiguity silently is a defect, not efficiency.** Measured on an identical brief carrying a real contradiction ("Level 4 finish throughout" against "Garage included"): the arm with no framework asked, got the answer, and priced 25 fewer labour hours. The arm running the full design chain asked nothing and priced a guess. Inferring an answer where the brief is undecided converts the user's decision into your hidden assumption and buries it in a deliverable, where it resurfaces as rework. Guessing is acceptable only when the guess is stated as one.
 
-This applies with more force here than in a delegating framework, not less: running the lenses inline means no handoff document exists where an unstated assumption might be caught by the next specialist reading it.
+Every dispatched scope carries explicit assumptions and unresolved decisions. The coordinator reconciles them at convergence and surfaces decision-changing ambiguity; parallel workers must not turn an undecided owner choice into an implicit agreement.
 
 ## Checkpoints
 
