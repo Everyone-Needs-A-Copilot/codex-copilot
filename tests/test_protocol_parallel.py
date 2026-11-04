@@ -3,6 +3,8 @@ import importlib.util
 import json
 from pathlib import Path
 import unittest
+import shutil
+import tempfile
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -25,14 +27,14 @@ class ProtocolParallelTest(unittest.TestCase):
         self.assertEqual(execution['cleanup'],'verified-merged-worktrees')
 
     def test_smoke_covers_catalog_roles_without_activating_packs(self):
-        adapter=load('cycle_adapter','scripts/protocol-cycle.py')
+        adapter=load('cycle_adapter','plugins/codex-copilot/scripts/protocol-cycle.py')
         catalog=json.loads((ROOT/'plugins/codex-copilot/agent-catalog.json').read_text())
         self.assertEqual(adapter.role_ids(),[item['id'] for item in catalog['agents']])
         self.assertEqual(set(adapter.role_ids(True)),{item['id'] for item in catalog['agents']+catalog['optionalAgents']})
         self.assertEqual(len(adapter.role_ids(True)),len(set(adapter.role_ids(True))))
 
     def test_smoke_only_calls_shared_provider_free_lifecycle(self):
-        adapter=load('cycle_cli','scripts/protocol-cycle.py')
+        adapter=load('cycle_cli','plugins/codex-copilot/scripts/protocol-cycle.py')
         with patch('sys.argv',['protocol-cycle.py','smoke','--tc','/verified/tc','--json']),patch.object(adapter.subprocess,'run') as run:
             run.return_value.returncode=0
             self.assertEqual(adapter.main(),0)
@@ -43,10 +45,26 @@ class ProtocolParallelTest(unittest.TestCase):
             self.assertFalse(run.call_args.kwargs['check'])
 
     def test_smoke_propagates_engine_failure(self):
-        adapter=load('cycle_failure','scripts/protocol-cycle.py')
+        adapter=load('cycle_failure','plugins/codex-copilot/scripts/protocol-cycle.py')
         with patch('sys.argv',['protocol-cycle.py','smoke','--tc','/verified/tc']),patch.object(adapter.subprocess,'run') as run:
             run.return_value.returncode=7
             self.assertEqual(adapter.main(),7)
+
+    def test_installed_bundle_smoke_does_not_need_source_checkout(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            installed=Path(temporary)/'plugin'
+            shutil.copytree(ROOT/'plugins/codex-copilot',installed)
+            script=installed/'scripts/protocol-cycle.py'
+            spec=importlib.util.spec_from_file_location('installed_cycle',script)
+            adapter=importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(adapter)
+            self.assertFalse((Path(temporary)/'scripts/protocol-cycle.py').exists())
+            self.assertTrue(adapter.role_ids())
+            with patch('sys.argv',[str(script),'smoke','--tc','/verified/tc','--json']),patch.object(adapter.subprocess,'run') as run:
+                run.return_value.returncode=0
+                self.assertEqual(adapter.main(),0)
+                self.assertEqual(run.call_args.args[0][:3],['/verified/tc','cycle','smoke'])
+                self.assertEqual(run.call_args.args[0][4],','.join(adapter.role_ids()))
 
     def test_legacy_normalization_preserves_input_dependency_and_paths(self):
         adapter=load('legacy_cycle','scripts/orchestrate-validate.py')

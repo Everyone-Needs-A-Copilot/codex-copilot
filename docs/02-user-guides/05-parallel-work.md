@@ -13,9 +13,9 @@ See the [native adapter](../../plugins/codex-copilot/skills/protocol/references/
 ## Quick lifecycle proof
 
 ```bash
-python scripts/protocol-cycle.py smoke --json
+tc cycle smoke --json
 ```
 
-This delegates to shared `tc cycle smoke` with every active specialist role in the catalog. It starts and reaps short local subprocesses with deterministic replies; no provider calls or model tokens are spent. Optional pack labels can be checked with `--include-optional` without activating packs. This is lifecycle/adapter coverage, not evidence that each native model role reasoned correctly. Use one small, separately recorded native fan-out to verify actual runtime dispatch and overlap; retain normal independent QA for real work.
+This invokes the shared lifecycle check from any project. The installed plugin also carries `scripts/protocol-cycle.py`, resolved relative to its plugin root, to derive every active specialist role from its adjacent catalog; the framework source wrapper delegates to that same implementation. It starts and reaps short local subprocesses with deterministic replies; no provider calls or model tokens are spent. Optional pack labels can be checked with `--include-optional` without activating packs. This is lifecycle/adapter coverage, not evidence that each native model role reasoned correctly. Use one small, separately recorded native fan-out to verify actual runtime dispatch and overlap; retain normal independent QA for real work.
 
 The old `scripts/orchestrate-validate.py` remains a compatibility adapter and delegates validation to shared `tc.services.cycles`. It keeps no separate ownership algorithm. Missing shared tooling is reported and blocks unsafe dispatch.
