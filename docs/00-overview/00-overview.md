@@ -18,7 +18,7 @@ request
   -> evidence-bound QA when implementation is involved
 ```
 
-Most specialist work happens in the main Codex session. Delegation is available only when the user explicitly asks for subagents or parallel work.
+The coordinator applies immediate blocking lenses locally and dispatches useful independent approved scopes through native agents by default. A capacity-aware ready queue respects actual runtime/resource limits; one owner converges integration, current independent QA and safe resource disposition.
 
 ## Honest Boundaries
 

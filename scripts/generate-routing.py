@@ -32,6 +32,11 @@ def render() -> str:
         f"Primary entrypoint: `${catalog['entrypoints']['primary']}`  ",
         f"Delegation entrypoint: `${catalog['entrypoints']['launcher']}`",
         "",
+        f"Execution default: `{catalog['execution']['default']}` through `{catalog['execution']['backend']}`; canonical policy: `{catalog['execution']['policySkill']}`.",
+        "`$orchestrate` is a deprecated compatibility redirect to `$protocol`.",
+        "",
+        "These specialist sequences describe decision/input dependencies, not global barriers across independent deliverables. Dispatch ready scopes continuously within native/resource capacity; one owner converges current evidence and verified resource disposition.",
+        "",
         "| Request type | Specialist sequence |",
         "| --- | --- |",
     ]

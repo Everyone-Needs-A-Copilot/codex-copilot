@@ -20,9 +20,9 @@ Use these Codex-native equivalents:
 
 - `AGENTS.md` for repo-level operating instructions
 - local skills from `plugins/codex-copilot/skills/`
-- `spawn_agent` only when the user explicitly asks for subagents, delegation, or parallel agent work
+- native `spawn_agent` for useful independent work within an approved plan, with visible tracked ownership
 
-When the user does not explicitly ask for subagents, apply the specialist playbook locally in the main session.
+The coordinator applies the immediate blocking lens locally and dispatches independent ready work through native agents by default after scope approval. Small coupled work may remain local when delegation adds no useful throughput.
 
 ## Output Contract
 
@@ -44,7 +44,7 @@ Detailed technical records belong in `tc` work products. Content always outranks
 
 **Example first (2026-10-29).** For a collection, workflow family, integration or asset family, build one populated first example with real content (one journey; one narrative section; one item through the real path; one record plus one exception; one device and an observed action), show it, apply the correction, then expand.
 
-**Fan-out cap (2026-10-29).** When the user asks for subagents, run at most three concurrently unless the done block says otherwise, close each when its piece is done, and run one QA pass per batch rather than per step.
+**Parallel default (2026-11-04).** Approval of the plan or done block authorizes useful local fan-out. Dispatch a capacity-aware ready queue through protocol; no arbitrary framework cap applies. Respect native slots, resource permits and budgets, complete owned agents promptly, and converge independent scoped QA plus cross-stream checks on one tested integration candidate. During cleanup, automatically retire recorded, fully integrated, clean and inactive worktrees after successful teardown and identity/consumer checks; preserve branches and hold unsafe resources. Other deletion still needs exact approval.
 
 **Make this a rule (2026-10-29).** When the owner says “make this a rule”, propose the destination (global instructions, framework file, project `AGENTS.md` or memory), rewrite the current rule rather than appending an exception, and report where it went. The command is `cc rule add`.
 
@@ -179,9 +179,9 @@ Use these specialist roles as decision lenses:
 
 ## Delegation Rules
 
-`spawn_agent` is allowed only when the user explicitly asks for delegation, subagents, or parallel work.
+An approved plan authorizes visible, tracked `spawn_agent` work by default wherever outputs can proceed independently. No separate spawn or worktree approval is needed within that scope. Read the shared `parallel-execution` policy through `cc skill get parallel-execution --scope machine --json` and the native adapter at `plugins/codex-copilot/skills/protocol/references/parallel-execution.md`.
 
-If delegation is authorized:
+For every dispatch:
 
 - use `explorer` for bounded codebase analysis questions
 - use `worker` for isolated implementation slices
@@ -263,4 +263,4 @@ acceptance alongside delivery criteria; task-bound QA verifies the actual record
 lesson application and artifact disposition. Exact destructive approval and
 verified recovery remain required. Instruction delivery is not a runtime hook.
 
-At start/resume (including a new PRD or initiative) and finish/merge/pause/handoff, proactively inspect relevant worktrees and surface eligible cleanup with exact paths, recovery and dependency checks, then visibly request deletion approval; do not wait for a cleanup command. Merge alone is insufficient. Record owned holds and pending approval in the existing task, continue unrelated work, and reuse unchanged prior approval after drift checks.
+At start/resume (including a new PRD or initiative) and finish/merge/pause/handoff, proactively inspect relevant worktrees. During cleanup automatically retire only recorded, fully integrated, clean and inactive merged worktrees after identity, recovery, consumer and project-teardown checks; never remove the coordinator’s current tree. Preserve branch history and hold dirty, unmerged, drifted, active or unknown work with an owner and next action. Other deletion requires exact approval; continue unrelated work while that approval is pending.

@@ -16,7 +16,7 @@ Port the `claude-copilot` framework into Codex-native constructs without faking 
 | Task Copilot via `tc` | unchanged |
 | selected Claude hook intent | Codex-native plugin hooks using Codex payload/output contracts |
 | knowledge/extensions | dormant capability packs plus project-local plugin activation |
-| orchestration worktrees | user-approved `spawn_agent` delegation plus stream validation and explicit git worktree handling |
+| orchestration worktrees | visible native `spawn_agent` within approved work plus shared `tc cycle` readiness, ownership and resource receipts |
 
 ## Design Choices
 
@@ -138,7 +138,7 @@ flowchart LR
     P --> S[Codex-native hooks, explicit scripts, and tests]
     P --> I[docs/40-initiatives]
     I -. links durable initiative context .-> TC
-    C -. user-approved delegation only .-> SA[spawn_agent]
+    C -. useful ready scopes inside approved plan .-> SA[spawn_agent]
 ```
 
 ## Ownership Boundaries

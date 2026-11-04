@@ -4,10 +4,10 @@ Codex Copilot mirrors Claude Copilot capability intent, not Claude-only syntax.
 
 The current baseline is recorded in `parity/claude-baseline.json`:
 
-- Adopted Claude Copilot framework source: `5.33.0`
+- Adopted Claude Copilot framework source: `5.34.0`
 - Required `cc`: `2.18.0`
-- Required `tc`: `2.11.0`
-- Current Codex source version: `0.15.0` (release publication and signatures are verified separately)
+- Required `tc`: `2.12.0`
+- Current Codex source version: `0.16.0` (release publication and signatures are verified separately)
 
 The manifests record source compatibility, not proof of a published foundation
 release. See [release preparation](../03-developer-guides/03-evidence-design-release.md)
@@ -52,7 +52,7 @@ Claude Code hook registration in `~/.claude/settings.json` and Claude payload/ou
 
 Claude named-agent syntax is substituted with direct skill names and `agent-catalog.json`.
 
-Headless worker orchestration is substituted with explicit user-approved `spawn_agent` launch templates and worktree safety checks.
+Headless worker orchestration uses visible native `spawn_agent` execution within approved work, a capacity-aware ready queue backed by shared `tc cycle`, and verified writer cwd/ownership. `$orchestrate` is a deprecated redirect to protocol, not a separate execution stage.
 
 ## Deferred
 

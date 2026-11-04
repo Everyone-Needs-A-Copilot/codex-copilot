@@ -1,15 +1,15 @@
 {
   "name": "codex-copilot",
-  "version": "0.15.0",
-  "releaseDate": "2026-11-02",
-  "codename": "tiered-verification",
-  "status": "stable",
+  "version": "0.16.0",
+  "releaseDate": "2026-11-04",
+  "codename": "protocol-parallel-default",
+  "status": "candidate",
   "mirrors": {
     "project": "claude-copilot",
-    "frameworkVersion": "5.33.0",
+    "frameworkVersion": "5.34.0",
     "baselineManifest": "parity/claude-baseline.json",
-    "capturedDate": "2026-11-02",
-    "adoptionNote": "Adopted Claude 5.33.0 / cc 2.18.0 / tc 2.11.0. Verification depth follows the change: tc records a T1/T2/T3 tier and approves T1/T2 by attestation. The canonical verification-policy.md is now copied byte for byte from Claude and the me, qa and protocol skills reference it; copilot-gate.sh already defers to tc task check-qa. Also adopts the 5.31.0 and 5.32.0 shared-tool releases (cc resources, organization skills) with no Codex port. See parity/2026-11-02-upstream-5.33.0-adoption.md."
+    "capturedDate": "2026-11-04",
+    "adoptionNote": "Local candidate adoption of protocol-native parallel execution and shared tc cycle2.12.0. Source lineage and content parity are verified against the explicit integrated candidate; no publication or signed tag implied."
   },
   "components": {
     "cc": {
@@ -35,7 +35,7 @@
       ]
     },
     "tc": {
-      "requiredVersion": "2.11.0",
+      "requiredVersion": "2.12.0",
       "source": "Claude Copilot tools/tc",
       "provides": [
         "tc prd",
@@ -56,7 +56,8 @@
         "tc task contract --from-done-block",
         "tc task tier",
         "tc task attest",
-        "tc task qa-packet"
+        "tc task qa-packet",
+        "tc cycle"
       ]
     }
   },
@@ -78,5 +79,13 @@
     "state": "released in 0.8.0",
     "detectorEngine": "0.1.3",
     "authority": "tc QA; detector and reports are advisory"
+  },
+  "parallelExecutionAdoption": {
+    "date": "2026-11-04",
+    "state": "local candidate; publication verified separately",
+    "backend": "shared tc cycle",
+    "default": "approved useful independent ready work",
+    "deprecated": "orchestrate redirects to protocol",
+    "cleanup": "automatic verified merged worktrees; preserve branches and unsafe holds"
   }
 }

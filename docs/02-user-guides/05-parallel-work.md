@@ -1,51 +1,21 @@
-# Parallel Work And Worktrees
+# Parallel execution is part of protocol
 
-Codex Copilot supports approval-based parallel work. It does not silently auto-spawn workers.
+After scope approval, `$protocol` starts useful independent work by default. You do not need to ask for subagents or invoke `$orchestrate`; the latter is a deprecated compatibility redirect.
 
-## Stream Metadata
+The coordinator plans bounded deliverables with exclusive write ownership, agreed interfaces and real input dependencies. It continuously starts ready work within native agent capacity, resource permits and existing budgets. A shared-file contribution has one writer. Each repository writer gets its own working directory and verified branch/cwd. Read-only research and review can share source access without provisioning software environments.
 
-Each stream should declare:
+Research divides by question, evidence source or hypothesis and converges through synthesis. Design explores bounded alternatives or journey scopes and converges at meaningful owner decisions. Code divides by owned outputs, builds against agreed contracts and converges through one integrator. Coarse specialist phases never create an artificial global barrier, but unresolved inputs and real design approvals remain dependencies.
 
-```json
-{
-  "streamId": "Stream-A",
-  "streamName": "Foundation",
-  "files": ["src/auth.ts"],
-  "streamDependencies": [],
-  "streamPaths": ["src/auth/**"],
-  "streamTokenBudget": 2500
-}
-```
+Builders commit locally and run focused checks; the integrator owns pushes and required full checks. Independent scoped QA plus seam checks bind to the actual assembled source. Fixes rerun affected evidence and consumers. Cleanup automatically removes recorded eligible merged worktrees after clean-state, identity, inactivity, consumer and teardown checks under the owner’s explicit authority; branch history is preserved, and other deletion retains exact approval. Dirty, unmerged or actively consumed work is held with an owner and next action.
 
-Required fields:
+See the [native adapter](../../plugins/codex-copilot/skills/protocol/references/parallel-execution.md) for the internal `tc cycle` contract. The canonical organization procedure is loaded through `cc skill get parallel-execution --scope machine --json`; both Copilots read that same source.
 
-- `streamId`
-- `files`
-- `streamDependencies`
-
-## Validate Streams
-
-Before parallel work:
+## Quick lifecycle proof
 
 ```bash
-scripts/orchestrate-validate.py stream-plan.json
+python scripts/protocol-cycle.py smoke --json
 ```
 
-The validator checks required fields, duplicate stream ids, unknown dependencies, dependency cycles, and overlapping file ownership.
+This delegates to shared `tc cycle smoke` with every active specialist role in the catalog. It starts and reaps short local subprocesses with deterministic replies; no provider calls or model tokens are spent. Optional pack labels can be checked with `--include-optional` without activating packs. This is lifecycle/adapter coverage, not evidence that each native model role reasoned correctly. Use one small, separately recorded native fan-out to verify actual runtime dispatch and overlap; retain normal independent QA for real work.
 
-## Worktree Safety
-
-Use git worktrees only after the user approves the branch and merge plan.
-
-Recommended lifecycle:
-
-1. validate stream metadata
-2. create one worktree per approved stream
-3. run stream work in disjoint scopes
-4. route each stream through QA
-5. merge only after approval
-6. clean up only after merge status is clear
-
-## Spawn-Agent Boundary
-
-Use `spawn_agent` only when the user explicitly asks for delegation or parallel execution. Each launch prompt should include the specialist role, task id, owned paths, forbidden paths, and required work product.
+The old `scripts/orchestrate-validate.py` remains a compatibility adapter and delegates validation to shared `tc.services.cycles`. It keeps no separate ownership algorithm. Missing shared tooling is reported and blocks unsafe dispatch.

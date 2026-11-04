@@ -31,7 +31,8 @@ Use $protocol to refactor the auth service.
 - uses `docs/40-initiatives/NN-slug/` for formal multi-phase initiative knowledge while keeping live execution state in `tc`
 - uses Live Docs before third-party API planning or implementation
 - records QA-required implementation work through the Codex QA gate convention
-- hands off to `$launcher` only when delegated subagents are explicitly desired
+- continuously dispatches useful independent scopes through `$launcher` after plan approval, within native capacity and resource permits
+- integrates contributions, binds independent QA to current source, and prepares exact cleanup automatically
 
 ## Default workflows
 
@@ -53,5 +54,5 @@ The behavior is the same goal as `/protocol`, but expressed through:
 
 - a native Codex skill
 - specialist skills
-- native `spawn_agent` when explicitly requested
+- visible native `spawn_agent` for useful independent approved work by default
 - explicit `tc` state and inspection scripts instead of hidden Claude hooks

@@ -2,9 +2,9 @@
 
 Codex Copilot is a Codex-native operating layer for developers who want specialist reasoning, durable task context, and evidence-bound verification before work is called complete.
 
-It mirrors [Claude Copilot](https://github.com/Everyone-Needs-A-Copilot/claude-copilot)'s capability intent through real Codex primitives: `AGENTS.md`, skills, plugin-bundled lifecycle hooks, `tc`, `cc`, scripts, tests, and explicitly approved `spawn_agent` delegation. It does not pretend Claude hook registration, slash commands, or named-agent syntax work unchanged in Codex.
+It mirrors [Claude Copilot](https://github.com/Everyone-Needs-A-Copilot/claude-copilot)'s capability intent through real Codex primitives: `AGENTS.md`, skills, plugin-bundled lifecycle hooks, `tc`, `cc`, scripts, tests, and visible `spawn_agent` execution within approved work. It does not pretend Claude hook registration, slash commands, or named-agent syntax work unchanged in Codex.
 
-Current release: **0.15.0**, which mirrors Claude Copilot 5.33.0 and requires shared **cc 2.18.0** and **tc 2.11.0** (see [`VERSION.json`](./VERSION.json) and the [parity contract](./docs/05-reference/03-parity-contract.md)).
+Current source candidate: **0.16.0** (publication is separate), which mirrors Claude Copilot 5.34.0 and requires shared **cc 2.18.0** and **tc 2.12.0** (see [`VERSION.json`](./VERSION.json) and the [parity contract](./docs/05-reference/03-parity-contract.md)).
 
 ## What You Get
 
@@ -12,7 +12,7 @@ Current release: **0.15.0**, which mirrors Claude Copilot 5.33.0 and requires sh
 - a done block before substantial work (Done means / Proven by / Not in scope / Assumptions / First example) that becomes the `tc` task contract, and a four-line completion report (Works / Unverified / Parked / Decision needed)
 - specialist skills for architecture (`$ta`), engineering (`$me`), QA (`$qa`), security (`$sec`), documentation (`$doc`), DevOps (`$do`), service design (`$sd`), industrial design (`$ind`), UX (`$uxd`), UI design (`$uids`) and UI implementation (`$uid`)
 - `$new-product`: facilitated zero-to-one product definition from an empty folder, through six phases to a prototype, with a root `SOUL.md` decision instrument that can't be ratified until the user has answered what would make them stop using the product
-- workflow skills: `$continue`, `$pause`, `$reflect`, `$cleanup`, `$map`, `$memory`, `$orchestrate`, `$extensions`, `$config`, `$skills-approve`, `$knowledge-copilot`, and setup and update skills
+- workflow skills: `$continue`, `$pause`, `$reflect`, `$cleanup`, `$map`, `$memory`, `$extensions`, `$config`, `$skills-approve`, `$knowledge-copilot`, and setup and update skills
 - native hooks for conditional protocol routing, failed-command circuit breaking, concise subagent returns, and optional design feedback on edits
 - `tc` PRDs, tasks, streams, handoffs, work products, execution limits and test maps
 - `cc` memory, skill discovery, configuration, Live Docs, design quality and rules
@@ -72,7 +72,7 @@ request
   -> four-line completion report
 ```
 
-Most work runs in the main Codex session. Subagents are used only when the user explicitly asks for delegation or parallel work, at most three at a time unless the done block says otherwise.
+Protocol continuously dispatches useful independent work within the approved plan, using native agents and isolated writers. Concurrency follows ready work, native capacity, resource permits and budget; one coordinator owns synthesis, integration, current QA and resource disposition. `$orchestrate` is deprecated and redirects to `$protocol`.
 
 Formal multi-phase initiatives live in `docs/40-initiatives/NN-slug/`. Their briefs, phase plans, decisions, closure evidence, and retrospectives are durable documentation; live tasks, dependencies, assignments, and QA status remain authoritative in `tc`.
 

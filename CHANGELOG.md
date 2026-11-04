@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.16.0 — Protocol parallel default (local candidate)
+
+Approved useful independent work now uses a capacity-aware native ready queue by default, backed by shared tc cycle state and canonical organization policy. Deprecated standalone orchestrate to a protocol compatibility redirect; one owner converges integration and current independent QA. Added provider-free catalog-role lifecycle smoke and safe automatic retirement of verified merged worktrees during cleanup under owner authority; preserved branch history and unsafe holds. Publication and live rollout are verified separately.
+
 ## [0.15.0] - 2026-11-02
 
 - Adopt Claude 5.33.0 (cc 2.18.0, tc 2.11.0), see `parity/2026-11-02-upstream-5.33.0-adoption.md`. Verification depth follows the change: `tc task tier` records T1 copy, T2 structural or T3 foundational, and `tc task attest` approves T1/T2 without a QA specialist. Codex needs no gate change because `scripts/copilot-gate.sh` already defers to `tc task check-qa`.

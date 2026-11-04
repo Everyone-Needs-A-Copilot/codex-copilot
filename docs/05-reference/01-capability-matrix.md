@@ -12,7 +12,7 @@ Authoritative sources:
 | Claude Copilot Capability | Codex Copilot Equivalent | Status | Boundary |
 | ------------------------- | ------------------------ | ------ | -------- |
 | `CLAUDE.md` project instructions | `AGENTS.md` project instructions | Implemented | Codex reads repo instructions rather than Claude-specific project instructions. |
-| software specialist agents | direct Codex skills such as `$sd`, `$uxd`, `$uid`, `$ta`, `$me`, and `$qa` | Implemented | Specialists run as skills in the main session unless delegation is explicitly requested. |
+| software specialist agents | direct Codex skills such as `$sd`, `$uxd`, `$uid`, `$ta`, `$me`, and `$qa` | Implemented | Immediate blocking lenses run locally; useful independent approved scopes dispatch through native agents by default. |
 | named-agent invocation | direct `$skill` names and `$launcher` | Codex-native substitute | This framework uses skills and session-supported agent types, not Claude named-agent syntax. |
 | `/protocol` | `$protocol` | Implemented | Skill-based workflow, not platform slash-command syntax. |
 | `/continue` | `$continue` | Implemented as workflow skill | Reads `tc` and `cc` context when available; no automatic checkpoint runtime. |
@@ -20,7 +20,7 @@ Authoritative sources:
 | `/map` | `$map` | Implemented as workflow skill | Produces or stores a map; writing `PROJECT_MAP.md` requires explicit request. |
 | `/memory` | `$memory` | Implemented as workflow skill | Uses `cc memory`, `cc memory check`, and `tc progress` where configured. |
 | `/extensions` | `$extensions` | Implemented as inspection workflow | Explains project/global/base resolution; does not perform automatic prompt assembly. |
-| `/orchestrate` | `$orchestrate` | Explicit-delegation substitute | Plans streams and validates boundaries; does not auto-spawn headless workers without user-approved delegation. |
+| `/orchestrate` | `$orchestrate` → `$protocol` | Deprecated compatibility redirect | Useful independent approved work is orchestrated by protocol by default; no separate owner command. |
 | `/setup`, `/setup-copilot` | `$setup-copilot` | Implemented as verification workflow | Provides safe setup/repair guidance; does not remove existing resources. |
 | `/setup-project` | `$setup-project` plus `scripts/setup-project.sh` | Implemented | Re-running over an existing install repairs it in place (delegates to `scripts/update-project.sh`) instead of refusing; `AGENTS.md` is never overwritten. |
 | `/update-project` | `$update-project` plus `scripts/update-project.sh` | Implemented | Discovers and content-compares (sha256) every framework-owned plugin path against source, including new hook assets; skips any path marked `ownership: project`; idempotent. |
@@ -36,9 +36,9 @@ Authoritative sources:
 | Claude quota observability | `cc usage` CLI | Optional utility | Reports Claude session quota, not Codex/OpenAI usage; useful for Claude Copilot tooling but not a Codex protocol gate. |
 | domain agents and extensions | dormant capability packs | Implemented convention | Packs stay inactive until a project exposes selected skills through its own local plugin. |
 | Mechanical Claude lifecycle hooks | Codex-native plugin hooks plus `tc` metadata, artifact-bound QA work products, `scripts/copilot-gate.sh`, instructions, and tests | Partial native port | Conditional routing, command-shape debug blocking, and subagent context use Codex hooks. Claude registration/payloads are not reused, and QA closure remains an explicit durable gate. This is not the design-led product protocol. |
-| Headless worker orchestration | Explicit `spawn_agent` delegation plus stream validation | Limited substitute | Codex delegation is user-approved and scoped; no autonomous background worker loop. |
+| Headless worker orchestration | Native `spawn_agent` plus shared `tc cycle` receipts | Protocol default | Dispatch useful ready scopes within approved work, native/resource capacity and budget; one owner converges current evidence and resource retirement. |
 | Claude 16-agent roster | 11 active software/product skills plus optional `business-creative` pack | Codex-native substitute | `kc`, `cco`, `cw`, `cs`, and `cpa` are activatable rather than globally loaded. |
-| Worktree stream validation | `scripts/orchestrate-validate.py` | Implemented utility | Validates stream metadata, dependencies, cycles, and file ownership before parallel work. |
+| Worktree stream validation | Shared `tc cycle validate` and compatibility `scripts/orchestrate-validate.py` | Shared authority | One fail-closed path/dependency validator; no duplicated Codex overlap algorithm. |
 | Initiative documentation | `docs/40-initiatives/NN-slug/` plus linked `tc` context | Implemented convention | Markdown preserves initiative goals, phases, decisions, validation evidence, and retrospectives; `tc` remains authoritative for live execution and QA state. |
 
 ## Evidence and design adoption

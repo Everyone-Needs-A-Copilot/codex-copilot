@@ -12,7 +12,7 @@
 > **It is living.** It changes only when real evidence says the product changed —
 > and every change is logged in **Section 10: Evolution**.
 
-> **STATUS: RATIFIED v1.2 — 2026-07-11.** QA evidence is now accepted only from a task-bound test work product; metadata may index evidence but can never replace it.
+> **STATUS: RATIFIED v1.4 — 2026-11-04.** Owner-approved work now dispatches useful independent scopes by default; workers remain visible, tracked and owned. Evidence-bound QA remains unchanged; verified merged worktrees retire automatically during cleanup under the owner’s explicit 4 November authority. Other deletion remains approval-bound.
 
 ---
 
@@ -119,10 +119,10 @@ Priority order: **Native Over Imitation > Evidence Or It Didn't Pass > Durable O
 **Line in the sand:** Live execution state stays in `tc`/`cc`. Formal initiative Markdown is allowed only under `docs/40-initiatives/` for durable goals, phases, decisions, validation evidence, and retrospectives linked back to `tc`.
 
 ### The Hidden Worker
-**Drift:** Background or headless orchestration is added so parallel work "just happens" without the user approving it.
-**Why it kills us:** Silent automation breaks the user-approved-delegation contract and the trust that the framework only does what was scoped and approved.
-**Early warning:** "Run these agents in the background," "auto-spawn workers," "headless orchestration," "no need to ask the user."
-**Line in the sand:** Parallel work is user-approved, scope-validated `spawn_agent` delegation only (via `$launcher`), with stream/file-ownership validation. No silent background workers.
+**Drift:** Workers run outside approved scope, without visible dispatch, ownership, task records or bounded lifetime.
+**Why it kills us:** Untracked work breaks accountability and makes recovery, evidence and resource disposition unreliable.
+**Early warning:** Unowned outputs, hidden dispatch, missing agent receipts, workers outliving the task, or unreported queued work.
+**Line in the sand:** Parallel work is the default when an approved plan has useful independent scopes. Plan or done-block approval authorizes local fan-out. Every worker is visibly dispatched, has validated exclusive write ownership and actual execution identity, is tracked in `tc`, and ends with verified disposition. Native limits, budgets and design decisions remain in force. Cleanup automatically retires only verified merged clean inactive worktrees; preserve branch history and hold dirty, unmerged, drifted, active or unknown resources. Other deletion requires exact approval. No silent, untracked or unowned workers.
 
 ### The Global Pack
 **Drift:** Business/creative specialists (`cco`, `cw`, `cs`, `cpa`, `kc`) get loaded into the default global plugin because "they're useful everywhere."
@@ -173,7 +173,8 @@ If yes → reject, or redesign until it doesn't.
 | Port routing and debug controls to Codex plugin hooks | **IN** | 1, 2 | Codex exposes real lifecycle events and plugin hook discovery; the implementation uses Codex payload/output contracts. |
 | Copy Claude hook files and `settings.json` registration unchanged | **OUT** | 1 | The harness contract differs even where event names overlap. |
 | Build an in-repo memory/task engine or database | **OUT** | 3 | Owned by `cc`/`tc`; duplicating it violates Borrow, Don't Rebuild. |
-| Hidden background / headless worker orchestration | **OUT** | 5 | The Hidden Worker; parallel work must be user-approved and scope-validated. |
+| Hidden, untracked or unowned worker orchestration | **OUT** | 5 | The Hidden Worker; every worker stays inside approved scope with visible receipts and ownership. |
+| Visible tracked fan-out for useful independent approved scopes | **IN** | 4, 5 | Protocol-native ready queue, one convergence owner, current QA and verified resource disposition. |
 | Make `cco`/`cw`/`cs`/`cpa`/`kc` global specialists | **OUT** | 3, 5 | The Global Pack; they stay dormant until `activate-pack.py`. |
 
 ---
@@ -266,7 +267,7 @@ The settled calls this instrument is built on. Ratified with the owner 2026-06-2
 2. **Honesty over imitation is the distinguishing principle.** It never fakes a Claude runtime feature; it substitutes with an explicit, inspectable mechanism or refuses. Resolves The Claude Cosplay.
 3. **QA is evidence-bound.** A passing verdict requires an `ARTIFACT:` marker; `copilot-gate.sh` is authoritative. Resolves The Rubber Stamp.
 4. **This is a leaf layer that borrows its engine.** Memory/task/docs work delegates to shared `cc`/`tc`; no engine is built or vendored here. Resolves engine-scope creep.
-5. **Delegation is user-approved only.** No hidden background workers; parallel work is scoped, validated, and explicitly requested. Resolves The Hidden Worker.
+5. **Parallel execution is the approved-work default.** Plan approval authorizes useful local fan-out; workers remain visible, scoped, validated, tracked and bounded. Hidden or unowned work stays forbidden. Owner changed the former opt-in rule on 2026-11-04; eligible merged-worktree retirement during cleanup is owner-authorized; other deletion remains approval-bound. Resolves The Hidden Worker.
 6. **Priority order is settled:** Native Over Imitation > Evidence Or It Didn't Pass > Durable Over Chat > Discipline Before Speed > Borrow, Don't Rebuild.
 7. **The anti-patterns are named and kept:** The Claude Cosplay, The Rubber Stamp, The Markdown Memory, The Hidden Worker, The Global Pack.
 8. **Initiatives have a canonical durable home.** Formal multi-phase initiative knowledge lives in `docs/40-initiatives/`; live execution and QA state remain authoritative in `tc`/`cc`. This preserves coherent program rationale without recreating The Markdown Memory.
@@ -286,6 +287,7 @@ When updated, add the rationale to the changelog below.
 
 | Date | Version | Change & rationale |
 |------|---------|--------------------|
+| 2026-11-04 | v1.4 | Owner approved full parallel-orchestration implementation: useful ready work fans out inside approved scope, with visible ownership and one convergence owner. Deprecated standalone orchestrate; retained native limits, QA and real design gates; the owner subsequently authorized automatic verified merged-worktree retirement during cleanup, preserving branches and unsafe holds. |
 | 2026-08-26 | v1.3 | Updated the native-runtime boundary after Codex added stable lifecycle hooks. Selected routing, debug, and subagent controls may now use tested Codex plugin hooks; Claude registration and payloads remain non-portable, and evidence-bound QA stays explicit. |
 | 2026-07-11 | v1.2 | Closed the metadata-only QA bypass discovered by executable audit. Metadata remains an index, while the task-bound test work product is the sole passing evidence source. |
 | 2026-07-11 | v1.1 | Ratified `docs/40-initiatives/` as the durable home for multi-phase goals, phase designs, decisions, validation evidence, and retrospectives. Clarified that The Markdown Memory rejects duplicate live task boards, not formal initiative knowledge linked to authoritative `tc`/`cc` state. |

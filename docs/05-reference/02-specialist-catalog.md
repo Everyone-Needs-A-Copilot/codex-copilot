@@ -13,7 +13,7 @@ The native building blocks available in Codex are:
 - `spawn_agent`
 - catalog launch mappings to `default`, `explorer` and `worker`, subject to the current session tool contract
 
-This project therefore defines each specialist as a native Codex skill and maps it to a real Codex subagent type when delegation is explicitly requested.
+This project therefore defines each specialist as a native Codex skill and maps it to a real native agent for useful independent approved scopes by default.
 
 ## Agent Catalog
 
@@ -48,7 +48,7 @@ Use $ind to shape the hardware/software touchpoint before UX work.
 
 ### Delegated mode
 
-If the user explicitly asks for subagents or parallel execution, use `$launcher` to map the requested specialist onto a real Codex spawned agent type:
+For useful independent scopes within the approved plan, use `$launcher` by default to map each specialist onto a real native agent, using these role hints where supported:
 
 - `explorer`: analysis-heavy specialists such as `ta`, `qa`, `sec`
 - `worker`: implementation-heavy specialists such as `me`, `uid`, `do`

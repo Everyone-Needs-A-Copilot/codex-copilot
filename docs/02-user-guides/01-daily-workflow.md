@@ -139,33 +139,13 @@ Use the actual task ID in place of `123`. An artifact marker and approval token
 alone are insufficient. Product-facing work also needs relevant rendered,
 interaction and accessibility evidence; a ready design report does not grant QA.
 
-## Use Delegation Carefully
+## Parallel execution follows approval
 
-Codex Copilot works locally in the main session by default.
+The coordinator applies the immediate blocking specialist lens locally, then continuously dispatches useful independent approved work within native slots, resource permits and budget. `$launcher` maps roles to native agents; every writer has exclusive outputs and a verified actual worktree cwd. Read-only research can share source access and converge by synthesis. One integration owner merges local builder commits, and independent scoped QA plus seam checks verify the assembled result.
 
-Use `spawn_agent` only when the user explicitly asks for:
+`$orchestrate` is deprecated and redirects to `$protocol`; no separate delegation or worktree approval is required inside the accepted plan. Protocol uses shared `tc cycle` readiness, claims and receipts, automatically prepares resource disposition and removes only verified eligible merged worktrees during cleanup. Branch history remains; dirty, unmerged, active, drifted or unknown resources are held.
 
-- subagents
-- delegation
-- parallel work
-
-When delegation is approved, use `$launcher` to map the specialist role to a Codex spawned-agent type and give the subagent a narrow file scope.
-
-## Use Orchestration For Parallel Streams
-
-For parallel work:
-
-1. have `$ta` define streams and file ownership
-2. validate streams
-3. get user approval for delegation and worktrees
-4. launch scoped subagents only if requested
-5. route every implementation stream through QA
-
-Validate stream plans:
-
-```bash
-scripts/orchestrate-validate.py stream-plan.json
-```
+See [Parallel Work](05-parallel-work.md) for the shared contract and cheap provider-free role lifecycle smoke.
 
 ## Activate Optional Packs
 

@@ -30,7 +30,7 @@
 - Lead with the answer, decision, result, or blocker. Default to 6 sentences or 5 bullets; expand when completeness requires it. Preserve findings, uncertainty, citations, QA evidence, safety warnings, Task/WP identifiers, and blockers.
 - Decisions lead with a recommendation; if every option is reversible within current authorization, take it and report instead of asking, and offer options only for irreversible, outward or budget-affecting choices. Design-flow checkpoints still need explicit approval. Do not manufacture decisions or ask again for authorized work.
 - Keep progress brief and material. Completion has four lines: Works (with evidence), Unverified, Parked (with task IDs), Decision needed (or “none”); no confidence percentages. Store detail in `tc` work products.
-- Before substantial work post a five-line done block (Done means / Proven by / Not in scope / Assumptions / First example) and wait for one word; register it with `tc task contract <id> --from-done-block <file>`. For a family of things, build one populated first example, show it, then expand. At most three concurrent subagents; one QA pass per batch.
+- Before substantial work post a five-line done block (Done means / Proven by / Not in scope / Assumptions / First example) and wait for one word; register it with `tc task contract <id> --from-done-block <file>`. For a family of things, build one populated first example, show it, then expand. Dispatch useful independent scopes within native/resource capacity and budget; one convergence owner aggregates current scoped QA plus seam checks.
 
 ## `cc` CLI
 
@@ -68,7 +68,7 @@
 - Experience work starts with `$sd` / `$uxd`; visual direction uses `$uids` before `$uid`. Architecture and non-trivial technical work use `$ta`; `$me` implements and `$qa` verifies.
 - Bugs follow `$qa -> $me -> $qa`; security-sensitive work includes `$sec`; infrastructure changes needing implementation follow `$do -> $me -> $qa`.
 - Keep changes focused, preserve user work, omit time estimates, and respect the user's authorization and review boundaries.
-- Use `spawn_agent` only when the user explicitly requests delegation, subagents, or parallel agent work.
+- Within the approved plan, use native `spawn_agent` for useful independent scopes by default. Follow the protocol parallel-execution adapter, validate ownership and actual cwd, and refill capacity within native slots, resource permits and budget; no separate spawn/worktree approval is required.
 
 ### Delegating to Subagents
 
@@ -105,4 +105,4 @@ acceptance alongside delivery criteria; task-bound QA verifies the actual record
 lesson application and artifact disposition. Exact destructive approval and
 verified recovery remain required. Instruction delivery is not a runtime hook.
 
-At start/resume (including a new PRD or initiative) and finish/merge/pause/handoff, proactively inspect relevant worktrees and surface eligible cleanup with exact paths, recovery and dependency checks, then visibly request deletion approval; do not wait for a cleanup command. Merge alone is insufficient. Record owned holds and pending approval in the existing task, continue unrelated work, and reuse unchanged prior approval after drift checks.
+At start/resume (including a new PRD or initiative) and finish/merge/pause/handoff, proactively inspect relevant worktrees. During cleanup automatically retire only recorded, fully integrated, clean and inactive merged worktrees after identity, recovery, consumer and project-teardown checks; never remove the coordinator’s current tree. Preserve branch history and hold dirty, unmerged, drifted, active or unknown work with an owner and next action. Other deletion requires exact approval; continue unrelated work while that approval is pending.
