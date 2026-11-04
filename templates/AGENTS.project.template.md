@@ -106,3 +106,5 @@ lesson application and artifact disposition. Exact destructive approval and
 verified recovery remain required. Instruction delivery is not a runtime hook.
 
 At start/resume (including a new PRD or initiative) and finish/merge/pause/handoff, proactively inspect relevant worktrees. During cleanup automatically retire only recorded, fully integrated, clean and inactive merged worktrees after identity, recovery, consumer and project-teardown checks; never remove the coordinator’s current tree. Preserve branch history and hold dirty, unmerged, drifted, active or unknown work with an owner and next action. Other deletion requires exact approval; continue unrelated work while that approval is pending.
+
+At finish, reconcile every task in the body/PRD/streams, including parked work: complete verified work through QA, cancel abandoned work with preserved handoff/history, verify workers stopped and inactive claims clear, and close streams/PRD only after no active tasks remain. Never delete task records or fake completion for unresolved requirements.
