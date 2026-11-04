@@ -1,7 +1,7 @@
 {
-  "codex_head_commit": "24f308b7fad30bf6e744170e28b9c7ea74acd229",
-  "codex_working_tree_dirty_at_update": true,
-  "port_attestation": null,
-  "updated_at": "2026-11-04T19:26:06.055600Z",
-  "upstream_commit": "38a03791ed1a5b33ae9980e42a0e75abba2c27cf"
+  "codex_head_commit": "74cc1fcd29cb89fe5ce6110e18719f29395db7a8",
+  "codex_working_tree_dirty_at_update": false,
+  "port_attestation": "Only shared tc execution source relocation changed after native port review; both native adapters already delegate to tc cycle and their mirrored behavior files are unchanged.",
+  "updated_at": "2026-11-04T19:34:11.876245Z",
+  "upstream_commit": "bc3ff3221b40f22f64ad078f53e06c44a14f38e7"
 }
