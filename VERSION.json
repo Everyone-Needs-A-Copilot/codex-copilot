@@ -3,13 +3,13 @@
   "version": "0.16.0",
   "releaseDate": "2026-11-04",
   "codename": "protocol-parallel-default",
-  "status": "candidate",
+  "status": "stable",
   "mirrors": {
     "project": "claude-copilot",
-    "frameworkVersion": "5.34.0",
+    "frameworkVersion": "5.34.1",
     "baselineManifest": "parity/claude-baseline.json",
     "capturedDate": "2026-11-04",
-    "adoptionNote": "Local candidate adoption of protocol-native parallel execution and shared tc cycle2.12.0. Source lineage and content parity are verified against the explicit integrated candidate; no publication or signed tag implied."
+    "adoptionNote": "Adopts Claude 5.34.1 / cc 2.18.0 / tc 2.12.0: protocol-native parallel execution, shared tc cycle, deprecated standalone orchestrate, safe automatic merged-worktree retirement and complete PRD reconciliation. Claude-only budget-lock repair has no native Codex payload change. See parity/2026-11-04-upstream-5.34.1-adoption.md; signed release and installed-consumer identities are verified separately."
   },
   "components": {
     "cc": {
@@ -82,7 +82,7 @@
   },
   "parallelExecutionAdoption": {
     "date": "2026-11-04",
-    "state": "local candidate; publication verified separately",
+    "state": "released in 0.16.0; consumer acceptance verified separately",
     "backend": "shared tc cycle",
     "default": "approved useful independent ready work",
     "deprecated": "orchestrate redirects to protocol",

@@ -2,12 +2,14 @@
 
 ## [0.16.0] - 2026-11-04
 
-- Adopt Claude 5.34.0 (cc 2.18.0, tc 2.12.0); see the [upstream adoption record](parity/2026-11-04-upstream-5.34.0-adoption.md). Approved useful independent work now uses a capacity-aware native ready queue by default, backed by shared `tc cycle` state and the canonical organization `parallel-execution` skill.
+- Adopt Claude 5.34.1 (cc 2.18.0, tc 2.12.0); see the [upstream adoption record](parity/2026-11-04-upstream-5.34.1-adoption.md). Approved useful independent work now uses a capacity-aware native ready queue by default, backed by shared `tc cycle` state and the canonical organization `parallel-execution` skill.
 - Deprecate standalone `$orchestrate` to a `$protocol` compatibility redirect. One coordinator owns convergence, integration and current independent QA; native capacity, exclusive write ownership, input readiness and execution identity remain enforced.
 - Add provider-free lifecycle smoke for all installed catalog roles, including optional labels, without activating packs or making model calls. The bundled adapter remains usable after installation without its source checkout.
 - Automatically retire eligible recorded merged worktrees after clean-state, identity, integration, teardown, stopped-worker and consumer checks; preserve branch history and unsafe holds. Finish reconciles every PRD task, including parked work, and refuses closure while tasks or workers remain active.
 
-Release metadata preparation does not establish publication: verify the signed foundation and Codex tags and installed-consumer identities separately.
+- Follow the corrected foundation 5.34.1 activation target. Its Claude-only session budget lock uses owned noclobber creation after concurrent CI exposed lost updates under the external directory-lock utility; Codex keeps its existing native gate and unchanged plugin payload. The immutable 5.34.0 tag is retained as superseded release history.
+
+Release metadata does not establish publication: verify the signed foundation and Codex tags and installed-consumer identities separately.
 
 ## [0.15.0] - 2026-11-02
 
