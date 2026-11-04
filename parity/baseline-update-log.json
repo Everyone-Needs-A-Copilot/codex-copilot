@@ -1,7 +1,7 @@
 {
-  "codex_head_commit": "74cc1fcd29cb89fe5ce6110e18719f29395db7a8",
+  "codex_head_commit": "54ae96fbefab4db98fbbe2f06032fad7f22db42d",
   "codex_working_tree_dirty_at_update": false,
-  "port_attestation": "Only shared tc execution source relocation changed after native port review; both native adapters already delegate to tc cycle and their mirrored behavior files are unchanged.",
-  "updated_at": "2026-11-04T19:34:11.876245Z",
-  "upstream_commit": "bc3ff3221b40f22f64ad078f53e06c44a14f38e7"
+  "port_attestation": "Integration-only merge records already reviewed engine recovery lineage; shared behavior bytes and native adapters are unchanged.",
+  "updated_at": "2026-11-04T19:34:26.424616Z",
+  "upstream_commit": "7c197ff91e874b7021fd9d384352e475efe64b4b"
 }
