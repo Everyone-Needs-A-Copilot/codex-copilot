@@ -1,8 +1,13 @@
 # Changelog
 
-## 0.16.0 — Protocol parallel default (local candidate)
+## [0.16.0] - 2026-11-04
 
-Approved useful independent work now uses a capacity-aware native ready queue by default, backed by shared tc cycle state and canonical organization policy. Deprecated standalone orchestrate to a protocol compatibility redirect; one owner converges integration and current independent QA. Added provider-free catalog-role lifecycle smoke and safe automatic retirement of verified merged worktrees during cleanup under owner authority; preserved branch history and unsafe holds. Publication and live rollout are verified separately.
+- Adopt Claude 5.34.0 (cc 2.18.0, tc 2.12.0); see the [upstream adoption record](parity/2026-11-04-upstream-5.34.0-adoption.md). Approved useful independent work now uses a capacity-aware native ready queue by default, backed by shared `tc cycle` state and the canonical organization `parallel-execution` skill.
+- Deprecate standalone `$orchestrate` to a `$protocol` compatibility redirect. One coordinator owns convergence, integration and current independent QA; native capacity, exclusive write ownership, input readiness and execution identity remain enforced.
+- Add provider-free lifecycle smoke for all installed catalog roles, including optional labels, without activating packs or making model calls. The bundled adapter remains usable after installation without its source checkout.
+- Automatically retire eligible recorded merged worktrees after clean-state, identity, integration, teardown, stopped-worker and consumer checks; preserve branch history and unsafe holds. Finish reconciles every PRD task, including parked work, and refuses closure while tasks or workers remain active.
+
+Release metadata preparation does not establish publication: verify the signed foundation and Codex tags and installed-consumer identities separately.
 
 ## [0.15.0] - 2026-11-02
 
