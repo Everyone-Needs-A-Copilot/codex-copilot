@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.16.3] - 2026-11-05
+
+- **Divide and conquer applies to every role and stage, including testing.** Protocol fans out each stage across same-role partition workers with one synthesis owner, and verification is partitioned across parallel QA agents with one convergence owner. Coordinator-only delegation language is aligned with the 2026-11-05 rule. No hook files changed, so existing `/hooks` trust is unaffected.
+- Adopt Claude 5.34.4 (cc 2.18.0, tc 2.12.0); see the [upstream adoption record](parity/2026-11-05-upstream-5.34.4-adoption.md).
+
 ## [0.16.2] - 2026-11-05
 
 - Adopt Claude 5.34.3 (cc 2.18.0, tc 2.12.0); see the [upstream adoption record](parity/2026-11-05-upstream-5.34.3-adoption.md). The plugin payload is unchanged.

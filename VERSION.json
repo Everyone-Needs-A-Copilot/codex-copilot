@@ -1,15 +1,15 @@
 {
   "name": "codex-copilot",
-  "version": "0.16.2",
+  "version": "0.16.3",
   "releaseDate": "2026-11-05",
   "codename": "protocol-parallel-default",
   "status": "stable",
   "mirrors": {
     "project": "claude-copilot",
-    "frameworkVersion": "5.34.3",
+    "frameworkVersion": "5.34.4",
     "baselineManifest": "parity/claude-baseline.json",
     "capturedDate": "2026-11-05",
-    "adoptionNote": "Adopts Claude 5.34.3 (cc 2.18.0 / tc 2.12.0): the main session is a coordinator only. Codex carries its own native PreToolUse coordinator-guard with a git-argument allowlist and always-on rule injection; Claude's user-level hook, installer and budget-deferral are Claude-only surfaces. See parity/2026-11-05-upstream-5.34.2-adoption.md; signed release and installed-consumer identities are verified separately."
+    "adoptionNote": "Adopts Claude 5.34.4 (cc 2.18.0 / tc 2.12.0): the main session is a coordinator only. Codex carries its own native PreToolUse coordinator-guard with a git-argument allowlist and always-on rule injection; Claude's user-level hook, installer and budget-deferral are Claude-only surfaces. See parity/2026-11-05-upstream-5.34.2-adoption.md; signed release and installed-consumer identities are verified separately."
   },
   "components": {
     "cc": {

@@ -1,18 +1,18 @@
 {
   "files": {
-    ".claude/agents/cco.md": "a84cac63d0b4e7df84c94d2459cf1056dec14d0b9023d0d95eeec18ab5325477",
-    ".claude/agents/cpa.md": "28b319d9122326043db9ebe853927ce7c6c3eb3af91779a9ac51b03c351f7078",
-    ".claude/agents/cs.md": "a2ed9897b5efa26780c906b35192f2e2974b9cae9ed3b8a3a3e311fda07734f3",
-    ".claude/agents/cw.md": "be8def7ac3d70bcdb0df7af3d14abcbbb6d992d177333904532e1fbd514c47f7",
+    ".claude/agents/cco.md": "aaf5ffbf1c3c5ce94dd2fa4830a613f3b14f25009479447340bc4828234787e5",
+    ".claude/agents/cpa.md": "def63389224e0982e83f454789533e6c7efcbd9fcc8739e10e9dba77682bda0e",
+    ".claude/agents/cs.md": "4100c0c43638e253f632c66469c983c81ffa3f9a56b384b171b2341fbea48107",
+    ".claude/agents/cw.md": "e087266891ab2aab016ca72db3e5a40b59d614b2601769826bfba60510d4450a",
     ".claude/agents/do.md": "6a17d67213195e3faf543117471418ba7a038dbc92d5af3433962f6ed3ecc97a",
-    ".claude/agents/doc.md": "47c4a8ce3eae5a9db191d8504bf71c9c1f77614f2a937566e9bfd0e5c4801d97",
-    ".claude/agents/ind.md": "869b61ab53f1f43b9fab23c87c60a3cd4bff48126c4bf8d89707364cd405e9db",
-    ".claude/agents/kc.md": "77ef3902f70d6fe4835f8e1ddd0a1afd28751ade0a43f7bc95bc2fbc00b1617b",
-    ".claude/agents/me.md": "9e24d3f5d488645b8eb748468b17c62ac7dc1e115c9f96af3dc9e7faf683eb2a",
-    ".claude/agents/qa.md": "fd24e319fc596fa86543b8a85c777a3f4e3ab804cfddb68b41f5b46a3200d351",
+    ".claude/agents/doc.md": "3d440382a28b4f0fdb8cbaf13cf26ce4c3571fecc7950fee6dad323d1aa7eaac",
+    ".claude/agents/ind.md": "9bb05db61b0bacd4ebc91985db1a6698cd9229578ddc728d4c4ab32ea8823aa3",
+    ".claude/agents/kc.md": "cbb686fbda037c5e91bb7dc1034425450eff1535fe706ea6b6e275b0de9c3fce",
+    ".claude/agents/me.md": "7f05862c81c6c86265df8a241ac716a03c588561449ae6406f9832404d958337",
+    ".claude/agents/qa.md": "1c462d1e3ecace4cd880fa4deb8bc551dfc6909c80cba542766d99a3d0bde872",
     ".claude/agents/sd.md": "c5e5fa47b7de4900e7733048545402fef7639350d135bd6e3f5f0e40092cb49a",
-    ".claude/agents/sec.md": "1b9832190c29e79f78a39fac354c3c19c150358977a6149128ac636b36ac28b9",
-    ".claude/agents/ta.md": "8b69a479722c47f01df10a29afec00a09cc1fa88a5fdc19f0b88a003cea8ec7a",
+    ".claude/agents/sec.md": "f95fb4140c82ee66ec7cd99cd31b3f15151ab3f462110cc7beceba9396098d73",
+    ".claude/agents/ta.md": "5238e53dbc6f9e91ef3c49780c9ee2062952c14d4d99283b1a099318cd646a5a",
     ".claude/agents/uid.md": "547d040d9bcaf5dc499df6a809b0f9b217a43a304d1869d327d4ec3ed587638c",
     ".claude/agents/uids.md": "6511491dd6c70bd62c0112971402593e5c19dcc5410fd98a41d0c35228de4034",
     ".claude/agents/uxd.md": "23b78f1a6ab8fd1d058223652ca9ff29f4d7138ba67d3a2b7a7b1af6b4d65b72",
@@ -25,7 +25,7 @@
     ".claude/commands/memory.md": "952ff7d6176d9a4eee1951b73d1ca3911b3665f5593ceeb9ac5c84d876146cdc",
     ".claude/commands/orchestrate.md": "7757254dcc8671f6799c7a74e34e9e21c40ffead0468c3a996773038d7e26140",
     ".claude/commands/pause.md": "2983eae992bfcd89a2ce9273dc32fe15edc0a372fc7eb8c8b41b7c3bf81d7384",
-    ".claude/commands/protocol.md": "1bc1bf9b50a82ad5b28578524ca40aecfc1f61df2885b5391a880abf4183df72",
+    ".claude/commands/protocol.md": "9ad4a5feda4b9e47a2bdf66400c4ef2f06c9c252d84ef34b6529c44145cb0bb4",
     ".claude/commands/reflect.md": "3e7d8127f62f26696cf27da02b023e933ffbc390b0ab0de1ef7b8132a5657ba2",
     ".claude/commands/setup-copilot.md": "7153a6d0a42bff4b9ff14e90efa718d11d8f58b0d5ef70a6f3293d24a0df1f6a",
     ".claude/commands/setup-knowledge-sync.md": "c6326900093e10d884410913cc65cfb5ba6a436012e895dc3e62ac5ea45bfd5f",
@@ -74,11 +74,11 @@
     ".claude/skills/testing/jest-patterns/SKILL.md": "c6ca37963cb1180a9ea2db5514e3a2e2e66a4f5cd461b46205da754ddd982baa",
     ".claude/skills/testing/pytest-patterns/SKILL.md": "85e10117406ae80d7ee77f25d1028cd6d6ab94f41f24d07164808752ee94e693"
   },
-  "generated_at": "2026-11-05T18:51:56.133011Z",
-  "upstream_commit": "f2f63c7b400e63fbc0c6e54738d9f0c3469601aa",
+  "generated_at": "2026-11-05T19:26:34.744846Z",
+  "upstream_commit": "a98883d296464dc1bc32391208ec8ac7c6b566cc",
   "versions": {
     "agents": "5.14.0",
     "commands": "5.11.0",
-    "framework": "5.34.3"
+    "framework": "5.34.4"
   }
 }
