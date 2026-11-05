@@ -31,7 +31,7 @@ KIND="$(head -n 1 "$TP" 2>/dev/null | $JQ -r '.payload | if .thread_source == "u
 [ "$KIND" = "main" ] || exit 0
 
 deny() {
-  $JQ -cn --arg r "Coordinator rule (2026-11-05): the main session does not $1. Dispatch an agent with spawn_agent. Allowed here: tc, cc status/list/progress/skill, git status/log/branch/worktree list, notes under ~/.codex/memories. Override: COPILOT_COORDINATOR=off (logged)." \
+  $JQ -cn --arg r "Coordinator rule (2026-11-05): the main session does not $1. Dispatch an agent with spawn_agent. Allowed here: tc; cc status/list/progress/skill; pwd, date, readlink <path>; git status (-s -b --porcelain), git log (--oneline -n N --format= --graph --decorate --all --since= --until= --author= --stat --name-only --name-status --first-parent --no-merges, refs/ranges, -- paths), git branch (-a -r -v -vv --list --show-current), git worktree list [--porcelain], git rev-parse (--abbrev-ref --short --show-toplevel --git-dir --is-inside-work-tree, refs); notes under ~/.codex/memories. Override: COPILOT_COORDINATOR=off (logged)." \
     '{hookSpecificOutput:{hookEventName:"PreToolUse",permissionDecision:"deny",permissionDecisionReason:$r}}'
   exit 0
 }
@@ -69,40 +69,100 @@ if [[ "$CMD" =~ ^(/bin/)?(ba|z)?sh\ +-l?c\ +[\'\"](.*)[\'\"]$ ]]; then CMD="${BA
 
 case "$CMD" in *'`'*|*'$('*|*'>'*|*'<'*|*$'\n'*) deny "run shell with substitution, redirection or multiple lines" ;; esac
 
+# Split a segment into tokens in W, removing matched surrounding quotes. Fails (1) on
+# unterminated quotes, backslashes, `$`, or any quote left inside a token.
+tokenize() {
+  W=(); local s="$1" tok="" has=0 q="" c i
+  for ((i=0; i<${#s}; i++)); do
+    c="${s:i:1}"
+    if [ -n "$q" ]; then
+      if [ "$c" = "$q" ]; then q=""; else tok+="$c"; fi
+    else
+      case "$c" in
+        "'"|'"') q="$c"; has=1 ;;
+        ' '|$'\t') if [ "$has" = 1 ]; then W+=("$tok"); tok=""; has=0; fi ;;
+        *) tok+="$c"; has=1 ;;
+      esac
+    fi
+  done
+  [ -z "$q" ] || return 1
+  [ "$has" = 0 ] || W+=("$tok")
+  local t
+  for t in "${W[@]}"; do
+    case "$t" in *\\*|*\$*|*"'"*|*'"'*) return 1 ;; esac
+  done
+  return 0
+}
+
+REV_RE='^[A-Za-z0-9._/@^~:-]+$'
+is_rev() { [[ "$1" != -* && "$1" =~ $REV_RE ]]; }
+
+# Allowlisted git arguments only (after quote removal); anything unlisted is denied.
+git_args_ok() {
+  local sub="$1"; shift
+  local a n=0 dashdash=0
+  case "$sub" in
+    status)
+      for a in "$@"; do
+        case "$a" in -s|--short|-b|--branch|--porcelain|--porcelain=v1|--porcelain=v2) ;; *) return 1 ;; esac
+      done ;;
+    log)
+      while [ $# -gt 0 ]; do
+        a="$1"; shift
+        if [ "$dashdash" = 1 ]; then continue; fi
+        case "$a" in
+          --) dashdash=1 ;;
+          --oneline|--graph|--decorate|--all|--stat|--name-only|--name-status|--first-parent|--no-merges) ;;
+          -n) [[ "${1:-}" =~ ^[0-9]+$ ]] || return 1; shift ;;
+          -[0-9]*) [[ "$a" =~ ^-[0-9]+$ ]] || return 1 ;;
+          --max-count=*) [[ "${a#*=}" =~ ^[0-9]+$ ]] || return 1 ;;
+          --format=*|--pretty=*|--since=*|--until=*|--author=*) ;;
+          -*) return 1 ;;
+          *) if [[ "$a" == *..* ]]; then [[ "$a" =~ $REV_RE ]] || return 1; else is_rev "$a" || return 1; fi ;;
+        esac
+      done ;;
+    branch)
+      local listing=0
+      for a in "$@"; do [ "$a" = "--list" ] && listing=1; done
+      for a in "$@"; do
+        case "$a" in
+          -a|-r|-v|-vv|--list|--show-current) ;;
+          -*) return 1 ;;
+          *) [ "$listing" = 1 ] || return 1 ;;
+        esac
+      done ;;
+    worktree)
+      [ "${1:-}" = "list" ] || return 1
+      [ $# -le 2 ] || return 1
+      [ $# -lt 2 ] || [ "$2" = "--porcelain" ] || return 1 ;;
+    rev-parse)
+      for a in "$@"; do
+        case "$a" in
+          --abbrev-ref|--short|--short=[0-9]*|--show-toplevel|--git-dir|--is-inside-work-tree) ;;
+          -*) return 1 ;;
+          *) is_rev "$a" || return 1 ;;
+        esac
+      done ;;
+    *) return 1 ;;
+  esac
+  return 0
+}
+
 seg_ok() {
-  local s="$1"; read -ra W <<< "$s"
+  tokenize "$1" || return 1
   [ ${#W[@]} -gt 0 ] || return 0
-  local bin="${W[0]##*/}"
+  local bin="${W[0]##*/}" a
   case "$bin" in
     tc) return 0 ;;
     cc) case "${W[1]:-}" in status|list|progress|skill) return 0 ;; esac; return 1 ;;
+    pwd) for a in "${W[@]:1}"; do [ "$a" = "-P" ] || [ "$a" = "-L" ] || return 1; done; return 0 ;;
+    date) for a in "${W[@]:1}"; do [ "$a" = "-u" ] || [[ "$a" == +* ]] || return 1; done; return 0 ;;
+    readlink) [ ${#W[@]} -eq 2 ] && [[ "${W[1]}" != -* ]] && return 0; return 1 ;;
     git)
       local i=1
-      while [ "${W[$i]:-}" = "-C" ]; do i=$((i+2)); done
-      local sub="${W[$i]:-}" a
-      local -a A=("${W[@]:$((i+1))}")
-      case "$sub" in
-        status|log|rev-parse)
-          for a in "${A[@]}"; do
-            case "$a" in
-              --output|--output=*|--ext-diff|--textconv|-c|-c*|--exec-path|--exec-path=*|--patch|-p|-[a-zA-Z]*p*) return 1 ;;
-            esac
-          done
-          return 0 ;;
-        branch)
-          local listing=0
-          for a in "${A[@]}"; do [ "$a" = "--list" ] && listing=1; done
-          for a in "${A[@]}"; do
-            case "$a" in
-              -a|-r|-v|-vv|--all|--remotes|--verbose|--list|--show-current) ;;
-              -*) return 1 ;;
-              *) [ "$listing" = 1 ] || return 1 ;;
-            esac
-          done
-          return 0 ;;
-        worktree) [ "${A[0]:-}" = "list" ] && [ ${#A[@]} -le 2 ] && return 0 ;;
-      esac
-      return 1 ;;
+      while [ "${W[$i]:-}" = "-C" ]; do [ -n "${W[$((i+1))]:-}" ] || return 1; i=$((i+2)); done
+      [ -n "${W[$i]:-}" ] || return 1
+      git_args_ok "${W[@]:$i}"; return $? ;;
     head|tail|wc) [ "$SEG_IDX" -gt 0 ] && return 0; return 1 ;;
   esac
   return 1
