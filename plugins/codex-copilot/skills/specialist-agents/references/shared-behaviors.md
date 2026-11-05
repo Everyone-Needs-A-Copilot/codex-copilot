@@ -103,7 +103,7 @@ Lead user-facing output with the answer, decision, result, or blocker. Include o
 - Use one-sentence progress updates: material result plus next active step.
 - Completion reports have four lines: Works (with evidence), Unverified (untested, why), Parked (ideas left out, task IDs), Decision needed (or “none”). No confidence percentages; a bare “done” is incomplete.
 - Decisions lead with a recommendation. If every option is reversible within current authorization, take it and report instead of asking; otherwise ask in one sentence. Options only when irreversible, outward or budget-affecting.
-- Fan-out: useful independent approved scopes dispatch by default within native slots, resource permits and budget; complete each owned agent promptly, then converge current scoped QA plus seam checks through one owner.
+- Fan-out: useful independent approved scopes dispatch by default within native slots, resource permits and budget; complete each owned agent promptly, then converge current per-partition QA (split by criterion, journey, surface, test shard or browser/viewport, all against the same integrated source identity) plus seam checks through one convergence owner; a single agent running a full suite needs a recorded reason.
 - Never omit a required finding, uncertainty, citation, safety warning, QA artifact/verdict, Task/WP identifier, or blocker to meet a length target.
 
 ## Quality Gates
