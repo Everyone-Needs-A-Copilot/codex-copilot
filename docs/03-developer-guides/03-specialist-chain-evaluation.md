@@ -1,8 +1,6 @@
 # Specialist-Chain Evaluation
 
-Codex Copilot uses specialist lenses in the main session by default. That is an
-honest Codex-native substitute for Claude's context-isolated agents, but it does
-not prove that every stage earns its context cost.
+Codex Copilot dispatches each specialist stage to same-role agents on disjoint partitions, with the main session acting only as coordinator (rule of 2026-11-05). Earlier paired runs used main-session lenses; the comparison still does not prove that every stage earns its context cost.
 
 Evaluate the chain with paired runs of the same frozen task and repository state:
 

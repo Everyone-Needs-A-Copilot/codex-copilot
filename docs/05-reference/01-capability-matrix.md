@@ -12,7 +12,7 @@ Authoritative sources:
 | Claude Copilot Capability | Codex Copilot Equivalent | Status | Boundary |
 | ------------------------- | ------------------------ | ------ | -------- |
 | `CLAUDE.md` project instructions | `AGENTS.md` project instructions | Implemented | Codex reads repo instructions rather than Claude-specific project instructions. |
-| software specialist agents | direct Codex skills such as `$sd`, `$uxd`, `$uid`, `$ta`, `$me`, and `$qa` | Implemented | Immediate blocking lenses run locally; useful independent approved scopes dispatch through native agents by default. |
+| software specialist agents | direct Codex skills such as `$sd`, `$uxd`, `$uid`, `$ta`, `$me`, and `$qa` | Implemented | The main session coordinates only; every role divides into same-role agents on disjoint partitions, with read-only work dispatched immediately and one synthesis owner per stage. |
 | named-agent invocation | direct `$skill` names and `$launcher` | Codex-native substitute | This framework uses skills and session-supported agent types, not Claude named-agent syntax. |
 | `/protocol` | `$protocol` | Implemented | Skill-based workflow, not platform slash-command syntax. |
 | `/continue` | `$continue` | Implemented as workflow skill | Reads `tc` and `cc` context when available; no automatic checkpoint runtime. |

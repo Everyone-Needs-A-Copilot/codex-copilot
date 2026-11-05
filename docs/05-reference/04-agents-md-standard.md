@@ -26,7 +26,7 @@ Target roughly 100 lines for the base template and fewer than 200 for a complete
 
 ## Preserve the Copilot contract
 
-- Use available native skills. The template's `$protocol` and specialist names are shorthand; resolve the actual skill exposed by the session, including plugin-qualified names. Applying a skill locally is distinct from launching a subagent. Delegation requires the user's explicit request.
+- Use available native skills. The template's `$protocol` and specialist names are shorthand; resolve the actual skill exposed by the session, including plugin-qualified names. The main session is a coordinator only and dispatches same-role agents via `spawn_agent` from the first turn (read-only work immediately; approval gates only writes, outward actions and spending); agents apply the skills on disjoint partitions with one synthesis owner per stage.
 - Keep outcome-first communication, diagnostic discipline, and the concise subagent return contract. Existing authorization remains valid; ordinary reversible work does not need repeated approval.
 - Use `cc` for memory, configuration, skills, and Live Docs; `tc` for live tasks and work products. Shared `.claude/cc/` paths are valid Copilot storage, not evidence that Codex implements Claude hooks or rule discovery.
 - Resolve task-relevant knowledge through configured `CC_KNOWLEDGE_REPOS`, nearest tier first. Projects supply their consumption-contract and domain pointers; never ship organization-specific facts in the public framework or invent missing knowledge.

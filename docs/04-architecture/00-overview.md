@@ -9,7 +9,7 @@ Port the `claude-copilot` framework into Codex-native constructs without faking 
 | Claude Copilot concept | Codex equivalent |
 |------------------------|------------------|
 | `CLAUDE.md` | `AGENTS.md` |
-| named-agent invocation | specialist playbook applied locally or via `spawn_agent` when explicitly authorized |
+| named-agent invocation | specialist playbook run by same-role agents via `spawn_agent` on disjoint partitions; the main session only coordinates |
 | slash commands | documented workflows and reusable skills |
 | `.claude/skills/` | `cc` skill discovery bridge to plugin-delivered Codex skills |
 | Memory Copilot / Skills Copilot MCP servers | `cc` CLI |
@@ -121,10 +121,10 @@ Claude's `kc`, `cco`, `cw`, `cs`, and `cpa` specialists are useful but not alway
 ### Non-goals
 
 - hidden or autonomous background worker loops
-- delegation without explicit user approval
+- main-session execution of project work, or agents without a recorded owner and scope
 - a second task or memory engine inside this repository
 
-These boundaries are intentional. Hidden workers are not a roadmap item; approved delegation remains explicit and scope-validated.
+These boundaries are intentional. Hidden workers are not a roadmap item; delegation is the default for all work and stays owned and scope-validated; approval gates only writes, outward actions and spending.
 
 ## System Context
 

@@ -18,7 +18,7 @@ request
   -> evidence-bound QA when implementation is involved
 ```
 
-The coordinator applies immediate blocking lenses locally and dispatches useful independent approved scopes through native agents by default. A capacity-aware ready queue respects actual runtime/resource limits; one owner converges integration, current independent QA and safe resource disposition.
+The main session is a coordinator only: it never reads project content, edits files or runs work commands, and from the first turn it dispatches agents through `spawn_agent` (read-only work immediately with no approval wait; approval gates only writes, outward actions and spending). Every role and stage divides into several same-role agents on disjoint partitions with one synthesis owner per stage, and verification divides by criterion, journey, surface, shard or browser with one QA convergence owner. Useful independent approved scopes dispatch through native agents by default. A capacity-aware ready queue respects actual runtime/resource limits; one owner converges integration, current independent QA and safe resource disposition.
 
 ## Honest Boundaries
 

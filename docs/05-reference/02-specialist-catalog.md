@@ -35,9 +35,9 @@ Each specialist is a first-class skill in `plugins/codex-copilot/skills/`:
 
 ## Invocation model
 
-### Local specialist mode
+### Direct skill invocation
 
-Invoke a specialist skill directly in the main Codex session:
+A skill can be named directly, but the main session only coordinates: the named specialist runs as dispatched agents, not in the main session. Example requests:
 
 ```text
 Use $protocol to route this task through the right workflow.
@@ -48,7 +48,7 @@ Use $ind to shape the hardware/software touchpoint before UX work.
 
 ### Delegated mode
 
-For useful independent scopes within the approved plan, use `$launcher` by default to map each specialist onto a real native agent, using these role hints where supported:
+For every role, use `$launcher` by default to map each specialist onto a real native agent, using these role hints where supported:
 
 - `explorer`: analysis-heavy specialists such as `ta`, `qa`, `sec`
 - `worker`: implementation-heavy specialists such as `me`, `uid`, `do`
