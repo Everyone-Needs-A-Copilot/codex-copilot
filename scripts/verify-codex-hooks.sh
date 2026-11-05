@@ -22,7 +22,8 @@ jq -e '.hooks.UserPromptSubmit and .hooks.PreToolUse and .hooks.PostToolUse and 
   "${HOOK_ROOT}/hooks.json" >/dev/null || fail "hooks.json is missing a required event"
 
 NON_MATCH="$(printf '%s' '{"prompt":"Summarize this note."}' | bash "${HOOK_ROOT}/user-prompt-protocol.sh")"
-[[ -z "${NON_MATCH}" ]] || fail "routing hook emitted output for an unrelated prompt"
+[[ "$(jq -r '.hookSpecificOutput.additionalContext' <<< "${NON_MATCH}")" == *'Coordinator rule (2026-11-05)'* ]] || fail "prompt hook did not inject the coordinator rule on an unrelated prompt"
+[[ "$(jq -r '.hookSpecificOutput.additionalContext' <<< "${NON_MATCH}")" != *'$qa'* ]] || fail "routing nudge leaked into an unrelated prompt"
 
 ROUTED="$(printf '%s' '{"prompt":"This backend API is failing."}' | bash "${HOOK_ROOT}/user-prompt-protocol.sh")"
 [[ "$(jq -r '.hookSpecificOutput.hookEventName' <<< "${ROUTED}")" == "UserPromptSubmit" ]] || fail "routing hook returned the wrong event"
