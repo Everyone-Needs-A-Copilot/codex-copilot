@@ -22,8 +22,8 @@
 
 ## Codex Copilot
 
-- Use relevant skills exposed in this session. `$protocol` and specialist names are shorthand, not shell commands or requests to spawn agents. Read only task-relevant skills/references.
-- Start with `$protocol` unless the specialist is obvious; use `$launcher` when routing is unclear. Apply playbooks locally; if unavailable in the session, inspect `plugins/codex-copilot/skills/<name>/SKILL.md`. Report missing capabilities.
+- Use relevant skills exposed in this session. `$protocol` and specialist names are shorthand, not shell commands; the main session is a coordinator and dispatches agents (native `spawn_agent`) that load them. Read only task-relevant skills/references.
+- Start with `$protocol` unless the specialist is obvious; use `$launcher` when routing is unclear. Dispatched agents apply playbooks, never the main session; if unavailable in the session, inspect `plugins/codex-copilot/skills/<name>/SKILL.md`. Report missing capabilities.
 
 ## Output Contract
 

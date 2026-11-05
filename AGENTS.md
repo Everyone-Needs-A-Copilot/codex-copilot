@@ -22,7 +22,7 @@ Use these Codex-native equivalents:
 - local skills from `plugins/codex-copilot/skills/`
 - native `spawn_agent` for useful independent work within an approved plan, with visible tracked ownership
 
-The coordinator applies the immediate blocking lens locally and dispatches independent ready work through native agents by default after scope approval. Small coupled work may remain local when delegation adds no useful throughput.
+Coordinator rule (2026-11-05): The main session is a coordinator. It never reads project content, edits files or runs work commands itself. From the first turn it splits the request into independent streams and dispatches agents (Codex native spawn_agent); read-only work is dispatched immediately with no approval wait. Approval gates apply only before writes, outward actions and spending. Coordinator allowlist: routing and briefing agents; state commands (tc, cc status/list/progress/skill, git status/log/branch/worktree list); synthesizing agent results; answering from the conversation; maintaining its own memory/scratchpad notes; asking the owner for decisions. Every other read, edit or command goes to an agent. Default to multiple agents split by question, source or exclusively owned files, with one integration owner and independent QA. Coupled work goes to one agent, never the main session. No size-based exceptions (T1, tiny, coupled, immediate blocking step). Canonical text: the `parallel-execution` skill.
 
 ## Output Contract
 
@@ -44,7 +44,7 @@ Detailed technical records belong in `tc` work products. Content always outranks
 
 **Example first (2026-10-29).** For a collection, workflow family, integration or asset family, build one populated first example with real content (one journey; one narrative section; one item through the real path; one record plus one exception; one device and an observed action), show it, apply the correction, then expand.
 
-**Parallel default (2026-11-04).** Approval of the plan or done block authorizes useful local fan-out. Dispatch a capacity-aware ready queue through protocol; no arbitrary framework cap applies. Respect native slots, resource permits and budgets, complete owned agents promptly, and converge independent scoped QA plus cross-stream checks on one tested integration candidate. During cleanup, automatically retire recorded, fully integrated, clean and inactive worktrees after successful teardown and identity/consumer checks; preserve branches and hold unsafe resources. Other deletion still needs exact approval.
+**Parallel default (2026-11-04).** Approval of the plan or done block authorizes useful parallel fan-out through dispatched agents. Dispatch a capacity-aware ready queue through protocol; no arbitrary framework cap applies. Respect native slots, resource permits and budgets, complete owned agents promptly, and converge independent scoped QA plus cross-stream checks on one tested integration candidate. During cleanup, automatically retire recorded, fully integrated, clean and inactive worktrees after successful teardown and identity/consumer checks; preserve branches and hold unsafe resources. Other deletion still needs exact approval.
 
 **Make this a rule (2026-10-29).** When the owner says “make this a rule”, propose the destination (global instructions, framework file, project `AGENTS.md` or memory), rewrite the current rule rather than appending an exception, and report where it went. The command is `cc rule add`.
 
@@ -187,7 +187,7 @@ For every dispatch:
 - use `worker` for isolated implementation slices
 - give the subagent a single clear responsibility
 - keep write scopes disjoint
-- do not delegate the immediate blocking step if doing it locally is faster
+- never keep any step in the main session because it is small, coupled or blocking; coupled work goes to one agent
 
 Subagents return a decision, not a transcript:
 
