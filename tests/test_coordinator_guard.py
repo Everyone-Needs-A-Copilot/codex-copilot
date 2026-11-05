@@ -41,6 +41,26 @@ class GuardTest(unittest.TestCase):
                   "git rev-parse --output=f", "git worktree list --porcelain; git worktree prune", "git worktree remove x"]:
             self.assertTrue(self.bash(c), c)
 
+    def test_git_allowlist_blocks_bypasses(self):
+        for c in ["git log --outp=f", "git log --out=f", "git log --ou=f", "git log '--output=f'", 'git log "--outp=f"',
+                  "git log --ext", "git log --textc", "git log --cc", "git log --diff-merges=on", "git log --pa", "git log -u",
+                  "git log -O f", "git log --open-files-in-pager", "git log --show-signature", "git --git-dir=/x log",
+                  "git log --git-dir=/x", "git --work-tree=/x status", "git status --work-tree=/x", "git rev-parse --git-dir=/x",
+                  "git log --format=%h\\x", "git log $X", "git log 'a", "git status -uall", "git worktree list --foo",
+                  "pwd x", "date -s 12:00", "readlink", "readlink -f x", "git rev-parse --verify HEAD"]:
+            self.assertTrue(self.bash(c), c)
+
+    def test_git_allowlist_allows(self):
+        for c in ["git status -s", "git status --short -b", "git status --branch", "git status --porcelain", "git status --porcelain=v2",
+                  "git log --oneline -n 5", "git log -5", "git log --max-count=3", "git log --format=%h", "git log --pretty='%h %s'",
+                  'git log --format="%h %an"', "git log --graph --decorate --all", "git log --since=2.days --until=yesterday --author=bob",
+                  "git log --stat", "git log --name-only", "git log --name-status", "git log --first-parent --no-merges",
+                  "git log main..HEAD", "git log origin/main...HEAD", "git log HEAD~3 -- src docs/a.md", "git log 'v1.0'",
+                  "git branch --list 'f*'", "git branch -vv", "git worktree list --porcelain", "git rev-parse --abbrev-ref HEAD",
+                  "git rev-parse --short HEAD", "git rev-parse --show-toplevel", "git rev-parse --git-dir", "git rev-parse --is-inside-work-tree",
+                  "pwd", "date", "date -u +%F", "readlink x", "git -C /x status -s"]:
+            self.assertFalse(self.bash(c), c)
+
     def test_subagent_never_blocked(self):
         self.assertFalse(self.bash("cat README.md", self.sub))
         self.assertFalse(self.run_guard("apply_patch", {"command": "*** Begin Patch\n*** Add File: /p/x\n+a\n*** End Patch"}, self.sub))
