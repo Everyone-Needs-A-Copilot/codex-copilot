@@ -1,7 +1,7 @@
 {
-  "codex_head_commit": "40da41e18ac8d49cf4688dac10fc313428a33c39",
+  "codex_head_commit": "80430a824fdd7f112c11f43caca1eaa47618e6ff",
   "codex_working_tree_dirty_at_update": true,
-  "port_attestation": "Reviewed 5.34.4: per-role partition lines and partitioned T3 QA ported natively across Codex protocol, router, specialist skills and docs; Claude agent-size budget overrides are Claude-only. No hook change.",
-  "updated_at": "2026-11-05T19:26:34.744846Z",
-  "upstream_commit": "a98883d296464dc1bc32391208ec8ac7c6b566cc"
+  "port_attestation": "Reviewed 5.34.5: shared cc reconcile and snapshot-installer root repointing; Codex reuses shared cc and has no native counterpart. No shared canonical lifecycle or plugin payload change; only framework version and source provenance advance.",
+  "updated_at": "2026-11-05T23:29:53.702295Z",
+  "upstream_commit": "89c03f02e9f14b1fdbfe5b29d9384d1a01fea839"
 }
