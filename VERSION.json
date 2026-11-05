@@ -1,15 +1,15 @@
 {
   "name": "codex-copilot",
-  "version": "0.16.0",
-  "releaseDate": "2026-11-04",
+  "version": "0.16.1",
+  "releaseDate": "2026-11-05",
   "codename": "protocol-parallel-default",
   "status": "stable",
   "mirrors": {
     "project": "claude-copilot",
-    "frameworkVersion": "5.34.1",
+    "frameworkVersion": "5.34.2",
     "baselineManifest": "parity/claude-baseline.json",
-    "capturedDate": "2026-11-04",
-    "adoptionNote": "Adopts Claude 5.34.1 / cc 2.18.0 / tc 2.12.0: protocol-native parallel execution, shared tc cycle, deprecated standalone orchestrate, safe automatic merged-worktree retirement and complete PRD reconciliation. Claude-only budget-lock repair has no native Codex payload change. See parity/2026-11-04-upstream-5.34.1-adoption.md; signed release and installed-consumer identities are verified separately."
+    "capturedDate": "2026-11-05",
+    "adoptionNote": "Adopts Claude 5.34.2 (cc 2.18.0 / tc 2.12.0): the main session is a coordinator only. Codex carries its own native PreToolUse coordinator-guard with a git-argument allowlist and always-on rule injection; Claude's user-level hook, installer and budget-deferral are Claude-only surfaces. See parity/2026-11-05-upstream-5.34.2-adoption.md; signed release and installed-consumer identities are verified separately."
   },
   "components": {
     "cc": {

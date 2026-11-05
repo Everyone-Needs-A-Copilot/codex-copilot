@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.16.1] - 2026-11-05
+
+- **Coordinator rule.** The main session is a coordinator only: it dispatches agents and no longer implements, reads project content or runs work commands itself, with no carve-outs for small, coupled or blocking steps. The previous carve-outs are removed from instructions, and the rule is injected into every session.
+- **Coordinator guard.** A native `coordinator-guard.sh` PreToolUse hook enforces the rule in the main session. Shell commands are split on every control operator, and git arguments are checked against an allowlist after quote removal, so abbreviated or quoted options such as `git log --outp=f` no longer pass. Hooks require the owner's interactive `/hooks` trust.
+- Adopt Claude 5.34.2 (cc 2.18.0, tc 2.12.0); see the [upstream adoption record](parity/2026-11-05-upstream-5.34.2-adoption.md).
+
 ## [0.16.0] - 2026-11-04
 
 - Adopt Claude 5.34.1 (cc 2.18.0, tc 2.12.0); see the [upstream adoption record](parity/2026-11-04-upstream-5.34.1-adoption.md). Approved useful independent work now uses a capacity-aware native ready queue by default, backed by shared `tc cycle` state and the canonical organization `parallel-execution` skill.

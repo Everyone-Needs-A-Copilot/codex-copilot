@@ -1,10 +1,10 @@
 {
   "baseline": {
     "source": "claude-copilot",
-    "frameworkVersion": "5.34.1",
-    "capturedDate": "2026-11-04",
-    "codexParityVersion": "0.16.0",
-    "notes": "Codex 0.16.0 adopts protocol-native parallel execution from Claude 5.34.1 with shared tc cycle 2.12.0 and cc 2.18.0. Deprecated standalone orchestrate, native capacity, exclusive ownership, current QA and safe merged-worktree retirement are preserved. Reviewed Claude instruction compaction and legacy CLI compatibility are already covered by the native protocol; the Claude-only budget-lock repair does not change the Codex payload. See parity/2026-11-04-upstream-5.34.1-adoption.md. Content hashes bind the verified release source; publication and consumer acceptance are checked separately."
+    "frameworkVersion": "5.34.2",
+    "capturedDate": "2026-11-05",
+    "codexParityVersion": "0.16.1",
+    "notes": "Codex 0.16.1 adopts the Claude 5.34.2 coordinator rule natively with its own PreToolUse guard and rule injection; Claude-only hook, installer and budget deferral are not ported. See parity/2026-11-05-upstream-5.34.2-adoption.md. Content hashes bind the verified release source."
   },
   "components": {
     "cc": {

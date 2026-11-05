@@ -1,7 +1,7 @@
 {
-  "codex_head_commit": "cc1f2aa472dedde54835f101f749b81427de87d2",
+  "codex_head_commit": "b180e6e865d1081cbdd1ca83a6263bb719afe8eb",
   "codex_working_tree_dirty_at_update": true,
-  "port_attestation": "Reviewed 5.34.1: eight Claude specialist definitions and protocol/legacy alias compact or restore harness-specific instruction contracts already covered by Codex native protocol and guarded tc cycle fallback; Claude pretool budget-lock ownership repair and CI diagnostics are not Codex hook surfaces. No shared canonical lifecycle or native plugin payload change; only final framework version/source provenance advances.",
-  "updated_at": "2026-11-04T21:36:31.933994Z",
-  "upstream_commit": "8d1b0de6c3b6fb7dd77426cd4fb9b86afa5b3d5a"
+  "port_attestation": "Reviewed 5.34.2: coordinator rule ported natively in Codex instructions, injection and its own PreToolUse guard; Claude user-level hook, snapshot installer registration and force-delegate deferral are Claude-only surfaces with no Codex counterpart. No shared canonical lifecycle change.",
+  "updated_at": "2026-11-05T18:34:19.188840Z",
+  "upstream_commit": "c16ea6e3be3da1e2f0f21454a1044e41c28ffc04"
 }
