@@ -11,7 +11,7 @@ This skill provides Codex-native specialist playbooks modeled on the original Cl
 
 ### Local mode
 
-Dispatch the immediate blocking specialist lens to an agent; coupled work goes to one agent, never the main session. No size-based exceptions.
+Dispatch the immediate blocking stage's specialist lens to one or more same-role agents on disjoint partitions; coupled work goes to one agent, never the main session. No size-based exceptions.
 
 ### Delegated mode
 
