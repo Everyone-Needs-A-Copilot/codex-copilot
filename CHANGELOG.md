@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.16.2] - 2026-11-05
+
+- Adopt Claude 5.34.3 (cc 2.18.0, tc 2.12.0); see the [upstream adoption record](parity/2026-11-05-upstream-5.34.3-adoption.md). The plugin payload is unchanged.
+
 ## [0.16.1] - 2026-11-05
 
 - **Coordinator rule.** The main session is a coordinator only: it dispatches agents and no longer implements, reads project content or runs work commands itself, with no carve-outs for small, coupled or blocking steps. The previous carve-outs are removed from instructions, and the rule is injected into every session.

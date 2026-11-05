@@ -1,7 +1,7 @@
 {
-  "codex_head_commit": "b180e6e865d1081cbdd1ca83a6263bb719afe8eb",
+  "codex_head_commit": "e03fe9c72232dd74e77d42538097b7b6a9655532",
   "codex_working_tree_dirty_at_update": true,
-  "port_attestation": "Reviewed 5.34.2: coordinator rule ported natively in Codex instructions, injection and its own PreToolUse guard; Claude user-level hook, snapshot installer registration and force-delegate deferral are Claude-only surfaces with no Codex counterpart. No shared canonical lifecycle change.",
-  "updated_at": "2026-11-05T18:34:19.188840Z",
-  "upstream_commit": "c16ea6e3be3da1e2f0f21454a1044e41c28ffc04"
+  "port_attestation": "Reviewed 5.34.3: shared tc cycle record fix for bracketed changed-file names; Codex reuses shared tc and has no native counterpart. No shared canonical lifecycle or plugin payload change; only framework version and source provenance advance.",
+  "updated_at": "2026-11-05T18:51:56.133011Z",
+  "upstream_commit": "f2f63c7b400e63fbc0c6e54738d9f0c3469601aa"
 }

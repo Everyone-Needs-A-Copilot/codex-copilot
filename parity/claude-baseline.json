@@ -1,9 +1,9 @@
 {
   "baseline": {
     "source": "claude-copilot",
-    "frameworkVersion": "5.34.2",
+    "frameworkVersion": "5.34.3",
     "capturedDate": "2026-11-05",
-    "codexParityVersion": "0.16.1",
+    "codexParityVersion": "0.16.2",
     "notes": "Codex 0.16.1 adopts the Claude 5.34.2 coordinator rule natively with its own PreToolUse guard and rule injection; Claude-only hook, installer and budget deferral are not ported. See parity/2026-11-05-upstream-5.34.2-adoption.md. Content hashes bind the verified release source."
   },
   "components": {
