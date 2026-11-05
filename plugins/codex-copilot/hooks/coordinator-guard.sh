@@ -79,9 +79,28 @@ seg_ok() {
     git)
       local i=1
       while [ "${W[$i]:-}" = "-C" ]; do i=$((i+2)); done
-      case "${W[$i]:-}" in
-        status|log|branch) return 0 ;;
-        worktree) [ "${W[$((i+1))]:-}" = "list" ] && return 0 ;;
+      local sub="${W[$i]:-}" a
+      local -a A=("${W[@]:$((i+1))}")
+      case "$sub" in
+        status|log|rev-parse)
+          for a in "${A[@]}"; do
+            case "$a" in
+              --output|--output=*|--ext-diff|--textconv|-c|-c*|--exec-path|--exec-path=*|--patch|-p|-[a-zA-Z]*p*) return 1 ;;
+            esac
+          done
+          return 0 ;;
+        branch)
+          local listing=0
+          for a in "${A[@]}"; do [ "$a" = "--list" ] && listing=1; done
+          for a in "${A[@]}"; do
+            case "$a" in
+              -a|-r|-v|-vv|--all|--remotes|--verbose|--list|--show-current) ;;
+              -*) return 1 ;;
+              *) [ "$listing" = 1 ] || return 1 ;;
+            esac
+          done
+          return 0 ;;
+        worktree) [ "${A[0]:-}" = "list" ] && [ ${#A[@]} -le 2 ] && return 0 ;;
       esac
       return 1 ;;
     head|tail|wc) [ "$SEG_IDX" -gt 0 ] && return 0; return 1 ;;
@@ -89,11 +108,11 @@ seg_ok() {
   return 1
 }
 
-# Split on && || ; |  (each segment must be allowlisted; head/tail/wc only as pipe sinks).
+# Split on every control operator: && || ; & | (newlines are rejected above) (each segment must be allowlisted; head/tail/wc only as pipe sinks).
 SEG_IDX=0
 while IFS= read -r seg; do
   seg="${seg#"${seg%%[![:space:]]*}"}"
   seg_ok "$seg" || deny "run work commands (${seg%% *})"
   SEG_IDX=$((SEG_IDX+1))
-done < <(printf '%s\n' "$CMD" | sed -E 's/&&|\|\||;|\|/\n/g')
+done < <(printf '%s\n' "$CMD" | sed -E 's/&&|\|\||[;&|]/\n/g')
 exit 0

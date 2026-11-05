@@ -1,6 +1,6 @@
 # Native parallel execution adapter
 
-Orchestration belongs to `$protocol`. Approval of the plan or done block authorizes useful independent local work without a separate spawn/worktree question. The coordinator owns the result and all convergence; no standalone `/orchestrate` stage is needed.
+Orchestration belongs to `$protocol`. Approval of the plan or done block authorizes dispatch of useful independent work without a separate spawn/worktree question. The coordinator owns the result and all convergence; no standalone `/orchestrate` stage is needed.
 
 ## Shared authority and fallback
 

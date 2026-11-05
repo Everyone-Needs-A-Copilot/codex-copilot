@@ -28,12 +28,17 @@ class GuardTest(unittest.TestCase):
 
     def test_main_allowlist(self):
         for c in ["tc task list --json", "cc status", "cc skill get x", "git status --short", "git -C /x log --oneline | head -5",
-                  "git worktree list", "/Users/me/.local/bin/cc progress", "git branch"]:
+                  "git worktree list", "/Users/me/.local/bin/cc progress", "git branch", "git branch -a", "git branch -r", "git branch -v", "git branch --list", "git branch --list 'f*'",
+                  "git branch --show-current", "git rev-parse HEAD", "git log --oneline -n 5 && git status"]:
             self.assertFalse(self.bash(c), c)
 
     def test_main_denied(self):
         for c in ["cat README.md", "ls", "git commit -m x", "git worktree add x", "cc memory search x", "tc task list; rm -rf x",
-                  "git log | sh", "git status > out", "echo $(whoami)", "head file"]:
+                  "git log | sh", "git status > out", "echo $(whoami)", "head file",
+                  "git status & cat /etc/passwd", "git status &cat /etc/passwd", "git branch -D x", "git branch newbranch", "git branch -v x",
+                  "git branch -m a b", "git log --output=f", "git log --output f", "git log --ext-diff", "git log --textconv",
+                  "git -c core.pager=sh log", "git log -c", "git status --exec-path=/x", "git log -p", "git log --patch", "git log -sp",
+                  "git rev-parse --output=f", "git worktree list --porcelain; git worktree prune", "git worktree remove x"]:
             self.assertTrue(self.bash(c), c)
 
     def test_subagent_never_blocked(self):
