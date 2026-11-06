@@ -8,6 +8,8 @@ import tempfile
 import textwrap
 import unittest
 
+from central_helpers import env_with, stub_cc
+
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 EXPECTED_SPECIALISTS = [
@@ -471,7 +473,7 @@ class DesignLedContractTest(unittest.TestCase):
     def test_live_docs_is_wired_into_core_surfaces(self):
         checked = [
             ROOT / "AGENTS.md",
-            ROOT / "templates/AGENTS.project.template.md",
+            ROOT / "templates/codex-AGENTS.framework.md",
             ROOT / "plugins/codex-copilot/skills/specialist-agents/references/shared-behaviors.md",
             ROOT / "plugins/codex-copilot/skills/ta/SKILL.md",
             ROOT / "plugins/codex-copilot/skills/me/SKILL.md",
@@ -484,7 +486,7 @@ class DesignLedContractTest(unittest.TestCase):
     def test_codex_qa_gate_substitute_is_documented_and_scripted(self):
         checked = [
             ROOT / "AGENTS.md",
-            ROOT / "templates/AGENTS.project.template.md",
+            ROOT / "templates/codex-AGENTS.framework.md",
             ROOT / "plugins/codex-copilot/skills/qa/SKILL.md",
             ROOT / "docs/02-user-guides/04-quality-gates.md",
         ]
@@ -623,18 +625,17 @@ class DesignLedContractTest(unittest.TestCase):
         for path in checked:
             self.assertNotIn(stale, path.read_text(), f"stale chain in {path}")
 
-    def test_setup_script_repairs_instead_of_refusing(self):
+    def test_setup_script_delegates_to_cc_project_init(self):
         script = (ROOT / "scripts/setup-project.sh").read_text()
         self.assertNotRegex(script, re.compile(r"\brm\s+-"))
-        self.assertNotIn("sed -i.bak", script)
-        self.assertNotIn("Refusing to replace", script)
-        self.assertNotIn("Refusing to overwrite", script)
-        self.assertIn("update-project.sh", script)
+        self.assertIn("project init", script)
+        for retired in ("cp -R", ".codex-copilot.json\"", "marketplace.json\"", "copilot-gate.sh\" \"${PROJECT"):
+            self.assertNotIn(retired, script)
         updater = (ROOT / "scripts/update-project.sh").read_text()
-        self.assertTrue(updater, "scripts/update-project.sh must exist and be non-empty")
+        self.assertIn("doctor", updater)
 
     def test_no_stale_cc_source_path(self):
-        for rel in ["AGENTS.md", "templates/AGENTS.project.template.md"]:
+        for rel in ["AGENTS.md", "templates/codex-AGENTS.framework.md"]:
             text = (ROOT / rel).read_text()
             self.assertNotIn("/Volumes/Dev/Sites/COPILOT/claude-copilot", text)
             self.assertNotIn("/Users/", text)
@@ -727,7 +728,7 @@ class DesignLedContractTest(unittest.TestCase):
 
         for rel in [
             "AGENTS.md",
-            "templates/AGENTS.project.template.md",
+            "templates/codex-AGENTS.framework.md",
             "plugins/codex-copilot/skills/protocol/SKILL.md",
             "plugins/codex-copilot/skills/task-copilot/SKILL.md",
         ]:
@@ -766,143 +767,84 @@ class DesignLedContractTest(unittest.TestCase):
                     failures.append(f"{path.relative_to(ROOT)} -> {target}")
         self.assertEqual(failures, [], "broken local Markdown links:\n" + "\n".join(failures))
 
-    def test_setup_scaffolds_initiatives_and_shared_qa_gate(self):
+    def _setup(self, target, home, *extra):
+        stub = stub_cc(home)
+        return subprocess.run(
+            ["bash", "scripts/setup-project.sh", "--project", str(target), "--name", "fixture-project", "--no-tc-init", *extra],
+            cwd=ROOT, capture_output=True, text=True, check=False, env=env_with(home, CC_BIN=str(stub)),
+        )
+
+    def test_setup_scaffolds_project_state_only_through_cc_init(self):
         with tempfile.TemporaryDirectory() as tmp:
+            home = pathlib.Path(tmp) / "home"
+            home.mkdir()
             target = pathlib.Path(tmp) / "project"
             target.mkdir()
-            subprocess.run(["git", "init", "-q", str(target)], check=True)
-            result = subprocess.run(
-                [
-                    "bash",
-                    "scripts/setup-project.sh",
-                    "--project",
-                    str(target),
-                    "--name",
-                    "fixture-project",
-                    "--no-tc-init",
-                ],
-                cwd=ROOT,
-                capture_output=True,
-                text=True,
-                check=False,
-            )
+            result = self._setup(target, home)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertIn("project init ", (home / "cc-calls.log").read_text())
+            self.assertTrue((target / "copilot.project.json").is_file())
             self.assertTrue((target / "docs/40-initiatives/README.md").exists())
-            self.assertTrue((target / "docs/40-initiatives/_template/phases/phase-1-plan.md").exists())
-            qa_gate = target / "scripts/copilot-gate.sh"
-            self.assertTrue(qa_gate.is_file())
-            self.assertFalse(qa_gate.is_symlink())
-            self.assertEqual(qa_gate.read_bytes(), (ROOT / "scripts/copilot-gate.sh").read_bytes())
-            self.assertTrue(os.access(qa_gate, os.X_OK))
-            plugin = target / "plugins/codex-copilot"
-            self.assertTrue(plugin.is_dir())
-            self.assertFalse(plugin.is_symlink())
-            skills = target / ".claude/skills/codex-copilot"
-            self.assertTrue(skills.is_symlink())
-            self.assertTrue(skills.resolve().samefile(plugin / "skills"))
-            metadata = json.loads((target / ".codex-copilot.json").read_text())
-            self.assertEqual(metadata["installType"], "copy")
-            relocated = pathlib.Path(tmp) / "unrelated" / "clone"
-            relocated.parent.mkdir()
-            shutil.copytree(target, relocated, symlinks=True)
-            relocated_skills = relocated / ".claude/skills/codex-copilot"
-            self.assertTrue(relocated_skills.is_symlink())
-            self.assertTrue(
-                relocated_skills.resolve().samefile(
-                    relocated / "plugins/codex-copilot/skills"
-                )
-            )
+            agents = (target / "AGENTS.md").read_text()
+            self.assertIn("fixture-project", agents)
+            self.assertIn("copilot:framework-section", agents)
+            self.assertNotIn("Output Contract", agents)
+            self.assertNotIn("QA Gate Convention", agents)
+            for absent in ("plugins", "scripts", ".claude/skills", ".agents", ".codex-copilot.json"):
+                self.assertFalse((target / absent).exists(), f"setup must not create {absent}")
 
     def test_setup_preserves_existing_initiative_documentation(self):
         with tempfile.TemporaryDirectory() as tmp:
+            home = pathlib.Path(tmp) / "home"
+            home.mkdir()
             target = pathlib.Path(tmp) / "project"
             initiatives = target / "docs/40-initiatives"
             initiatives.mkdir(parents=True)
             custom_index = "# Project Initiatives\n\nExisting project-owned content.\n"
             (initiatives / "README.md").write_text(custom_index)
-            subprocess.run(["git", "init", "-q", str(target)], check=True)
-            result = subprocess.run(
-                [
-                    "bash",
-                    "scripts/setup-project.sh",
-                    "--project",
-                    str(target),
-                    "--name",
-                    "fixture-project",
-                    "--no-tc-init",
-                ],
-                cwd=ROOT,
-                capture_output=True,
-                text=True,
-                check=False,
-            )
+            result = self._setup(target, home)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             self.assertEqual((initiatives / "README.md").read_text(), custom_index)
             self.assertFalse((initiatives / "_template").exists())
 
-    def test_setup_repairs_missing_plugin_without_clobbering_existing_files(self):
-        # A project can carry a hand-authored AGENTS.md and a custom cc
-        # config before ever having the plugin installed. setup-project.sh
-        # must repair the missing plugin/skill/gate in that case rather than
-        # refusing the whole run because one unrelated file already exists --
-        # and it must never touch the files that were already there.
-        for force in (False, True):
-            with self.subTest(force=force), tempfile.TemporaryDirectory() as tmp:
+    def test_setup_never_clobbers_existing_files_and_rerun_is_stable(self):
+        for flag in ((), ("--force",)):
+            with self.subTest(flag=flag), tempfile.TemporaryDirectory() as tmp:
+                home = pathlib.Path(tmp) / "home"
+                home.mkdir()
                 target = pathlib.Path(tmp) / "project"
                 target.mkdir()
-                agents = target / "AGENTS.md"
-                agents.write_text("# Existing instructions\n")
+                (target / "AGENTS.md").write_text("# Existing instructions\n")
                 config = target / ".claude/cc/config.json"
                 config.parent.mkdir(parents=True)
                 config.write_text('{"custom":"keep-me"}\n')
-                subprocess.run(["git", "init", "-q", str(target)], check=True)
-                command = [
-                    "bash",
-                    "scripts/setup-project.sh",
-                    "--project",
-                    str(target),
-                    "--no-tc-init",
-                ]
-                if force:
-                    command.append("--force")
-                result = subprocess.run(
-                    command,
-                    cwd=ROOT,
-                    capture_output=True,
-                    text=True,
-                    check=False,
-                )
-                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-                self.assertEqual(agents.read_text(), "# Existing instructions\n")
+                first = self._setup(target, home, *flag)
+                self.assertEqual(first.returncode, 0, first.stdout + first.stderr)
+                self.assertTrue((target / "AGENTS.md").read_text().startswith("# Existing instructions\n"))
                 self.assertEqual(config.read_text(), '{"custom":"keep-me"}\n')
-                self.assertTrue((target / "plugins/codex-copilot").is_dir())
-                self.assertTrue((target / "scripts/copilot-gate.sh").is_file())
+                snapshot = (target / "AGENTS.md").read_text()
+                second = self._setup(target, home, *flag)
+                self.assertEqual(second.returncode, 0, second.stdout + second.stderr)
+                self.assertEqual((target / "AGENTS.md").read_text(), snapshot)
 
-    def test_setup_rerun_over_existing_install_repairs_and_exits_zero(self):
-        # The regression this guards: setup-project.sh used to hard-refuse
-        # (exit non-zero) on any second run over an already-provisioned
-        # project. It must now delegate to update-project.sh and succeed.
+    def test_update_is_verify_only(self):
         with tempfile.TemporaryDirectory() as tmp:
+            home = pathlib.Path(tmp) / "home"
+            home.mkdir()
             target = pathlib.Path(tmp) / "project"
             target.mkdir()
-            subprocess.run(["git", "init", "-q", str(target)], check=True)
-            first = subprocess.run(
-                ["bash", "scripts/setup-project.sh", "--project", str(target), "--name", "fixture-project", "--no-tc-init"],
-                cwd=ROOT, capture_output=True, text=True, check=False,
-            )
-            self.assertEqual(first.returncode, 0, first.stdout + first.stderr)
-
-            drifted = target / "plugins/codex-copilot/agent-catalog.json"
-            original = drifted.read_text()
-            drifted.write_text(original.rstrip() + "\n// stale drift from an intermediate commit\n")
-
-            second = subprocess.run(
-                ["bash", "scripts/setup-project.sh", "--project", str(target), "--name", "fixture-project", "--no-tc-init"],
-                cwd=ROOT, capture_output=True, text=True, check=False,
-            )
-            self.assertEqual(second.returncode, 0, second.stdout + second.stderr)
-            self.assertNotIn("Refusing", second.stdout + second.stderr)
-            self.assertEqual(drifted.read_text(), original)
+            stub = stub_cc(home)
+            env = env_with(home, CC_BIN=str(stub))
+            missing = subprocess.run(["bash", "scripts/update-project.sh", "--project", str(target)],
+                                     cwd=ROOT, capture_output=True, text=True, env=env)
+            self.assertNotEqual(missing.returncode, 0)
+            (target / "copilot.project.json").write_text("{}")
+            before = sorted(p.name for p in target.iterdir())
+            ok = subprocess.run(["bash", "scripts/update-project.sh", "--project", str(target), "--dry-run"],
+                                cwd=ROOT, capture_output=True, text=True, env=env)
+            self.assertEqual(ok.returncode, 0, ok.stdout + ok.stderr)
+            self.assertIn("doctor ok", ok.stdout)
+            self.assertEqual(sorted(p.name for p in target.iterdir()), before)
 
 
 if __name__ == "__main__":

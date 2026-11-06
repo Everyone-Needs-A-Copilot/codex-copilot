@@ -2,6 +2,8 @@
 import json, os, subprocess, tempfile, unittest
 from pathlib import Path
 
+from central_helpers import link_central_release
+
 ROOT = Path(__file__).resolve().parents[1]
 HOOKS = ROOT / "plugins/codex-copilot/hooks"
 GUARD = HOOKS / "coordinator-guard.sh"
@@ -10,6 +12,7 @@ class GuardTest(unittest.TestCase):
     def setUp(self):
         self.tmp = Path(tempfile.mkdtemp())
         self.home = self.tmp / "home"; self.home.mkdir()
+        link_central_release(self.home)
         self.main = self.tmp / "main.jsonl"; self.sub = self.tmp / "sub.jsonl"
         self.main.write_text(json.dumps({"payload": {"source": "cli", "thread_source": "user"}}) + "\n")
         self.sub.write_text(json.dumps({"payload": {"source": {"subagent": {"thread_spawn": {}}}, "thread_source": "subagent"}}) + "\n")
@@ -86,8 +89,11 @@ class GuardTest(unittest.TestCase):
         self.assertTrue(log.exists() and "coordinator-bypass" in log.read_text())
 
     def test_prompt_hook_always_injects(self):
-        r = subprocess.run(["/bin/bash", str(HOOKS / "user-prompt-protocol.sh")], input=json.dumps({"prompt": "hello"}),
-                           capture_output=True, text=True)
+        # Marker-gated: runs through the frozen shim inside a marked project.
+        proj = self.tmp / "proj"; proj.mkdir(); (proj / "copilot.project.json").write_text("{}")
+        r = subprocess.run(["/bin/bash", str(HOOKS / "user-prompt-protocol.sh")],
+                           input=json.dumps({"prompt": "hello", "cwd": str(proj)}), capture_output=True, text=True,
+                           env={**os.environ, "HOME": str(self.home)})
         self.assertIn("Coordinator rule (2026-11-05)", json.loads(r.stdout)["hookSpecificOutput"]["additionalContext"])
 
     def test_hooks_json_registers_guard(self):

@@ -1,9 +1,16 @@
 #!/usr/bin/env bash
+# Central-resolution setup (ADR-001, initiative 06-central-resolution).
+#
+# Framework files are NOT copied into the project. The Codex plugin, skills and
+# hooks resolve through ~/.copilot/current; this script only seeds project-owned
+# scaffolds (project AGENTS.md sections, SOUL.md, architecture principles,
+# initiatives) when absent and delegates the marker, the thin framework section
+# and the Codex trust entry to `cc project init`.
 
 set -euo pipefail
 
 usage() {
-  cat <<'EOF'
+  cat <<'USAGE'
 Usage:
   setup-project.sh --project /path/to/project [options]
 
@@ -12,579 +19,116 @@ Options:
   --name NAME             Project display name (defaults to basename of project path)
   --description TEXT      Project description (default: "Project using codex-copilot")
   --stack TEXT            Tech stack summary (default: "Unknown")
-  --framework-root PATH   Override detected codex-copilot framework root
-  --rules-file PATH       Append project-specific rules from file into AGENTS.md
+  --rules-file PATH       Project-specific rules to place in a newly created AGENTS.md
   --no-decision-instruments
                           Skip SOUL.md and architecture-principles scaffolding
-  --org-plugin PATH       Install an additional organization-owned plugin
-                           from PATH, alongside the base plugin (opt-in;
-                           never replaces the base plugin)
-  --no-org-plugin         Do not install or auto-detect an organization
-                           plugin
-  --force                 Compatibility-only; existing project wiring is still preserved
   --no-tc-init            Skip tc init
   --help                  Show this help
 
-Safe to re-run: if the project already has a codex-copilot install, this
-delegates to update-project.sh to repair the plugin/skill/QA-gate paths in
-place (content-compared, ownership: project files preserved) instead of
-refusing. AGENTS.md, marketplace.json, and install metadata are always
-left untouched once they exist.
-
-Organization plugin: opt-in and off by default. Without --org-plugin or
---no-org-plugin, a previously recorded orgPluginSourcePath in an existing
-project's .codex-copilot.json is honored first, then a sibling repo next
-to the framework root (<framework-root-parent>/codex-copilot-internal/
-plugins/codex-copilot-internal) is auto-detected and used only when it
-exists. A project with none of those present is set up identically to how
-this script behaved before organization-plugin support existed. See
-scripts/update-project.sh --help for the full resolution order and how a
-later plain run keeps an installed organization plugin updated.
-EOF
+Writes copilot.project.json, a thin Copilot section in AGENTS.md/CLAUDE.md and the
+Codex trust entry through `cc project init`. Copies no plugin, skill, hook, QA gate,
+marketplace or .codex-copilot.json. Safe to re-run: existing files are preserved.
+Accepted for compatibility and ignored: --framework-root, --org-plugin,
+--no-org-plugin, --force.
+USAGE
 }
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 FRAMEWORK_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-TEMPLATE_PATH="${FRAMEWORK_ROOT}/templates/AGENTS.project.template.md"
-SOUL_TEMPLATE_PATH="${FRAMEWORK_ROOT}/templates/SOUL.template.md"
-ARCH_TEMPLATE_PATH="${FRAMEWORK_ROOT}/templates/architecture-guiding-principles.template.md"
-INITIATIVES_TEMPLATE_PATH="${FRAMEWORK_ROOT}/templates/initiatives"
 
 PROJECT_PATH=""
 PROJECT_NAME=""
 PROJECT_DESCRIPTION="Project using codex-copilot"
 TECH_STACK="Unknown"
-FRAMEWORK_ROOT_OVERRIDE=""
 RULES_FILE=""
-FORCE=0
 DO_TC_INIT=1
 DO_DECISION_INSTRUMENTS=1
-ORG_PLUGIN_ARG=""
-NO_ORG_PLUGIN=0
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --project)
-      PROJECT_PATH="${2:-}"
-      shift 2
-      ;;
-    --name)
-      PROJECT_NAME="${2:-}"
-      shift 2
-      ;;
-    --description)
-      PROJECT_DESCRIPTION="${2:-}"
-      shift 2
-      ;;
-    --stack)
-      TECH_STACK="${2:-}"
-      shift 2
-      ;;
-    --framework-root)
-      FRAMEWORK_ROOT_OVERRIDE="${2:-}"
-      shift 2
-      ;;
-    --rules-file)
-      RULES_FILE="${2:-}"
-      shift 2
-      ;;
-    --no-decision-instruments)
-      DO_DECISION_INSTRUMENTS=0
-      shift
-      ;;
-    --org-plugin)
-      ORG_PLUGIN_ARG="${2:-}"
-      shift 2
-      ;;
-    --no-org-plugin)
-      NO_ORG_PLUGIN=1
-      shift
-      ;;
-    --force)
-      FORCE=1
-      shift
-      ;;
-    --no-tc-init)
-      DO_TC_INIT=0
-      shift
-      ;;
-    --help)
-      usage
-      exit 0
-      ;;
-    *)
-      echo "Unknown option: $1" >&2
-      usage >&2
-      exit 1
-      ;;
+    --project) PROJECT_PATH="${2:-}"; shift 2 ;;
+    --name) PROJECT_NAME="${2:-}"; shift 2 ;;
+    --description) PROJECT_DESCRIPTION="${2:-}"; shift 2 ;;
+    --stack) TECH_STACK="${2:-}"; shift 2 ;;
+    --rules-file) RULES_FILE="${2:-}"; shift 2 ;;
+    --no-decision-instruments) DO_DECISION_INSTRUMENTS=0; shift ;;
+    --no-tc-init) DO_TC_INIT=0; shift ;;
+    --framework-root|--org-plugin) echo "note: ${1} is ignored (central resolution)" >&2; shift 2 ;;
+    --no-org-plugin|--force) echo "note: ${1} is ignored (central resolution)" >&2; shift ;;
+    --help) usage; exit 0 ;;
+    *) echo "Unknown option: $1" >&2; usage >&2; exit 1 ;;
   esac
 done
-
-if [[ -n "${ORG_PLUGIN_ARG}" && "${NO_ORG_PLUGIN}" -eq 1 ]]; then
-  echo "--org-plugin and --no-org-plugin are mutually exclusive" >&2
-  exit 1
-fi
 
 if [[ -z "${PROJECT_PATH}" ]]; then
   echo "--project is required" >&2
   usage >&2
   exit 1
 fi
-
 if [[ ! -d "${PROJECT_PATH}" ]]; then
   echo "Project path does not exist: ${PROJECT_PATH}" >&2
   exit 1
 fi
-
-if [[ -z "${PROJECT_NAME}" ]]; then
-  PROJECT_NAME="$(basename "${PROJECT_PATH}")"
-fi
-
-if [[ -n "${FRAMEWORK_ROOT_OVERRIDE}" ]]; then
-  FRAMEWORK_ROOT="$(cd "${FRAMEWORK_ROOT_OVERRIDE}" && pwd)"
-  TEMPLATE_PATH="${FRAMEWORK_ROOT}/templates/AGENTS.project.template.md"
-  SOUL_TEMPLATE_PATH="${FRAMEWORK_ROOT}/templates/SOUL.template.md"
-  ARCH_TEMPLATE_PATH="${FRAMEWORK_ROOT}/templates/architecture-guiding-principles.template.md"
-  INITIATIVES_TEMPLATE_PATH="${FRAMEWORK_ROOT}/templates/initiatives"
-fi
-
-if [[ ! -f "${TEMPLATE_PATH}" ]]; then
-  echo "Missing template: ${TEMPLATE_PATH}" >&2
-  exit 1
-fi
-
-if [[ "${DO_DECISION_INSTRUMENTS}" -eq 1 ]]; then
-  if [[ ! -f "${SOUL_TEMPLATE_PATH}" ]]; then
-    echo "Missing template: ${SOUL_TEMPLATE_PATH}" >&2
-    exit 1
-  fi
-
-  if [[ ! -f "${ARCH_TEMPLATE_PATH}" ]]; then
-    echo "Missing template: ${ARCH_TEMPLATE_PATH}" >&2
-    exit 1
-  fi
-fi
-
-if [[ ! -d "${INITIATIVES_TEMPLATE_PATH}" ]]; then
-  echo "Missing initiatives template directory: ${INITIATIVES_TEMPLATE_PATH}" >&2
-  exit 1
-fi
-
 if [[ -n "${RULES_FILE}" && ! -f "${RULES_FILE}" ]]; then
   echo "Rules file does not exist: ${RULES_FILE}" >&2
   exit 1
 fi
 
-INITIATIVES_PATH="${PROJECT_PATH}/docs/40-initiatives"
-INITIATIVES_EXISTED=0
-if [[ -e "${INITIATIVES_PATH}" ]]; then
-  INITIATIVES_EXISTED=1
-fi
+PROJECT_PATH="$(cd "${PROJECT_PATH}" && pwd)"
+[[ -n "${PROJECT_NAME}" ]] || PROJECT_NAME="$(basename "${PROJECT_PATH}")"
 
-PLUGIN_LINK="${PROJECT_PATH}/plugins/codex-copilot"
-FRAMEWORK_PLUGIN_PATH="${FRAMEWORK_ROOT}/plugins/codex-copilot"
-SKILLS_LINK="${PROJECT_PATH}/.claude/skills/codex-copilot"
-FRAMEWORK_SKILLS_PATH="${FRAMEWORK_PLUGIN_PATH}/skills"
-QA_GATE_LINK="${PROJECT_PATH}/scripts/copilot-gate.sh"
-FRAMEWORK_QA_GATE_PATH="${FRAMEWORK_ROOT}/scripts/copilot-gate.sh"
-MARKETPLACE_PATH="${PROJECT_PATH}/.agents/plugins/marketplace.json"
-INSTALL_METADATA_PATH="${PROJECT_PATH}/.codex-copilot.json"
-AGENTS_PATH="${PROJECT_PATH}/AGENTS.md"
-
-CODEX_CONFIG_PATH="${INSTALL_METADATA_PATH}"
-# shellcheck source=lib/resolve-org-plugin.sh
-source "${SCRIPT_DIR}/lib/resolve-org-plugin.sh"
-codex_resolve_org_plugin_source
-echo "Org plugin: ${ORG_PLUGIN_SOURCE_DESC}"
-
-ORG_PLUGIN_NAME=""
-ORG_PLUGIN_VERSION=""
-if [[ -n "${ORG_PLUGIN_SOURCE}" ]]; then
-  read -r ORG_PLUGIN_NAME ORG_PLUGIN_VERSION <<<"$(python3 -c "
-import json, sys
-data = json.load(open(sys.argv[1]))
-print(data.get('name') or '', data.get('version') or 'unknown')
-" "${ORG_PLUGIN_SOURCE}/.codex-plugin/plugin.json")"
-  if [[ -z "${ORG_PLUGIN_NAME}" ]]; then
-    ORG_PLUGIN_NAME="$(basename "${ORG_PLUGIN_SOURCE}")"
-  fi
-fi
-ORG_PLUGIN_LINK="${PROJECT_PATH}/plugins/${ORG_PLUGIN_NAME}"
-
-if [[ ! -d "${FRAMEWORK_PLUGIN_PATH}" ]]; then
-  echo "Missing framework plugin directory: ${FRAMEWORK_PLUGIN_PATH}" >&2
+CC_BIN="${CC_BIN:-${HOME}/.local/bin/cc}"
+if [[ ! -x "${CC_BIN}" ]]; then
+  echo "cc not found at ${CC_BIN}. Install the Copilot machine tools first (set CC_BIN to override)." >&2
   exit 1
 fi
-
-if [[ ! -d "${FRAMEWORK_SKILLS_PATH}" ]]; then
-  echo "Missing framework skills directory: ${FRAMEWORK_SKILLS_PATH}" >&2
-  exit 1
-fi
-
-if [[ ! -x "${FRAMEWORK_QA_GATE_PATH}" ]]; then
-  echo "Missing executable QA gate: ${FRAMEWORK_QA_GATE_PATH}" >&2
-  exit 1
-fi
-
-relative_path() {
-  python3 - "$1" "$2" <<'PY'
-from pathlib import Path
-import os
-import sys
-
-source = Path(sys.argv[1]).resolve()
-target = Path(sys.argv[2]).resolve()
-print(os.path.relpath(target, source))
-PY
-}
-
-# `cp -R` preserves permissions modulo the running umask, which does not
-# guarantee the destination lands with the executable bit the source
-# actually has. Called right after every fresh `cp -R` of a plugin tree so
-# mode correctness never depends on umask. Shares desired_mode() with
-# update-project.sh's sync_tree() via scripts/lib/plugin_mode.py rather
-# than reimplementing the rule here.
-normalize_plugin_modes() {
-  python3 - "${SCRIPT_DIR}" "$1" "$2" <<'PY'
-import sys
-from pathlib import Path
-
-sys.path.insert(0, str(Path(sys.argv[1]) / "lib"))
-from plugin_mode import normalize_tree_modes
-
-source_root = Path(sys.argv[2]).resolve()
-dest_root = Path(sys.argv[3]).resolve()
-changed = normalize_tree_modes(source_root, dest_root)
-for relpath in changed:
-    print(f"  mode corrected: {relpath}")
-PY
-}
-
-SKILLS_LINK_DIR="$(dirname "${SKILLS_LINK}")"
-PROJECT_PLUGIN_SKILLS_PATH="${PLUGIN_LINK}/skills"
-RELATIVE_SKILLS_TARGET="$(relative_path "${SKILLS_LINK_DIR}" "${PROJECT_PLUGIN_SKILLS_PATH}")"
-
-# An existing plugin/skill/gate path means this project was already set up.
-# Repair it in place via update-project.sh instead of refusing -- a second
-# run over an already-provisioned repo must repair, not exit non-zero.
-EXISTING_INSTALL=0
-if [[ -L "${PLUGIN_LINK}" || -e "${PLUGIN_LINK}" || -L "${SKILLS_LINK}" || -e "${SKILLS_LINK}" || -L "${QA_GATE_LINK}" || -e "${QA_GATE_LINK}" ]]; then
-  EXISTING_INSTALL=1
-fi
-
-# AGENTS.md, marketplace.json, and install metadata are project-owned once
-# generated (AGENTS.md carries hand-authored project rules); they are never
-# regenerated on top of an existing copy, but that is a per-file skip, not a
-# reason to abort the whole run.
-SKIP_AGENTS_RENDER=0
-if [[ -e "${AGENTS_PATH}" ]]; then
-  echo "AGENTS.md already exists; leaving it untouched (project-owned): ${AGENTS_PATH}"
-  SKIP_AGENTS_RENDER=1
-fi
-
-SKIP_MARKETPLACE_WRITE=0
-if [[ -e "${MARKETPLACE_PATH}" ]]; then
-  echo "marketplace.json already exists; leaving it untouched: ${MARKETPLACE_PATH}"
-  SKIP_MARKETPLACE_WRITE=1
-fi
-
-SKIP_METADATA_WRITE=0
-if [[ -e "${INSTALL_METADATA_PATH}" ]]; then
-  echo ".codex-copilot.json already exists; leaving it untouched (refreshed by update-project.sh): ${INSTALL_METADATA_PATH}"
-  SKIP_METADATA_WRITE=1
-fi
-
-if [[ "${EXISTING_INSTALL}" -eq 1 ]]; then
-  echo "Existing codex-copilot install detected at ${PROJECT_PATH}; delegating to update-project.sh to repair it in place."
-  ORG_DELEGATE_ARGS=()
-  if [[ -n "${ORG_PLUGIN_ARG}" ]]; then
-    ORG_DELEGATE_ARGS+=(--org-plugin "${ORG_PLUGIN_ARG}")
-  elif [[ "${NO_ORG_PLUGIN}" -eq 1 ]]; then
-    ORG_DELEGATE_ARGS+=(--no-org-plugin)
-  fi
-  "${SCRIPT_DIR}/update-project.sh" --project "${PROJECT_PATH}" --framework-root "${FRAMEWORK_ROOT}" "${ORG_DELEGATE_ARGS[@]+"${ORG_DELEGATE_ARGS[@]}"}"
-fi
-
-# Mutation starts only after every collision and input check has passed.
-mkdir -p "${PROJECT_PATH}/.agents/plugins"
-mkdir -p "${PROJECT_PATH}/.claude/cc"
-mkdir -p "${PROJECT_PATH}/.claude/memory/entries"
-mkdir -p "${PROJECT_PATH}/.claude/skills"
-mkdir -p "${PROJECT_PATH}/plugins"
-mkdir -p "${PROJECT_PATH}/scripts"
-if [[ "${DO_DECISION_INSTRUMENTS}" -eq 1 ]]; then
-  mkdir -p "${PROJECT_PATH}/docs/01-architecture"
-fi
-if [[ "${INITIATIVES_EXISTED}" -eq 0 ]]; then
-  mkdir -p "${INITIATIVES_PATH}/_template/phases"
-  mkdir -p "${INITIATIVES_PATH}/_template/decisions"
-  mkdir -p "${INITIATIVES_PATH}/_template/retrospectives"
-fi
-
-if [[ "${EXISTING_INSTALL}" -eq 0 ]]; then
-  cp -R "${FRAMEWORK_PLUGIN_PATH}" "${PLUGIN_LINK}"
-  normalize_plugin_modes "${FRAMEWORK_PLUGIN_PATH}" "${PLUGIN_LINK}"
-  ln -s "${RELATIVE_SKILLS_TARGET}" "${SKILLS_LINK}"
-  cp "${FRAMEWORK_QA_GATE_PATH}" "${QA_GATE_LINK}"
-  chmod +x "${QA_GATE_LINK}"
-
-  if [[ -n "${ORG_PLUGIN_SOURCE}" ]]; then
-    cp -R "${ORG_PLUGIN_SOURCE}" "${ORG_PLUGIN_LINK}"
-    normalize_plugin_modes "${ORG_PLUGIN_SOURCE}" "${ORG_PLUGIN_LINK}"
-    if [[ -d "${ORG_PLUGIN_SOURCE}/skills" ]]; then
-      ORG_SKILLS_LINK="${PROJECT_PATH}/.claude/skills/${ORG_PLUGIN_NAME}"
-      ORG_SKILLS_LINK_DIR="$(dirname "${ORG_SKILLS_LINK}")"
-      ORG_PROJECT_PLUGIN_SKILLS_PATH="${ORG_PLUGIN_LINK}/skills"
-      ORG_RELATIVE_SKILLS_TARGET="$(relative_path "${ORG_SKILLS_LINK_DIR}" "${ORG_PROJECT_PLUGIN_SKILLS_PATH}")"
-      ln -s "${ORG_RELATIVE_SKILLS_TARGET}" "${ORG_SKILLS_LINK}"
-    fi
-  fi
-fi
-
-MEMORY_GITIGNORE="${PROJECT_PATH}/.claude/memory/.gitignore"
-if [[ ! -f "${MEMORY_GITIGNORE}" ]]; then
-  cat > "${MEMORY_GITIGNORE}" <<'EOF'
-memory.db
-memory.db-shm
-memory.db-wal
-EOF
-fi
-
-touch "${PROJECT_PATH}/.claude/memory/entries/.gitkeep"
-
-CC_CONFIG_PATH="${PROJECT_PATH}/.claude/cc/config.json"
-if [[ ! -f "${CC_CONFIG_PATH}" ]]; then
-  cat > "${CC_CONFIG_PATH}" <<'EOF'
-{
-  "$schema": "cc-config-v1",
-  "version": 1,
-  "paths": {
-    "knowledge_repo": "@machine"
-  }
-}
-EOF
-fi
-
-if [[ "${SKIP_MARKETPLACE_WRITE}" -eq 0 ]]; then
-  # A resolved org plugin gets its own marketplace entry alongside the base
-  # plugin's, using its manifest name/path -- never hardcoded. When no org
-  # plugin resolved this run, this produces exactly the base-only file this
-  # script has always written.
-  python3 - "${MARKETPLACE_PATH}" "${ORG_PLUGIN_NAME}" <<'PY'
-import json
-import sys
-
-path, org_name = sys.argv[1], sys.argv[2]
-
-plugins = [
-    {
-        "name": "codex-copilot",
-        "source": {
-            "source": "local",
-            "path": "./plugins/codex-copilot",
-        },
-        "policy": {
-            "installation": "AVAILABLE",
-            "authentication": "ON_INSTALL",
-        },
-        "category": "Productivity",
-    }
-]
-if org_name:
-    plugins.append(
-        {
-            "name": org_name,
-            "source": {
-                "source": "local",
-                "path": f"./plugins/{org_name}",
-            },
-            "policy": {
-                "installation": "AVAILABLE",
-                "authentication": "ON_INSTALL",
-            },
-            "category": "Productivity",
-        }
-    )
-
-data = {
-    "name": "codex-copilot-project",
-    "interface": {"displayName": "Codex Copilot Project"},
-    "plugins": plugins,
-}
-
-with open(path, "w", encoding="utf-8") as f:
-    json.dump(data, f, indent=2)
-    f.write("\n")
-PY
-fi
-
-if [[ "${SKIP_METADATA_WRITE}" -eq 0 ]]; then
-  # orgPlugin* keys are only added when an org plugin actually resolved this
-  # run -- absent them, this produces exactly the base-only metadata this
-  # script has always written.
-  python3 - "${INSTALL_METADATA_PATH}" "${PROJECT_NAME}" "${ORG_PLUGIN_NAME}" "${ORG_PLUGIN_SOURCE}" "${ORG_PLUGIN_VERSION}" <<'PY'
-import json
-import sys
-
-path, project_name, org_name, org_source, org_version = sys.argv[1:6]
-
-data = {
-    "installType": "copy",
-    "pluginPath": "./plugins/codex-copilot",
-    "projectName": project_name,
-}
-if org_name:
-    data["orgPluginName"] = org_name
-    data["orgPluginPath"] = f"./plugins/{org_name}"
-    data["orgPluginSourcePath"] = org_source
-    data["orgPluginInstallType"] = "copy"
-    data["orgPluginVersion"] = org_version
-
-with open(path, "w", encoding="utf-8") as f:
-    json.dump(data, f, indent=2)
-    f.write("\n")
-PY
-fi
-
-
-# Fresh setup has no copilot.lock.json yet. Record only the files this invocation
-# actually copied so the first update can distinguish repairable installed drift
-# from a genuinely unrecorded destination claimed by a later framework release.
-if [[ "${EXISTING_INSTALL}" -eq 0 ]]; then
-  python3 - "${INSTALL_METADATA_PATH}" "${PROJECT_PATH}" "${FRAMEWORK_ROOT}" "${ORG_PLUGIN_SOURCE}" "${ORG_PLUGIN_NAME}" <<'PYSETUP'
-import hashlib
-import json
-from pathlib import Path
-import sys
-
-metadata_path, project, framework = map(Path, sys.argv[1:4])
-org_source, org_name = sys.argv[4:6]
-data = json.loads(metadata_path.read_text(encoding="utf-8"))
-
-
-def installed_entry(source, target, relative):
-    payload = source.read_bytes()
-    if not target.is_file() or target.read_bytes() != payload:
-        raise SystemExit(f"Installed-file receipt mismatch; setup incomplete: {target}")
-    return {"path": relative, "ownership": "framework",
-            "checksum": "sha256:" + hashlib.sha256(payload).hexdigest()}
-
-
-files = []
-for source in sorted((framework / "plugins/codex-copilot").rglob("*")):
-    if source.is_file():
-        relative = source.relative_to(framework).as_posix()
-        files.append(installed_entry(source, project / relative, relative))
-relative = "scripts/copilot-gate.sh"
-files.append(installed_entry(framework / relative, project / relative, relative))
-rosters = {"codex": files}
-if org_source:
-    source_root = Path(org_source)
-    org_files = []
-    for source in sorted(source_root.rglob("*")):
-        if source.is_file():
-            relative = source.relative_to(source_root).as_posix()
-            org_files.append(installed_entry(source, project / "plugins" / org_name / relative, relative))
-    rosters["codex-org"] = org_files
-data["installedFiles"] = rosters
-metadata_path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
-PYSETUP
-fi
-
-render_project_template() {
-  local source_path="$1"
-  local output_path="$2"
-
-  if [[ -f "${output_path}" ]]; then
-    return 0
-  fi
-
-  python3 - "${source_path}" "${output_path}" <<'PY'
-from pathlib import Path
-import os
-import sys
-
-src = Path(sys.argv[1])
-dst = Path(sys.argv[2])
-content = src.read_text()
-content = content.replace("{{PROJECT_NAME}}", os.environ["PROJECT_NAME"])
-content = content.replace("{{PROJECT_DESCRIPTION}}", os.environ["PROJECT_DESCRIPTION"])
-content = content.replace("{{TECH_STACK}}", os.environ["TECH_STACK"])
-dst.write_text(content)
-PY
-}
 
 PROJECT_RULES="Add project-specific rules here."
 if [[ -n "${RULES_FILE}" ]]; then
   PROJECT_RULES="$(cat "${RULES_FILE}")"
 fi
-export PROJECT_RULES
-export PROJECT_NAME
-export PROJECT_DESCRIPTION
-export TECH_STACK
+export PROJECT_NAME PROJECT_DESCRIPTION TECH_STACK PROJECT_RULES
 
-if [[ "${SKIP_AGENTS_RENDER}" -eq 0 ]]; then
-  python3 - "${TEMPLATE_PATH}" "${AGENTS_PATH}" <<'PY'
-from pathlib import Path
+# Project-owned scaffolds, rendered only when absent.
+render_if_absent() {
+  local source_path="$1" output_path="$2"
+  [[ -f "${source_path}" ]] || { echo "Missing template: ${source_path}" >&2; exit 1; }
+  [[ -e "${output_path}" ]] && return 0
+  mkdir -p "$(dirname "${output_path}")"
+  python3 - "${source_path}" "${output_path}" <<'PY'
 import os
 import sys
+from pathlib import Path
 
-src = Path(sys.argv[1])
-dst = Path(sys.argv[2])
-content = src.read_text()
-content = content.replace("{{PROJECT_NAME}}", os.environ["PROJECT_NAME"])
-content = content.replace("{{PROJECT_DESCRIPTION}}", os.environ["PROJECT_DESCRIPTION"])
-content = content.replace("{{TECH_STACK}}", os.environ["TECH_STACK"])
-content = content.replace("{{PROJECT_RULES}}", os.environ["PROJECT_RULES"])
-dst.write_text(content)
+content = Path(sys.argv[1]).read_text()
+for key in ("PROJECT_NAME", "PROJECT_DESCRIPTION", "TECH_STACK", "PROJECT_RULES"):
+    content = content.replace("{{" + key + "}}", os.environ[key])
+Path(sys.argv[2]).write_text(content)
 PY
-fi
+}
 
+T="${FRAMEWORK_ROOT}/templates"
+render_if_absent "${T}/AGENTS.project.template.md" "${PROJECT_PATH}/AGENTS.md"
 if [[ "${DO_DECISION_INSTRUMENTS}" -eq 1 ]]; then
-  render_project_template "${SOUL_TEMPLATE_PATH}" "${PROJECT_PATH}/SOUL.md"
-  render_project_template "${ARCH_TEMPLATE_PATH}" "${PROJECT_PATH}/docs/01-architecture/12-architecture-guiding-principles.md"
+  render_if_absent "${T}/SOUL.template.md" "${PROJECT_PATH}/SOUL.md"
+  render_if_absent "${T}/architecture-guiding-principles.template.md" "${PROJECT_PATH}/docs/01-architecture/12-architecture-guiding-principles.md"
+fi
+if [[ ! -e "${PROJECT_PATH}/docs/40-initiatives" ]]; then
+  render_if_absent "${T}/initiatives/README.md" "${PROJECT_PATH}/docs/40-initiatives/README.md"
+  render_if_absent "${T}/initiatives/_template/README.md" "${PROJECT_PATH}/docs/40-initiatives/_template/README.md"
+  render_if_absent "${T}/initiatives/_template/phases/phase-1-plan.md" "${PROJECT_PATH}/docs/40-initiatives/_template/phases/phase-1-plan.md"
+  render_if_absent "${T}/initiatives/_template/decisions/ADR-001-template.md" "${PROJECT_PATH}/docs/40-initiatives/_template/decisions/ADR-001-template.md"
+  render_if_absent "${T}/initiatives/_template/retrospectives/README.md" "${PROJECT_PATH}/docs/40-initiatives/_template/retrospectives/README.md"
 fi
 
-if [[ "${INITIATIVES_EXISTED}" -eq 0 ]]; then
-  render_project_template "${INITIATIVES_TEMPLATE_PATH}/README.md" "${INITIATIVES_PATH}/README.md"
-  render_project_template "${INITIATIVES_TEMPLATE_PATH}/_template/README.md" "${INITIATIVES_PATH}/_template/README.md"
-  render_project_template "${INITIATIVES_TEMPLATE_PATH}/_template/phases/phase-1-plan.md" "${INITIATIVES_PATH}/_template/phases/phase-1-plan.md"
-  render_project_template "${INITIATIVES_TEMPLATE_PATH}/_template/decisions/ADR-001-template.md" "${INITIATIVES_PATH}/_template/decisions/ADR-001-template.md"
-  render_project_template "${INITIATIVES_TEMPLATE_PATH}/_template/retrospectives/README.md" "${INITIATIVES_PATH}/_template/retrospectives/README.md"
-fi
+# Marker, thin AGENTS.md/CLAUDE.md section, Codex trust entry: one writer.
+"${CC_BIN}" project init "${PROJECT_PATH}"
 
 if [[ "${DO_TC_INIT}" -eq 1 ]]; then
   if command -v tc >/dev/null 2>&1; then
     (cd "${PROJECT_PATH}" && tc init --json >/dev/null) || true
-  elif [[ -x "${PROJECT_PATH}/.venv-tc/bin/tc" ]]; then
-    (cd "${PROJECT_PATH}" && ./.venv-tc/bin/tc init --json >/dev/null) || true
   fi
 fi
 
-if [[ "${EXISTING_INSTALL}" -eq 1 ]]; then
-  echo "Repaired existing project: ${PROJECT_PATH}"
-else
-  echo "Configured project: ${PROJECT_PATH}"
-fi
-echo "Framework root: ${FRAMEWORK_ROOT}"
-echo "Project plugin: ${PLUGIN_LINK}"
-echo "Plugin source: ${FRAMEWORK_PLUGIN_PATH}"
-echo "Skill link: ${SKILLS_LINK}"
-echo "Skill source: ${RELATIVE_SKILLS_TARGET}"
-echo "QA gate: ${QA_GATE_LINK}"
-echo "Initiatives: ${INITIATIVES_PATH}"
-echo "cc config: ${CC_CONFIG_PATH}"
-echo "AGENTS.md: ${AGENTS_PATH}"
-if [[ -n "${ORG_PLUGIN_NAME}" ]]; then
-  echo "Org plugin: ${ORG_PLUGIN_NAME} (${ORG_PLUGIN_SOURCE_DESC})"
-  echo "Org plugin path: ${ORG_PLUGIN_LINK}"
-fi
-
-# Print the paths, then actually check them. Listing what was wired is a record
-# of intent; a project can carry all of the above as dangling links or a
-# non-executable gate and read exactly the same in this output. The distinction
-# matters because an unwired project does not fail -- it silently behaves like
-# plain Codex while the instruction layer keeps describing specialists that
-# cannot be reached.
-echo
-"${SCRIPT_DIR}/enforcement-status.sh" --project "${PROJECT_PATH}" || true
+echo "Configured project: ${PROJECT_PATH}"
+echo "Framework resolves through ~/.copilot/current; verify with: cc doctor"
