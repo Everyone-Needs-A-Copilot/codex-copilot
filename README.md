@@ -4,7 +4,7 @@ Codex Copilot is a Codex-native operating layer for developers who want speciali
 
 It mirrors [Claude Copilot](https://github.com/Everyone-Needs-A-Copilot/claude-copilot)'s capability intent through real Codex primitives: `AGENTS.md`, skills, plugin-bundled lifecycle hooks, `tc`, `cc`, scripts, tests, and visible `spawn_agent` execution within approved work. It does not pretend Claude hook registration, slash commands, or named-agent syntax work unchanged in Codex.
 
-Current version: **0.16.6**, which mirrors Claude Copilot 5.34.7 and requires shared **cc 2.18.0** and **tc 2.12.0** (see [`VERSION.json`](./VERSION.json) and the [parity contract](./docs/05-reference/03-parity-contract.md)).
+Current version: **0.16.7**, which mirrors Claude Copilot 5.34.8 and requires shared **cc 2.18.0** and **tc 2.12.0** (see [`VERSION.json`](./VERSION.json) and the [parity contract](./docs/05-reference/03-parity-contract.md)).
 
 ## What You Get
 

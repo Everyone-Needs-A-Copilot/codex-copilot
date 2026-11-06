@@ -1,7 +1,7 @@
 {
-  "codex_head_commit": "97b8b4629bbb1199076189ecc3926b43bc2f5802",
+  "codex_head_commit": "0f9e6d45740f579d3f6760678fbd0254a2cbc02a",
   "codex_working_tree_dirty_at_update": true,
-  "port_attestation": "Reviewed 5.34.7: shared cc project-inspection recognition of bare plugin entries, project-owned lock records and project-extended merged JSON; Codex reuses shared cc and has no native counterpart. No shared canonical lifecycle or plugin payload change; only framework version and source provenance advance.",
-  "updated_at": "2026-11-06T01:37:04.119505Z",
-  "upstream_commit": "5cc8bafd9d475e287fcaf6de91307f8fade95f16"
+  "port_attestation": "Reviewed 5.34.8: shared cc project-inspection treats a required file claimed with owner: project as satisfying its lock requirement; Codex reuses shared cc and has no native counterpart. No shared canonical lifecycle or plugin payload change; only framework version and source provenance advance.",
+  "updated_at": "2026-11-06T02:25:23.839452Z",
+  "upstream_commit": "e4578de8f1269d5968356008b0db535cf7ada1f2"
 }
