@@ -1,7 +1,7 @@
 {
-  "codex_head_commit": "80430a824fdd7f112c11f43caca1eaa47618e6ff",
+  "codex_head_commit": "595d4a1d6f997607c6912f2bcff8d33c33b5d736",
   "codex_working_tree_dirty_at_update": true,
-  "port_attestation": "Reviewed 5.34.5: shared cc reconcile and snapshot-installer root repointing; Codex reuses shared cc and has no native counterpart. No shared canonical lifecycle or plugin payload change; only framework version and source provenance advance.",
-  "updated_at": "2026-11-05T23:29:53.702295Z",
-  "upstream_commit": "89c03f02e9f14b1fdbfe5b29d9384d1a01fea839"
+  "port_attestation": "Reviewed 5.34.6: shared cc lock-reader and canonical-symlink fixes and a Claude-only budget hook lock wait; Codex reuses shared cc and has no native counterpart. No shared canonical lifecycle or plugin payload change; only framework version and source provenance advance.",
+  "updated_at": "2026-11-06T01:12:28.165677Z",
+  "upstream_commit": "e50eabe9215245c247360418a3e380c9d08102bb"
 }
