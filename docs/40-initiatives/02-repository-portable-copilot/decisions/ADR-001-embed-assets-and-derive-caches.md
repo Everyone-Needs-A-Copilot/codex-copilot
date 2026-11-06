@@ -1,6 +1,20 @@
 # ADR-001: Embed Prompt Assets And Derive Local State Caches
 
-> Status: Proposed
+> Status: Superseded by [central-resolution ADR-001](../../../../../claude-copilot/docs/40-initiatives/06-central-resolution/decisions/ADR-001-central-release-pointer.md) (claude-copilot `docs/40-initiatives/06-central-resolution/`)
+
+## Supersession note
+
+This record is kept as history; do not implement it. The embedded-assets and lock-manifest copy model it proposes is replaced by central resolution.
+
+**Why:** per-project copies plus checksum locks made every release stale across roughly 71 projects, so each release forced a per-project sync. Codex user-level `AGENTS.md`, skills, the user-enabled plugin and hook trust are machine-level, so a copy inside each repository never removed the machine-level setup and only added drift.
+
+**What replaces it:**
+
+- One release pointer that all projects resolve against, with no per-project asset copies or checksum locks.
+- A user-scope Codex plugin installed under one marketplace name.
+- A per-project trust entry written by `cc project init`.
+
+Host applications, credentials, trust decisions and personal state stay machine-owned, as this record already stated. See the central-resolution ADR for the full decision, consequences and alternatives.
 
 ## Context
 
