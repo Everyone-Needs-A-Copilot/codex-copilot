@@ -35,6 +35,49 @@ class FrozenPluginTests(unittest.TestCase):
             self.assertTrue((ROOT / "templates/central-hooks" / script.name).is_file())
 
 
+FROZEN_FILES = [
+    ".codex-plugin/plugin.json",
+    "hooks/coordinator-guard.sh",
+    "hooks/debug-circuit-breaker.sh",
+    "hooks/design-feedback.sh",
+    "hooks/hooks.json",
+    "hooks/subagent-return-contract.sh",
+    "hooks/user-prompt-protocol.sh",
+]
+# sha256 over sorted "relpath NUL content-sha256" lines. Changing this value means Codex
+# hook trust is invalidated for every user; it must not change in ordinary releases.
+FROZEN_TREE_SHA256 = "b03913bce82aab238e39f3c2c47cb824500b18f1b7d1a03112f6952ad04632a2"
+
+
+def plugin_tree_hash():
+    files = sorted(str(p.relative_to(PLUGIN)) for p in PLUGIN.rglob("*") if p.is_file())
+    digest = hashlib.sha256()
+    for rel in files:
+        digest.update(f"{rel}\0{hashlib.sha256((PLUGIN / rel).read_bytes()).hexdigest()}\n".encode())
+    return files, digest.hexdigest()
+
+
+class FrozenPluginDirectoryTests(unittest.TestCase):
+    def test_plugin_directory_holds_only_frozen_files(self):
+        files, _ = plugin_tree_hash()
+        self.assertEqual(files, FROZEN_FILES)
+
+    def test_plugin_directory_hash_is_frozen(self):
+        _, tree = plugin_tree_hash()
+        self.assertEqual(tree, FROZEN_TREE_SHA256, "plugin dir changed; Codex would show hooks as modified")
+
+    def test_plugin_version_is_decoupled_from_product_version(self):
+        version = json.loads((ROOT / "VERSION.json").read_text())
+        plugin = json.loads((PLUGIN / ".codex-plugin/plugin.json").read_text())
+        self.assertEqual(plugin["version"], version["pluginCoreVersion"])
+        self.assertNotEqual(plugin["version"], version["version"])
+
+    def test_moved_content_lives_in_the_release_tree(self):
+        for rel in ["skills/protocol/SKILL.md", "agent-catalog.json", "agent-prompts/protocol.openai.yaml",
+                    "scripts/protocol-cycle.py"]:
+            self.assertTrue((ROOT / rel).is_file(), rel)
+
+
 class MarkerGateTests(unittest.TestCase):
     def setUp(self):
         self.tmp = Path(tempfile.mkdtemp())

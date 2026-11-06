@@ -30,7 +30,7 @@ done < <(cd "${ROOT}" && python3 - <<'PY'
 import json
 from pathlib import Path
 
-catalog = json.loads(Path("plugins/codex-copilot/agent-catalog.json").read_text())
+catalog = json.loads(Path("agent-catalog.json").read_text())
 print("protocol")
 for agent in catalog["agents"]:
     print(agent["id"])

@@ -1,7 +1,7 @@
 """Parity and packaging contract for the `$new-product` skill.
 
 The skill is authored upstream in claude-copilot at `.claude/skills/new-product/`
-and vendored here byte-for-byte at `plugins/codex-copilot/skills/new-product/`.
+and vendored here byte-for-byte at `skills/new-product/`.
 Two gates keep the copies identical:
 
 * the mirror must match `parity/skill-folder-hashes.json`, the committed
@@ -30,8 +30,8 @@ import yaml
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 SKILL = "new-product"
-MIRROR = ROOT / "plugins/codex-copilot/skills" / SKILL
-POLICY = ROOT / "plugins/codex-copilot/agent-prompts" / f"{SKILL}.openai.yaml"
+MIRROR = ROOT / "skills" / SKILL
+POLICY = ROOT / "agent-prompts" / f"{SKILL}.openai.yaml"
 MANIFEST = ROOT / "parity/skill-folder-hashes.json"
 
 
@@ -125,12 +125,12 @@ class NewProductMirrorParityTest(unittest.TestCase):
         self.assertFalse((MIRROR / "agents").exists())
         self.assertFalse(list(MIRROR.rglob("*.openai.yaml")))
 
-    def test_plugin_packaging_ships_the_skill_with_the_plugin(self):
+    def test_skill_ships_in_the_release_tree_not_the_frozen_plugin(self):
         plugin_root = ROOT / "plugins/codex-copilot"
         manifest = json.loads((plugin_root / ".codex-plugin/plugin.json").read_text())
-        skills_root = (plugin_root / manifest["skills"]).resolve()
-        self.assertEqual(skills_root, (plugin_root / "skills").resolve())
-        self.assertTrue((skills_root / SKILL / "SKILL.md").is_file())
+        self.assertNotIn("skills", manifest)  # skills ship through the release pointer, not the frozen plugin
+        self.assertFalse((plugin_root / "skills").exists())
+        self.assertTrue((ROOT / "skills" / SKILL / "SKILL.md").is_file())
         self.assertFalse(any(p.is_symlink() for p in MIRROR.rglob("*")))
 
     def test_mirror_has_no_runtime_specific_paths_outside_the_adapter(self):

@@ -9,8 +9,8 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-CATALOG = ROOT / "plugins/codex-copilot/agent-catalog.json"
-OUTPUT = ROOT / "plugins/codex-copilot/skills/protocol/references/generated-workflows.md"
+CATALOG = ROOT / "agent-catalog.json"
+OUTPUT = ROOT / "skills/protocol/references/generated-workflows.md"
 
 
 def render() -> str:

@@ -131,7 +131,7 @@ check_exec() {
 }
 
 check_dir  "plugins/codex-copilot"
-check_dir  "plugins/codex-copilot/skills"
+check_dir  "skills"
 check_dir  ".claude/skills/codex-copilot"
 check_exec "scripts/copilot-gate.sh"
 

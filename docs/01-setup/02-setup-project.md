@@ -133,7 +133,7 @@ The target repo will contain:
 - `.codex-copilot.json`
 - `.claude/cc/config.json`
 - `.claude/memory/entries/`
-- `.claude/skills/codex-copilot` -> relative symlink to `plugins/codex-copilot/skills` inside the same project
+- `.claude/skills/codex-copilot` -> relative symlink to `skills` inside the same project
 - `scripts/copilot-gate.sh` -> project-local executable copy
 - `docs/40-initiatives/README.md`
 - `docs/40-initiatives/_template/`

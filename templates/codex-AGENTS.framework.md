@@ -6,7 +6,7 @@
 ## Codex Copilot
 
 - Use relevant skills exposed in this session. `$protocol` and specialist names are shorthand, not shell commands; the main session is a coordinator and dispatches agents (native `spawn_agent`) that load them. Read only task-relevant skills/references.
-- Start with `$protocol` unless the specialist is obvious; use `$launcher` when routing is unclear. Dispatched agents apply playbooks, never the main session; if unavailable in the session, inspect `$HOME/.copilot/current/codex-copilot/plugins/codex-copilot/skills/<name>/SKILL.md`. Report missing capabilities.
+- Start with `$protocol` unless the specialist is obvious; use `$launcher` when routing is unclear. Dispatched agents apply playbooks, never the main session; if unavailable in the session, inspect `$HOME/.copilot/current/codex-copilot/skills/<name>/SKILL.md`. Report missing capabilities.
 
 ## Output Contract
 
@@ -29,12 +29,12 @@
 ## Knowledge and Optional Context
 
 - For brand, voice, product, or methodology knowledge, hydrate `cc env`; follow project consumption-contract pointers through comma-separated `CC_KNOWLEDGE_REPOS`, nearest tier first, reading the first matching sub-path. Never use singular `CC_KNOWLEDGE_REPO` for sub-path lookup. Report missing sources; never invent company facts.
-- Before `cc skill select`, read `$HOME/.copilot/current/codex-copilot/plugins/codex-copilot/skills/specialist-agents/references/shared-behaviors.md`, section `Optional Context`. Follow its load-once, receipt, and fallback rules; mandatory instructions are never relevance-filtered.
+- Before `cc skill select`, read `$HOME/.copilot/current/codex-copilot/skills/specialist-agents/references/shared-behaviors.md`, section `Optional Context`. Follow its load-once, receipt, and fallback rules; mandatory instructions are never relevance-filtered.
 
 ## Task Management
 
 - Track substantial work in `tc` PRDs/tasks and store detailed work products there; create missing records. Use `cc memory` for durable decisions and lessons.
-- Prefer `tc`, then `./.venv-tc/bin/tc`; use `--json` where supported. Read `$HOME/.copilot/current/codex-copilot/plugins/codex-copilot/skills/task-copilot/SKILL.md` when managing tasks.
+- Prefer `tc`, then `./.venv-tc/bin/tc`; use `--json` where supported. Read `$HOME/.copilot/current/codex-copilot/skills/task-copilot/SKILL.md` when managing tasks.
 - Batch three or more related operations using `tc.api`, or separately `cc.api`, with a verified interpreter. Never mix these APIs in one process.
 - Formal initiatives belong in `docs/40-initiatives/NN-slug/`, indexed in `docs/40-initiatives/README.md`. Start with one maintained `README.md`; create supporting files only when current work needs them. Consolidate completed work into that README while retaining required original evidence separately. Markdown holds durable rationale/evidence; `tc` owns live state. Never create `docs/initiatives/`.
 
@@ -79,7 +79,7 @@ When an explanation conflicts with a measurement, follow the measurement and nar
 
 ## Work Lifecycle
 
-Apply `$HOME/.copilot/current/codex-copilot/plugins/codex-copilot/skills/cleanup/references/work-lifecycle.md` for all
+Apply `$HOME/.copilot/current/codex-copilot/skills/cleanup/references/work-lifecycle.md` for all
 work, including direct specialist and noncoding work. Use `$cleanup` for explicit
 consolidation and cleanup. Keep small checkpoints in the existing record; do not
 create routine handoff trees, retrospective scaffolding or duplicate memories.

@@ -59,7 +59,7 @@ REQUIRED_SPECIALIST_SECTIONS = [
 
 class DesignLedContractTest(unittest.TestCase):
     def load_catalog(self):
-        return json.loads((ROOT / "plugins/codex-copilot/agent-catalog.json").read_text())
+        return json.loads((ROOT / "agent-catalog.json").read_text())
 
     def load_baseline(self):
         return json.loads((ROOT / "parity/claude-baseline.json").read_text())
@@ -72,7 +72,7 @@ class DesignLedContractTest(unittest.TestCase):
         self.assertEqual(catalog["entrypoints"]["primary"], "protocol")
         self.assertEqual(catalog["entrypoints"]["launcher"], "launcher")
         self.assertEqual(catalog["designChain"], ["sd", "uxd", "uids", "uid", "ta", "me", "qa"])
-        self.assertTrue((ROOT / "plugins/codex-copilot/agent-catalog.schema.json").exists())
+        self.assertTrue((ROOT / "agent-catalog.schema.json").exists())
 
     def test_specialist_roster_uses_direct_skill_names(self):
         catalog = self.load_catalog()
@@ -81,14 +81,14 @@ class DesignLedContractTest(unittest.TestCase):
 
         for agent_id in EXPECTED_SPECIALISTS:
             self.assertTrue(
-                (ROOT / f"plugins/codex-copilot/skills/{agent_id}/SKILL.md").exists(),
+                (ROOT / f"skills/{agent_id}/SKILL.md").exists(),
                 f"missing skill for agent {agent_id}",
             )
             self.assertFalse(
-                (ROOT / f"plugins/codex-copilot/skills/agent-{agent_id}/SKILL.md").exists(),
+                (ROOT / f"skills/agent-{agent_id}/SKILL.md").exists(),
                 f"stale agent-* skill for {agent_id}",
             )
-        self.assertTrue((ROOT / "plugins/codex-copilot/skills/launcher/SKILL.md").exists())
+        self.assertTrue((ROOT / "skills/launcher/SKILL.md").exists())
 
     def test_workflows_match_design_led_contract(self):
         workflows = self.load_catalog()["workflows"]
@@ -398,11 +398,11 @@ class DesignLedContractTest(unittest.TestCase):
     def test_command_equivalent_skills_exist(self):
         for skill in EXPECTED_COMMAND_SKILLS:
             self.assertTrue(
-                (ROOT / f"plugins/codex-copilot/skills/{skill}/SKILL.md").exists(),
+                (ROOT / f"skills/{skill}/SKILL.md").exists(),
                 f"missing command-equivalent skill {skill}",
             )
             self.assertTrue(
-                (ROOT / f"plugins/codex-copilot/agent-prompts/{skill}.openai.yaml").exists(),
+                (ROOT / f"agent-prompts/{skill}.openai.yaml").exists(),
                 f"missing command-equivalent prompt metadata {skill}",
             )
 
@@ -416,7 +416,8 @@ class DesignLedContractTest(unittest.TestCase):
         self.assertEqual(version["mirrors"]["frameworkVersion"], baseline["baseline"]["frameworkVersion"])
         self.assertEqual(version["components"]["cc"]["requiredVersion"], baseline["components"]["cc"]["version"])
         self.assertEqual(version["components"]["tc"]["requiredVersion"], baseline["components"]["tc"]["version"])
-        self.assertEqual(plugin["version"], version["version"])
+        self.assertEqual(plugin["version"], version["pluginCoreVersion"])
+        self.assertNotEqual(plugin["version"], version["version"])
         self.assertEqual(catalog["version"], version["version"])
         self.assertEqual(sorted(baseline["activeSpecialists"]), sorted(EXPECTED_SPECIALISTS))
         self.assertEqual(sorted(baseline["optionalSpecialists"]), sorted(OPTIONAL_SPECIALISTS))
@@ -466,7 +467,7 @@ class DesignLedContractTest(unittest.TestCase):
 
     def test_active_specialists_have_operational_contracts(self):
         for agent_id in EXPECTED_SPECIALISTS:
-            text = (ROOT / f"plugins/codex-copilot/skills/{agent_id}/SKILL.md").read_text()
+            text = (ROOT / f"skills/{agent_id}/SKILL.md").read_text()
             for section in REQUIRED_SPECIALIST_SECTIONS:
                 self.assertIn(section, text, f"{agent_id} missing {section}")
 
@@ -474,10 +475,10 @@ class DesignLedContractTest(unittest.TestCase):
         checked = [
             ROOT / "AGENTS.md",
             ROOT / "templates/codex-AGENTS.framework.md",
-            ROOT / "plugins/codex-copilot/skills/specialist-agents/references/shared-behaviors.md",
-            ROOT / "plugins/codex-copilot/skills/ta/SKILL.md",
-            ROOT / "plugins/codex-copilot/skills/me/SKILL.md",
-            ROOT / "plugins/codex-copilot/skills/qa/SKILL.md",
+            ROOT / "skills/specialist-agents/references/shared-behaviors.md",
+            ROOT / "skills/ta/SKILL.md",
+            ROOT / "skills/me/SKILL.md",
+            ROOT / "skills/qa/SKILL.md",
             ROOT / "docs/02-user-guides/03-live-docs.md",
         ]
         for path in checked:
@@ -487,7 +488,7 @@ class DesignLedContractTest(unittest.TestCase):
         checked = [
             ROOT / "AGENTS.md",
             ROOT / "templates/codex-AGENTS.framework.md",
-            ROOT / "plugins/codex-copilot/skills/qa/SKILL.md",
+            ROOT / "skills/qa/SKILL.md",
             ROOT / "docs/02-user-guides/04-quality-gates.md",
         ]
         for path in checked:
@@ -607,8 +608,8 @@ class DesignLedContractTest(unittest.TestCase):
             self.assertIn(term, text)
 
     def test_shared_behaviors_are_discoverable(self):
-        shared = ROOT / "plugins/codex-copilot/skills/specialist-agents/references/shared-behaviors.md"
-        specialist = ROOT / "plugins/codex-copilot/skills/specialist-agents/SKILL.md"
+        shared = ROOT / "skills/specialist-agents/references/shared-behaviors.md"
+        specialist = ROOT / "skills/specialist-agents/SKILL.md"
         self.assertTrue(shared.exists())
         self.assertIn("shared-behaviors.md", specialist.read_text())
 
@@ -618,9 +619,9 @@ class DesignLedContractTest(unittest.TestCase):
             ROOT / "README.md",
             ROOT / "docs/02-user-guides/02-protocol.md",
             ROOT / "docs/02-user-guides/01-daily-workflow.md",
-            ROOT / "plugins/codex-copilot/skills/protocol/SKILL.md",
-            ROOT / "plugins/codex-copilot/skills/protocol/references/flows.md",
-            ROOT / "plugins/codex-copilot/skills/launcher/references/workflows.md",
+            ROOT / "skills/protocol/SKILL.md",
+            ROOT / "skills/protocol/references/flows.md",
+            ROOT / "skills/launcher/references/workflows.md",
         ]
         for path in checked:
             self.assertNotIn(stale, path.read_text(), f"stale chain in {path}")
@@ -705,7 +706,7 @@ class DesignLedContractTest(unittest.TestCase):
 
     def test_force_guidance_matches_script_behavior(self):
         setup_doc = (ROOT / "docs/01-setup/02-setup-project.md").read_text()
-        setup_skill = (ROOT / "plugins/codex-copilot/skills/setup-project/SKILL.md").read_text()
+        setup_skill = (ROOT / "skills/setup-project/SKILL.md").read_text()
         self.assertIn("does not override", setup_doc)
         self.assertIn("compatibility-only", setup_skill)
         self.assertNotIn("Do not use `--force` unless", setup_skill)
@@ -729,8 +730,8 @@ class DesignLedContractTest(unittest.TestCase):
         for rel in [
             "AGENTS.md",
             "templates/codex-AGENTS.framework.md",
-            "plugins/codex-copilot/skills/protocol/SKILL.md",
-            "plugins/codex-copilot/skills/task-copilot/SKILL.md",
+            "skills/protocol/SKILL.md",
+            "skills/task-copilot/SKILL.md",
         ]:
             text = (ROOT / rel).read_text()
             self.assertIn("docs/40-initiatives/", text, f"missing initiative convention in {rel}")

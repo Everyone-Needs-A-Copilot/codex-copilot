@@ -7,7 +7,7 @@ The current baseline is recorded in `parity/claude-baseline.json`:
 - Adopted Claude Copilot framework source: `5.34.8`
 - Required `cc`: `2.18.0`
 - Required `tc`: `2.12.0`
-- Current Codex source version: `0.16.8` (release publication and signatures are verified separately)
+- Current Codex source version: `0.17.0` (release publication and signatures are verified separately)
 
 The manifests record source compatibility, not proof of a published foundation
 release. See [release preparation](../03-developer-guides/03-evidence-design-release.md)
@@ -170,8 +170,8 @@ When Claude Copilot changes, update:
 
 1. `parity/claude-baseline.json`
 2. `VERSION.json`
-3. `plugins/codex-copilot/agent-catalog.json`
-4. `plugins/codex-copilot/agent-catalog.schema.json`
+3. `agent-catalog.json`
+4. `agent-catalog.schema.json`
 5. affected docs; inspect tests that assert the parity surface and change them only with the explicit authorization required by `AGENTS.md`
 
 Then run:

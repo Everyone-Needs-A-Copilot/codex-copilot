@@ -22,7 +22,7 @@ CORE = ROOT / "plugins" / "codex-copilot" / "skills"
 PACKS = ROOT / "packs"
 READERS = ("sd", "ta", "ind", "uid", "uids", "uxd")
 CONSUMERS = {
-    "plugins/codex-copilot/skills/uids": ("uids", "visual|illustration|motion"),
+    "skills/uids": ("uids", "visual|illustration|motion"),
     "packs/business-creative/skills/cco": ("cco", "concept|naming|narrative"),
     "packs/writing-legal/skills/cco": ("cco", "concept|naming|narrative"),
     "packs/business-creative/skills/cw": ("cw", "copy|naming|narrative"),
@@ -146,7 +146,7 @@ class ReaderRenameTest(unittest.TestCase):
     def test_readers_name_taste_md_only(self):
         for name in READERS:
             with self.subTest(name):
-                check_reader(skill(f"plugins/codex-copilot/skills/{name}"))
+                check_reader(skill(f"skills/{name}"))
 
     def test_no_shipped_skill_names_the_legacy_file(self):
         offenders = [
@@ -158,7 +158,7 @@ class ReaderRenameTest(unittest.TestCase):
         self.assertEqual(offenders, [])
 
     def test_negative_controls_reader_rename(self):
-        text = skill("plugins/codex-copilot/skills/sd")
+        text = skill("skills/sd")
         with self.assertRaises(AssertionError):
             check_reader(text.replace("08-taste/TASTE.md", "08-taste/INDEX.md"))
         with self.assertRaises(AssertionError):
@@ -185,7 +185,7 @@ class ConsumerContractTest(unittest.TestCase):
                 self.assertEqual(len(numbers), len(set(numbers)), "workflow numbering stays unique after the insert")
 
     def test_core_consumer_reads_the_taste_file_before_the_find_step(self):
-        text = skill("plugins/codex-copilot/skills/uids")
+        text = skill("skills/uids")
         self.assertLess(text.index("08-taste/TASTE.md"), text.index("Taste: before drafting"))
 
     def test_no_other_skill_gains_the_step(self):

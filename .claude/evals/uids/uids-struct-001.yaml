@@ -2,7 +2,7 @@ id: uids-struct-001
 name: "UI design retains visual-system rigor"
 priority: P0
 type: structural
-source: {type: file, path: "plugins/codex-copilot/skills/uids/SKILL.md"}
+source: {type: file, path: "skills/uids/SKILL.md"}
 assertions:
   - {type: contains, value: "Rams-style reduction", description: "Reduction methodology is present"}
   - {type: contains, value: "accessible contrast", description: "Contrast is treated as a constraint"}

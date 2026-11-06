@@ -53,8 +53,8 @@ PROJECT_DIR="${SCRATCH_ROOT}/scratch-project"
 mkdir -p "${PROJECT_DIR}"
 git -C "${PROJECT_DIR}" init -q
 
-SAMPLE_LOCKED_FILE="plugins/codex-copilot/skills/protocol/SKILL.md"
-SAMPLE_LOCKED_FILE2="plugins/codex-copilot/agent-catalog.json"
+SAMPLE_LOCKED_FILE="skills/protocol/SKILL.md"
+SAMPLE_LOCKED_FILE2="agent-catalog.json"
 
 # Scenarios 1-5 pass --no-org-plugin throughout so their assertions stay
 # scoped to the base plugin and independent of whatever organization repo

@@ -19,10 +19,10 @@ def digest(content):
 
 class VerificationPolicyTests(unittest.TestCase):
     def test_native_skills_load_policy_and_retain_approval_authority(self):
-        shared = ROOT / 'plugins/codex-copilot/skills/specialist-agents/references/verification-policy.md'
+        shared = ROOT / 'skills/specialist-agents/references/verification-policy.md'
         policy = shared.read_text()
         for role in ('me', 'qa'):
-            skill = (ROOT / f'plugins/codex-copilot/skills/{role}/SKILL.md').read_text()
+            skill = (ROOT / f'skills/{role}/SKILL.md').read_text()
             self.assertIn('../specialist-agents/references/verification-policy.md', skill)
             self.assertIn('Do not downgrade requiresQa', skill)
         for term in ('Instructions/routing', 'Logic/transformation', 'Storage/installation',
@@ -58,12 +58,12 @@ class VerificationPolicyTests(unittest.TestCase):
                      'Untiered tasks default to T3', 'escalates upward only', 'Downgrades are owner-only'):
             self.assertIn(term, flat_tiers)
         for role in ('me', 'qa', 'protocol'):
-            skill = (ROOT / f'plugins/codex-copilot/skills/{role}/SKILL.md').read_text()
+            skill = (ROOT / f'skills/{role}/SKILL.md').read_text()
             self.assertIn('../specialist-agents/references/verification-policy.md', skill)
             self.assertIn('tc task attest', skill)
             self.assertIn('T3', skill)
         self.assertNotIn('Treat `$qa` as required for implementation work that needs verification.',
-                         (ROOT / 'plugins/codex-copilot/skills/me/SKILL.md').read_text())
+                         (ROOT / 'skills/me/SKILL.md').read_text())
         self.assertNotIn('with its authority, contract and negative-control record', authority)
         self.assertNotIn('"The tests pass" is only evidence if the tests are unchanged', authority)
 

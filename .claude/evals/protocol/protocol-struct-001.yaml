@@ -2,7 +2,7 @@ id: protocol-struct-001
 name: "Protocol keeps decision instruments and catalog routing"
 priority: P0
 type: structural
-source: {type: file, path: "plugins/codex-copilot/skills/protocol/SKILL.md"}
+source: {type: file, path: "skills/protocol/SKILL.md"}
 assertions:
   - {type: contains, value: "SOUL.md", description: "Product decisions use SOUL.md"}
   - {type: contains, value: "architecture-guiding-principles.md", description: "Technical decisions use architecture principles"}

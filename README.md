@@ -4,7 +4,7 @@ Codex Copilot is a Codex-native operating layer for developers who want speciali
 
 It mirrors [Claude Copilot](https://github.com/Everyone-Needs-A-Copilot/claude-copilot)'s capability intent through real Codex primitives: `AGENTS.md`, skills, plugin-bundled lifecycle hooks, `tc`, `cc`, scripts, tests, and visible `spawn_agent` execution within approved work. It does not pretend Claude hook registration, slash commands, or named-agent syntax work unchanged in Codex.
 
-Current version: **0.16.8**, which mirrors Claude Copilot 5.34.8 and requires shared **cc 2.18.0** and **tc 2.12.0** (see [`VERSION.json`](./VERSION.json) and the [parity contract](./docs/05-reference/03-parity-contract.md)).
+Current version: **0.17.0**, which mirrors Claude Copilot 5.34.8 and requires shared **cc 2.18.0** and **tc 2.12.0** (see [`VERSION.json`](./VERSION.json) and the [parity contract](./docs/05-reference/03-parity-contract.md)).
 
 ## What You Get
 
@@ -78,7 +78,7 @@ Formal multi-phase initiatives live in `docs/40-initiatives/NN-slug/`. Their bri
 
 ## Work Lifecycle
 
-`$cleanup` preserves useful history, applies scoped lessons and retires unnecessary artifacts with exact approval and verified recovery. Protocol, direct specialists (including optional packs when the project lifecycle instruction is installed), resume, pause, reflection and task closure use the same [packaged contract](plugins/codex-copilot/skills/cleanup/references/work-lifecycle.md), with worktree checks and visible cleanup approval at start, resume, new PRD or initiative, merge, finish, pause and handoff. Registered lifecycle criteria are checked by existing `tc` QA, not a new runtime hook or task engine. Recorded lessons and cleaner files are not evidence of improved product outcomes until later work measures the effect.
+`$cleanup` preserves useful history, applies scoped lessons and retires unnecessary artifacts with exact approval and verified recovery. Protocol, direct specialists (including optional packs when the project lifecycle instruction is installed), resume, pause, reflection and task closure use the same [packaged contract](skills/cleanup/references/work-lifecycle.md), with worktree checks and visible cleanup approval at start, resume, new PRD or initiative, merge, finish, pause and handoff. Registered lifecycle criteria are checked by existing `tc` QA, not a new runtime hook or task engine. Recorded lessons and cleaner files are not evidence of improved product outcomes until later work measures the effect.
 
 Setup preserves an existing project `AGENTS.md`: when adopting into an existing project, add the lifecycle pointer from the project template. Standalone pack activation does not install the base lifecycle contract.
 

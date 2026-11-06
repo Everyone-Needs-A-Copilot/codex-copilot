@@ -4,8 +4,8 @@
 
 | Change | Canonical surface |
 | --- | --- |
-| specialist behavior | `plugins/codex-copilot/skills/<name>/SKILL.md` |
-| active roster or routing | `plugins/codex-copilot/agent-catalog.json` |
+| specialist behavior | `skills/<name>/SKILL.md` |
+| active roster or routing | `agent-catalog.json` |
 | optional domain capability | `packs/<pack>/` |
 | organization-owned plugin (separate repo, installed opt-in) | `scripts/lib/resolve-org-plugin.sh`, `scripts/setup-project.sh --org-plugin`, `scripts/update-project.sh --org-plugin` |
 | target-project scaffolding | `scripts/setup-project.sh` and `templates/` |

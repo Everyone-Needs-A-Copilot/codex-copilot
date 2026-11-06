@@ -50,7 +50,7 @@ These verify:
 Open this repo in Codex. Codex will read:
 
 - `AGENTS.md`
-- `plugins/codex-copilot/skills/`
+- `skills/`
 
 Start with:
 

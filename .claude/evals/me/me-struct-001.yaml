@@ -2,7 +2,7 @@ id: me-struct-001
 name: "Engineering retains simple design and QA routing"
 priority: P0
 type: structural
-source: {type: file, path: "plugins/codex-copilot/skills/me/SKILL.md"}
+source: {type: file, path: "skills/me/SKILL.md"}
 assertions:
   - {type: contains, value: "Kent Beck's simple design", description: "Simple-design methodology is present"}
   - {type: contains, value: "`$qa` for T3 and escalated work", description: "T3 and escalated implementation routes to QA"}
