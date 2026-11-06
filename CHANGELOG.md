@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.16.6] - 2026-11-05
+
+- Adopt Claude 5.34.7 (cc 2.18.0, tc 2.12.0); see the [upstream adoption record](parity/2026-11-05-upstream-5.34.7-adoption.md). The plugin payload is unchanged.
+
 ## [0.16.5] - 2026-11-05
 
 - Adopt Claude 5.34.6 (cc 2.18.0, tc 2.12.0); see the [upstream adoption record](parity/2026-11-05-upstream-5.34.6-adoption.md). The plugin payload is unchanged.
