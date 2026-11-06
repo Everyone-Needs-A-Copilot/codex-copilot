@@ -18,6 +18,16 @@ def digest(content):
 
 
 class VerificationPolicyTests(unittest.TestCase):
+    def test_blast_radius_qa_is_the_single_default_strategy(self):
+        # New 2026-11-06: policy, QA/protocol skills and AGENTS.md reference the shared
+        # blast-radius-qa skill instead of restating QA depth (old: no such assertion).
+        policy = (ROOT / 'skills/specialist-agents/references/verification-policy.md').read_text()
+        for term in ('Blast-Radius QA (2026-11-06)', 'cc skill get blast-radius-qa', 'one parallel sweep',
+                     'one defect list', 'failed checks plus any check sharing code the fixes changed'):
+            self.assertIn(term, policy)
+        for rel in ('skills/qa/SKILL.md', 'skills/protocol/SKILL.md', 'skills/ta/SKILL.md', 'AGENTS.md'):
+            self.assertIn('blast-radius-qa', (ROOT / rel).read_text(), rel)
+
     def test_native_skills_load_policy_and_retain_approval_authority(self):
         shared = ROOT / 'skills/specialist-agents/references/verification-policy.md'
         policy = shared.read_text()

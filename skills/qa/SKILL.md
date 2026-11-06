@@ -55,7 +55,7 @@ Return:
 
 Read `../specialist-agents/references/verification-policy.md` once per task before
 selecting checks. Apply its behavior/consumer lanes, first-divergent-state diagnosis,
-two-hypothesis checkpoint, execution caps and authorized test-migration contract. Check the task's tier first (`tc task tier <id> --check`): on a T1/T2 task verify only that a valid tc attestation exists (`tc task check-qa <id> --json`) and that the diff does not need a higher tier; do not build a per-criterion packet. `tc task qa-packet <id>` pre-fills the T3 packet's IDENTITY and each criterion's exact text.
+two-hypothesis checkpoint, execution caps and authorized test-migration contract. Scope, partitioning, run-to-completion and retest follow the organization `blast-radius-qa` skill (blast radius of the change; full regression is one parallel sweep; one defect list; retest only failed checks plus checks sharing changed code). Check the task's tier first (`tc task tier <id> --check`): on a T1/T2 task verify only that a valid tc attestation exists (`tc task check-qa <id> --json`) and that the diff does not need a higher tier; do not build a per-criterion packet. `tc task qa-packet <id>` pre-fills the T3 packet's IDENTITY and each criterion's exact text.
 
 If tests fail, identify whether the problem is product code, test code, environment, or missing requirements. Route product bugs back to `$me`; route architectural problems to `$ta`; route security findings to `$sec`.
 
@@ -195,4 +195,4 @@ cumulative history for existing work.
 
 ## Parallel Partitions
 
-When verification is split (2026-11-05, see the protocol `parallel-execution` reference), a QA agent acting as convergence owner proposes the partitions to the coordinator (by acceptance criterion, user journey, surface, test file or shard, and browser/viewport), merges per-partition evidence recorded against the same integrated source identity into one verdict, and runs the cross-partition seam checks. A partition worker stays inside its assigned partition, records evidence against the stated source identity, and issues no overall verdict. Running a full suite as a single agent is a coupled exception that needs a recorded reason.
+When verification is split (2026-11-05, see the protocol `parallel-execution` reference), a QA agent acting as convergence owner proposes the partitions to the coordinator (by acceptance criterion, user journey, surface, test file or shard, and browser/viewport), merges per-partition evidence recorded against the same integrated source identity into one verdict, and runs the cross-partition seam checks. A partition worker stays inside its assigned partition, records evidence against the stated source identity, and issues no overall verdict. Running a full-regression sweep as a single agent, serially, is a coupled exception that needs a recorded reason (`blast-radius-qa`).
