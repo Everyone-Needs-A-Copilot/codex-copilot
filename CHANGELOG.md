@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.16.8] - 2026-11-05
+
+- Sort imports and apply standard formatting in the bundled `scripts/protocol-cycle.py` so consumers that lint vendored plugin files with Ruff (rules E, W, F, I, UP, B, C4, RUF) pass. Lint-only change; no behavior change. Still on Claude 5.34.8 (cc 2.18.0, tc 2.12.0).
+
 ## [0.16.7] - 2026-11-05
 
 - Adopt Claude 5.34.8 (cc 2.18.0, tc 2.12.0); see the [upstream adoption record](parity/2026-11-05-upstream-5.34.8-adoption.md). The plugin payload is unchanged.
