@@ -1,6 +1,6 @@
 # ADR-001: Embed Prompt Assets And Derive Local State Caches
 
-> Status: Superseded by [central-resolution ADR-001](../../../../../claude-copilot/docs/40-initiatives/06-central-resolution/decisions/ADR-001-central-release-pointer.md) (claude-copilot `docs/40-initiatives/06-central-resolution/`)
+> Status: Superseded by [central-resolution ADR-001](https://github.com/Everyone-Needs-A-Copilot/claude-copilot/blob/main/docs/40-initiatives/06-central-resolution/decisions/ADR-001-central-release-pointer.md) (claude-copilot `docs/40-initiatives/06-central-resolution/`)
 
 ## Supersession note
 
