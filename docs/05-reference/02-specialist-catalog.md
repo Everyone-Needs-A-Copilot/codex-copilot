@@ -17,7 +17,7 @@ This project therefore defines each specialist as a native Codex skill and maps 
 
 ## Agent Catalog
 
-Each specialist is a first-class skill in `plugins/codex-copilot/skills/`:
+Each specialist is a first-class skill in `skills/`:
 
 - `$protocol`
 - `$sd`
@@ -64,7 +64,7 @@ This keeps the system genuinely native to Codex:
 
 ## Machine-readable source
 
-See [agent-catalog.json](../../plugins/codex-copilot/agent-catalog.json) and its
-[schema](../../plugins/codex-copilot/agent-catalog.schema.json). The catalog is
+See [agent-catalog.json](../../agent-catalog.json) and its
+[schema](../../agent-catalog.schema.json). The catalog is
 the source of truth for the active roster, optional pack specialists, routing
 edges, and design chain.

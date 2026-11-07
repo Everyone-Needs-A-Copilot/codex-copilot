@@ -9,7 +9,7 @@ import unittest
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SCAN = ['AGENTS.md', 'templates', 'plugins/codex-copilot/skills', 'plugins/codex-copilot/agent-prompts']
+SCAN = ['AGENTS.md', 'templates', 'skills', 'agent-prompts']
 RETIRED = [
     'Debug-spiral circuit breaker',
     'three consecutive unsuccessful',
@@ -45,7 +45,7 @@ class RetiredPhraseTests(unittest.TestCase):
             self.assertEqual(len(scan([sample])), 2)
 
     def test_consolidated_rules_are_present(self):
-        checkpoints = (ROOT / 'plugins/codex-copilot/skills/protocol/references/checkpoints.md').read_text()
+        checkpoints = (ROOT / 'skills/protocol/references/checkpoints.md').read_text()
         self.assertIn('DECISION NEEDED:', checkpoints)
         self.assertIn('no auto-proceed', checkpoints)
         self.assertIn('`tc execution`', (ROOT / 'AGENTS.md').read_text())

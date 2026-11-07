@@ -2,7 +2,7 @@ id: ta-struct-001
 name: "Architecture retains evidence and tradeoffs"
 priority: P0
 type: structural
-source: {type: file, path: "plugins/codex-copilot/skills/ta/SKILL.md"}
+source: {type: file, path: "skills/ta/SKILL.md"}
 assertions:
   - {type: contains, value: "Live Docs", description: "Third-party APIs require current evidence"}
   - {type: contains, value: "ADR shape", description: "Architecture decisions use ADR reasoning"}

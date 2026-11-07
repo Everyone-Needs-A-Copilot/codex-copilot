@@ -8,7 +8,7 @@ Research divides by question, evidence source or hypothesis and converges throug
 
 Builders commit locally and run focused checks; the integrator owns pushes and required full checks. Independent scoped QA plus seam checks bind to the actual assembled source. Fixes rerun affected evidence and consumers. Cleanup automatically removes recorded eligible merged worktrees after clean-state, identity, inactivity, consumer and teardown checks under the owner’s explicit authority; branch history is preserved, and other deletion retains exact approval. Dirty, unmerged or actively consumed work is held with an owner and next action.
 
-See the [native adapter](../../plugins/codex-copilot/skills/protocol/references/parallel-execution.md) for the internal `tc cycle` contract. The canonical organization procedure is loaded through `cc skill get parallel-execution --scope machine --json`; both Copilots read that same source.
+See the [native adapter](../../skills/protocol/references/parallel-execution.md) for the internal `tc cycle` contract. The canonical organization procedure is loaded through `cc skill get parallel-execution --scope machine --json`; both Copilots read that same source.
 
 ## Quick lifecycle proof
 

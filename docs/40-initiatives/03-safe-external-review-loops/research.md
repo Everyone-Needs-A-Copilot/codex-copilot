@@ -132,7 +132,7 @@ helpful errors, and explicit exit codes. This follows the Agent Skills
 Codex Copilot already has several stronger foundations:
 
 - [`SOUL.md`](../../../SOUL.md) requires native primitives and evidence-bound QA.
-- [`qa/SKILL.md`](../../../plugins/codex-copilot/skills/qa/SKILL.md) refuses approval without an accepted external artifact.
+- [`qa/SKILL.md`](../../../skills/qa/SKILL.md) refuses approval without an accepted external artifact.
 - [`scripts/copilot-gate.sh`](../../../scripts/copilot-gate.sh) checks task-bound evidence and verdict tokens.
 - [capability packs](../../02-user-guides/06-capability-packs.md) provide an explicit dormant surface for optional skills.
 - the core [plugin manifest](../../../plugins/codex-copilot/.codex-plugin/plugin.json) already provides Codex-native multi-skill packaging.
@@ -141,7 +141,7 @@ One immediate gap is that [`scripts/smoke-test.sh`](../../../scripts/smoke-test.
 does not run the Agent Skills reference validator. During this research:
 
 - all three inspected Greptile skills passed `agentskills validate`
-- all current `plugins/codex-copilot/skills/*` skills passed the same validation
+- all current `skills/*` skills passed the same validation
 
 The command used was:
 

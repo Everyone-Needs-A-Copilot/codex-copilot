@@ -8,9 +8,9 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = Path('.claude/agents/_shared/work-lifecycle.md')
-DESTINATION = Path('plugins/codex-copilot/skills/cleanup/references/work-lifecycle.md')
+DESTINATION = Path('skills/cleanup/references/work-lifecycle.md')
 POLICY_SOURCE = Path('.claude/agents/_shared/verification-policy.md')
-POLICY_DESTINATION = Path('plugins/codex-copilot/skills/specialist-agents/references/verification-policy.md')
+POLICY_DESTINATION = Path('skills/specialist-agents/references/verification-policy.md')
 # Each canonical Claude file and its single byte-for-byte Codex copy.
 PAIRS = ((SOURCE, DESTINATION), (POLICY_SOURCE, POLICY_DESTINATION))
 

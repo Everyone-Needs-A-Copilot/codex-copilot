@@ -17,7 +17,7 @@ packs/
         SKILL.md
 ```
 
-The active global plugin remains `plugins/codex-copilot/skills/`. Anything under `packs/` is inactive until a project exposes it.
+The active global plugin remains `skills/`. Anything under `packs/` is inactive until a project exposes it.
 
 ## Activation Pattern
 

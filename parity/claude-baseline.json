@@ -3,7 +3,7 @@
     "source": "claude-copilot",
     "frameworkVersion": "5.34.8",
     "capturedDate": "2026-11-05",
-    "codexParityVersion": "0.16.8",
+    "codexParityVersion": "0.17.0",
     "notes": "Codex 0.16.1 adopts the Claude 5.34.2 coordinator rule natively with its own PreToolUse guard and rule injection; Claude-only hook, installer and budget deferral are not ported. See parity/2026-11-05-upstream-5.34.2-adoption.md. Content hashes bind the verified release source."
   },
   "components": {
@@ -219,7 +219,7 @@
   "workLifecycleAdoption": {
     "state": "introduced in 0.9.0; proactive housekeeping clarified in 0.9.1; skill renamed from optimize to cleanup in 0.10.0",
     "canonicalSource": ".claude/agents/_shared/work-lifecycle.md",
-    "codexReference": "plugins/codex-copilot/skills/cleanup/references/work-lifecycle.md",
+    "codexReference": "skills/cleanup/references/work-lifecycle.md",
     "verification": "scripts/sync-work-lifecycle.py --claude-root <explicit checkout> --check",
     "boundary": "Native cleanup skill and proportional instruction checkpoints; existing tc v2 QA; no new lifecycle hook, task engine or automatic deletion.",
     "sourceRelease": "Claude Copilot 5.21.1",

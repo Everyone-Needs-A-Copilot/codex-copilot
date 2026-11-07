@@ -1,7 +1,7 @@
 {
   "name": "codex-copilot",
-  "version": "0.16.8",
-  "description": "Codex-native software specialist framework with tc-backed workflow discipline and Claude Copilot parity contracts.",
+  "version": "1.0.0",
+  "description": "Frozen Codex hook shim for Codex Copilot. Skills, scripts and logic are delivered through the release pointer (~/.copilot/current).",
   "author": {
     "name": "Everyone Needs A Copilot",
     "url": "https://ineedacopilot.com"
@@ -15,7 +15,6 @@
     "task-copilot",
     "workflow"
   ],
-  "skills": "./skills/",
   "interface": {
     "displayName": "Codex Copilot",
     "shortDescription": "Specialist playbooks and tc discipline for Codex.",

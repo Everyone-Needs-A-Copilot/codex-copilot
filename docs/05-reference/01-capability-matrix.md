@@ -4,7 +4,7 @@ Codex Copilot translates the useful parts of Claude Copilot into Codex-native pr
 
 Authoritative sources:
 
-- `plugins/codex-copilot/agent-catalog.json` for specialists and routing
+- `agent-catalog.json` for specialists and routing
 - `VERSION.json` for framework and dependency versions
 - `parity/claude-baseline.json` for the adopted Claude baseline
 - script behavior and `--help` output for executable contracts

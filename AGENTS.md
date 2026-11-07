@@ -19,10 +19,12 @@ This project does not assume Claude-style named-agent syntax.
 Use these Codex-native equivalents:
 
 - `AGENTS.md` for repo-level operating instructions
-- local skills from `plugins/codex-copilot/skills/`
+- local skills from `skills/`
 - native `spawn_agent` for useful independent work within an approved plan, with visible tracked ownership
 
 Coordinator rule (2026-11-05): The main session is a coordinator. It never reads project content, edits files or runs work commands itself. From the first turn it splits the request into independent streams and dispatches agents (Codex native spawn_agent); read-only work is dispatched immediately with no approval wait. Approval gates apply only before writes, outward actions and spending. Coordinator allowlist: routing and briefing agents; state commands (tc, cc status/list/progress/skill, git status/log/branch/worktree list); synthesizing agent results; answering from the conversation; maintaining its own memory/scratchpad notes; asking the owner for decisions. Every other read, edit or command goes to an agent. Default to multiple agents split by question, source or exclusively owned files, with one integration owner and independent QA. Coupled work goes to one agent, never the main session. No size-based exceptions (T1, tiny, coupled, immediate blocking step). Per stage: every role and stage divides (2026-11-05): when a stage's work divides, dispatch several agents of the same role on disjoint partitions in parallel, with one synthesis owner per stage merging partial results with provenance and keeping contradictions visible; a flow arrow is a stage boundary, not a single agent; one agent per stage only when its work is genuinely indivisible, with the reason recorded. Canonical text: the `parallel-execution` skill.
+
+Blast-Radius QA (2026-11-06): the default QA strategy; test the change's blast radius, not the whole product. Canonical text: the organization `blast-radius-qa` skill (`cc skill get blast-radius-qa --scope machine --json`; Claude Copilot reads the same file). It replaces any earlier QA-depth statement.
 
 ## Output Contract
 
@@ -57,7 +59,7 @@ Use the `cc` CLI for persistent memory, skill discovery, Live Docs, onboarding, 
 - Source: Claude Copilot `tools/cc/`
 - Project config: `.claude/cc/config.json`
 - Project memory: `.claude/memory/entries/`
-- Project skills bridge: `.claude/skills/codex-copilot` -> `plugins/codex-copilot/skills`
+- Project skills bridge: `.claude/skills/codex-copilot` -> `skills`
 
 When a task needs Copilot config values, run:
 
@@ -179,7 +181,7 @@ Use these specialist roles as decision lenses:
 
 ## Delegation Rules
 
-An approved plan authorizes visible, tracked `spawn_agent` work by default wherever outputs can proceed independently. No separate spawn or worktree approval is needed within that scope. Read the shared `parallel-execution` policy through `cc skill get parallel-execution --scope machine --json` and the native adapter at `plugins/codex-copilot/skills/protocol/references/parallel-execution.md`.
+An approved plan authorizes visible, tracked `spawn_agent` work by default wherever outputs can proceed independently. No separate spawn or worktree approval is needed within that scope. Read the shared `parallel-execution` policy through `cc skill get parallel-execution --scope machine --json` and the native adapter at `skills/protocol/references/parallel-execution.md`.
 
 For every dispatch:
 
@@ -246,15 +248,15 @@ true.
 
 Before substantial work, read the relevant skill:
 
-- `plugins/codex-copilot/skills/protocol/SKILL.md`
-- `plugins/codex-copilot/skills/launcher/SKILL.md`
-- `plugins/codex-copilot/skills/protocol-router/SKILL.md`
-- `plugins/codex-copilot/skills/task-copilot/SKILL.md`
-- `plugins/codex-copilot/skills/specialist-agents/SKILL.md`
+- `skills/protocol/SKILL.md`
+- `skills/launcher/SKILL.md`
+- `skills/protocol-router/SKILL.md`
+- `skills/task-copilot/SKILL.md`
+- `skills/specialist-agents/SKILL.md`
 
 ## Work Lifecycle
 
-Apply `plugins/codex-copilot/skills/cleanup/references/work-lifecycle.md` for all
+Apply `skills/cleanup/references/work-lifecycle.md` for all
 work, including direct specialist and noncoding work. Use `$cleanup` for explicit
 consolidation and cleanup. Keep small checkpoints in the existing record; do not
 create routine handoff trees, retrospective scaffolding or duplicate memories.

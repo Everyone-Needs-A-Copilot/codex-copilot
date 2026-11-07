@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.17.0] - 2026-11-06
+
+- **Central resolution (ADR-001, initiative 06-central-resolution).** Projects no longer carry a copy of the plugin, skills, QA gate, marketplace file or the `.codex-copilot.json` per-file checksum lock. The framework resolves through `~/.copilot/current`.
+- **Frozen plugin hooks.** `hooks/hooks.json` is byte-identical to 0.16.8 and every `hooks/*.sh` is now a constant shim that execs the real script from `~/.copilot/current/codex-copilot/templates/central-hooks/`. Codex hashes the whole plugin directory for hook trust, so the plugin directory must stay byte-frozen from this release on (including `plugin.json`); this release needs one re-trust, later releases need none. Every hook except `coordinator-guard` exits 0 unless the project has `copilot.project.json`; the coordinator guard is ungated and behaves exactly as before.
+- **Setup and update.** `scripts/setup-project.sh` seeds project-owned scaffolds only when absent and delegates the marker, thin `AGENTS.md` section and Codex trust entry to `cc project init`. `scripts/update-project.sh` is verify-only (`cc doctor`). `--framework-root`, `--org-plugin`, `--no-org-plugin`, `--force` and `--dry-run` are accepted and ignored.
+- **Templates.** `templates/AGENTS.project.template.md` holds project-only sections. The framework text moved to `templates/codex-AGENTS.framework.md`, the source of the managed block in `~/.codex/AGENTS.md`.
+- **Plugin directory reduced to the frozen core (0.17.0).** `plugins/codex-copilot/` now holds only `.codex-plugin/plugin.json`, `hooks/hooks.json` and the five constant hook shims. `skills/`, `agent-prompts/`, `agent-catalog.json`, `agent-catalog.schema.json` and `scripts/protocol-cycle.py` moved to the repository (release) root and ship through `~/.copilot/current`; Codex skills are reached through `~/.codex/skills` links generated from the release tree. `plugin.json` no longer declares `skills`. Reason: Codex's trust hash covers the whole plugin directory, so any per-release content there would show hooks as modified after every release.
+- **Plugin version decoupled from product version.** `plugin.json` is pinned to the constant `pluginCoreVersion` (`1.0.0`, recorded in `VERSION.json`) and does not move per release; the product version (`VERSION.json.version`, catalog, packs, parity baseline) is 0.17.0. The parity test and `scripts/check-versions.sh` now require plugin version == `pluginCoreVersion` and differing from the product version. `tests/test_central_hooks.py` hashes the plugin directory and fails on any non-frozen content.
+- Tests that exercised the copy model (collision holds, lock adoption, drift repair) were replaced by central-model tests.
+
 ## [0.16.8] - 2026-11-05
 
 - Sort imports and apply standard formatting in the bundled `scripts/protocol-cycle.py` so consumers that lint vendored plugin files with Ruff (rules E, W, F, I, UP, B, C4, RUF) pass. Lint-only change; no behavior change. Still on Claude 5.34.8 (cc 2.18.0, tc 2.12.0).

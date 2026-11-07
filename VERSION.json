@@ -1,6 +1,7 @@
 {
   "name": "codex-copilot",
-  "version": "0.16.8",
+  "version": "0.17.0",
+  "pluginCoreVersion": "1.0.0",
   "releaseDate": "2026-11-05",
   "codename": "protocol-parallel-default",
   "status": "stable",
@@ -13,7 +14,7 @@
   },
   "components": {
     "cc": {
-      "requiredVersion": "2.18.0",
+      "requiredVersion": "2.19.0",
       "source": "Claude Copilot tools/cc",
       "provides": [
         "cc memory",

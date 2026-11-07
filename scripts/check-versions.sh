@@ -10,13 +10,13 @@ root = Path.cwd()
 version = json.loads((root / "VERSION.json").read_text())
 baseline = json.loads((root / "parity/claude-baseline.json").read_text())
 plugin = json.loads((root / "plugins/codex-copilot/.codex-plugin/plugin.json").read_text())
-catalog = json.loads((root / "plugins/codex-copilot/agent-catalog.json").read_text())
-catalog_schema = json.loads((root / "plugins/codex-copilot/agent-catalog.schema.json").read_text())
+catalog = json.loads((root / "agent-catalog.json").read_text())
+catalog_schema = json.loads((root / "agent-catalog.schema.json").read_text())
 
 expected = version["version"]
 errors = []
-if plugin["version"] != expected:
-    errors.append(f"plugin version {plugin['version']} != VERSION.json {expected}")
+if plugin["version"] != version["pluginCoreVersion"]:
+    errors.append(f"plugin version {plugin['version']} != VERSION.json pluginCoreVersion {version['pluginCoreVersion']}")
 if catalog["version"] != expected:
     errors.append(f"catalog version {catalog['version']} != VERSION.json {expected}")
 if version["mirrors"]["frameworkVersion"] != baseline["baseline"]["frameworkVersion"]:

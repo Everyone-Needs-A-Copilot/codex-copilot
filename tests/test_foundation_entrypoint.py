@@ -7,6 +7,8 @@ import subprocess
 import tempfile
 import unittest
 
+from central_helpers import env_with, stub_cc
+
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -42,24 +44,25 @@ class FoundationEntrypointTests(unittest.TestCase):
             subprocess.run(['git', 'init', '-q', str(project)], check=True, timeout=10)
             owner = project / 'AGENTS.md'
             owner.write_text('# Owner rules\nPreserve this project.\n')
+            home = Path(scratch) / 'home'
+            home.mkdir()
+            stub = stub_cc(home)
             for _ in range(2):
                 setup = subprocess.run(['bash', str(ROOT / 'scripts/setup-project.sh'),
                                         '--project', str(project), '--framework-root', str(ROOT),
                                         '--no-org-plugin', '--no-tc-init'], cwd=ROOT,
-                                       capture_output=True, text=True, timeout=30)
+                                       capture_output=True, text=True, timeout=30,
+                                       env=env_with(home, CC_BIN=str(stub)))
                 self.assertEqual(setup.returncode, 0, setup.stdout + setup.stderr)
-                self.assertEqual(owner.read_text(), '# Owner rules\nPreserve this project.\n')
-            self.assertEqual([p.name for p in (project / 'plugins').iterdir()], ['codex-copilot'])
-            plugin = project / 'plugins/codex-copilot'
-            self.assertTrue((plugin / 'skills/protocol/SKILL.md').is_file())
-            self.assertTrue((plugin / 'skills/specialist-agents/references/verification-policy.md').is_file())
-            self.assertTrue(os.access(project / 'scripts/copilot-gate.sh', os.X_OK))
-            self.assertTrue((project / '.claude/skills/codex-copilot').resolve().samefile(plugin / 'skills'))
-            self.assertFalse((plugin / 'skills/cpa').exists())
+                self.assertTrue(owner.read_text().startswith('# Owner rules\nPreserve this project.\n'))
+            # Central model: the project carries no plugin, QA gate or skill link.
+            self.assertTrue((project / 'copilot.project.json').is_file())
+            for absent in ('plugins', 'scripts', '.claude/skills', '.codex-copilot.json'):
+                self.assertFalse((project / absent).exists(), absent)
             (project / 'check.py').write_text(
                 'from pathlib import Path\n'
                 'assert "Preserve this project." in Path("AGENTS.md").read_text()\n'
-                'assert Path("plugins/codex-copilot/skills/protocol/SKILL.md").is_file()\n')
+                'assert Path("copilot.project.json").is_file()\n')
             manifest = {'schemaVersion': 1, 'inputs': ['AGENTS.md', 'check.py'],
                         'fallbackLanes': ['entry'], 'lanes': [{'id': 'entry', 'description': 'Native entry',
                         'paths': ['AGENTS.md'], 'argv': ['{python}', 'check.py'], 'cwd': '.',
