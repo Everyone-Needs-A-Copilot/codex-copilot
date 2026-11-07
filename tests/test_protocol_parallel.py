@@ -1,4 +1,6 @@
 """Native adapter contracts; shared engine owns scheduling/ownership semantics."""
+from contextlib import contextmanager
+import os
 import importlib.util
 import json
 from pathlib import Path
@@ -8,6 +10,17 @@ import tempfile
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
+
+@contextmanager
+def fixture_directory():
+    if os.environ.get('COPILOT_TEST_RETAIN_SCRATCH') == '1':
+        retained = tempfile.mkdtemp(prefix='codex-protocol-retained-')
+        print('Retained Codex protocol fixture:', retained)
+        yield retained
+    else:
+        with tempfile.TemporaryDirectory() as temporary:
+            yield temporary
+
 
 def load(name, path):
     spec = importlib.util.spec_from_file_location(name, ROOT / path)
@@ -51,7 +64,7 @@ class ProtocolParallelTest(unittest.TestCase):
             self.assertEqual(adapter.main(),7)
 
     def test_installed_bundle_smoke_does_not_need_source_checkout(self):
-        with tempfile.TemporaryDirectory() as temporary:
+        with fixture_directory() as temporary:
             installed=Path(temporary)/'plugin'
             (installed/'scripts').mkdir(parents=True)
             shutil.copy(ROOT/'scripts/protocol-cycle.py',installed/'scripts/protocol-cycle.py')

@@ -3,7 +3,9 @@
 # Denies main-thread file edits and non-allowlisted shell. Spawned agents are never
 # blocked: thread kind is read from the first line of the session transcript
 # (thread_source / source.subagent). Fails OPEN on any parse error or when the
-# thread kind cannot be determined. Escape hatch: COPILOT_COORDINATOR=off (logged).
+# thread kind cannot be determined. Native dispatch is authorized separately by
+# tc cycle verify-dispatch: this matcher does not intercept namespaced spawn tools
+# and must never be reported as a native lifecycle or stage enforcement boundary. Escape hatch: COPILOT_COORDINATOR=off (logged).
 
 JQ="$(command -v jq 2>/dev/null || true)"
 [ -n "$JQ" ] || exit 0

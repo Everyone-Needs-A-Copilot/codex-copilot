@@ -24,7 +24,7 @@ COORD='Coordinator rule (2026-11-05): you are a coordinator. Never read project 
 if [ "${COPILOT_COORDINATOR:-}" = "off" ]; then
   COORD='Coordinator rule is OFF for this session (COPILOT_COORDINATOR=off).'
 fi
-MSG="$COORD ${MSG:+$MSG }Preserve native capacity, exclusive ownership and one convergence owner."
+MSG="$COORD ${MSG:+$MSG }Preserve native capacity, exclusive ownership and one convergence owner. New managed work requires tc cycle schema2 and inventory freeze; use the protocol adapter, not untracked native dispatch."
 
 $JQ -cn --arg context "$MSG" \
   '{hookSpecificOutput:{hookEventName:"UserPromptSubmit",additionalContext:$context}}'

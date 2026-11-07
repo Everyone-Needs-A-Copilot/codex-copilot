@@ -140,6 +140,8 @@ Optional pack specialists (`kc`, `cco`, `cw`, `cs`, `cpa`) are activated per pro
 
 ## Delegated pattern
 
+New substantial managed work requires schema2 from `tc cycle capability --json`, independent inventory freeze and the native adapter in `references/parallel-execution.md`; missing capability holds enrollment. Stage predicates supplement task QA at every tier.
+
 Approved work uses `$launcher` to map useful independent scopes onto native Codex spawned-agent roles by default. Read `references/parallel-execution.md` before dispatch. `$orchestrate` is a deprecated compatibility redirect; orchestration is part of this protocol, not another owner-operated stage.
 
 ## Task Copilot
