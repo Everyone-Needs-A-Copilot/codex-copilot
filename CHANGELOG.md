@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.18.0] - 2026-11-07
+
+- Adopt shared stage policy version 1 from Claude 5.36.0, requiring cc 2.20.0 and tc 2.13.0. Managed work uses complete check inventories, bounded claims and one-use permits, actual native lifecycle observations, complete failure collection, and source-bound task/release gates.
+- Keep dispatch in supported Codex native tools; the shared service does not spawn agents or attest provider execution. The canonical organization skill is shared with Claude, with no duplicate scheduler.
+- Preserve the frozen plugin core at 1.0.0. No plugin payload bytes or trust shims change for this release.
+- Retain protocol-install fixture scratch when explicitly requested, with unchanged assertions and default cleanup.
+
 ## [0.17.0] - 2026-11-06
 
 - **Central resolution (ADR-001, initiative 06-central-resolution).** Projects no longer carry a copy of the plugin, skills, QA gate, marketplace file or the `.codex-copilot.json` per-file checksum lock. The framework resolves through `~/.copilot/current`.
